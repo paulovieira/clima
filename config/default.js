@@ -1,3 +1,4 @@
+var Path = require("path");
 
 module.exports = {
 
@@ -11,6 +12,11 @@ module.exports = {
     // the default language is the first in the array below
     allowedLanguages: ["pt", "en"],
 
+    rootDir: Path.resolve(__dirname, ".."),
+    
+    actions: {
+        db: Path.resolve(__dirname, "..", "database/actions"),
+    },
 
     hapi: {
 

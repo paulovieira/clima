@@ -1,7 +1,9 @@
-var pgpLib = require('pg-promise'),
-    PgMonitor = require("pg-monitor"),
-    config = require("config"),
-    Q = require("q");
+var Fs = require("fs");
+var Path = require("path");
+var pgpLib = require('pg-promise');
+var PgMonitor = require("pg-monitor");
+var Config = require("config");
+var Q = require("q");
 
 var pgpOptions = {
     promiseLib: Q
@@ -13,29 +15,40 @@ var pgp = pgpLib(pgpOptions);
 
 
 var connectionOptions = {
-    host: config.get("db.postgres.host"),
+    host: Config.get("db.postgres.host"),
     port: 5432,
-    user: config.get("db.postgres.username"),
-    password: config.get("db.postgres.password"),
-    database: config.get("db.postgres.database"),
+    user: Config.get("db.postgres.username"),
+    password: Config.get("db.postgres.password"),
+    database: Config.get("db.postgres.database"),
     //pgFormatting: true
 };
 
 // db will be the exported object
-var db = pgp(connectionOptions);
+module.exports = pgp(connectionOptions);
 
-db.queryResult = {
+module.exports.queryResult = {
     one: 1,     // single-row result is expected;
     many: 2,    // multi-row result is expected;
     none: 4,    // no rows expected;
     any: 6      // (default) = many|none = any result.
 };
 
-db.as = pgp.as;
+module.exports.as = pgp.as;
 
-db.end = function(){
+module.exports.end = function(){
     pgp.end();
     console.log("Released all connections. Goodbye!");
 };
 
-module.exports = db;
+// load seneca actions (database-related)
+module.exports.loadActions = function(senecaInstance){
+
+    // we assume all modules in database/actions export a seneca action
+    var actionsDir = Path.join(Config.get("rootDir"), "database/actions");
+    var filenames = Fs.readdirSync(actionsDir);
+
+    filenames.forEach(function(name){
+        senecaInstance.use(Path.join(actionsDir, name));
+    });
+
+};

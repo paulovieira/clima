@@ -3,8 +3,8 @@
 
 var Hoek = require("hoek");
 var Boom = require("boom");
-var Db = require("../database");
-var Utils = require("../lib/common/utils");
+var Db = require("..");
+var Utils = require("../../lib/common/utils");
 
 
 var internals = {
@@ -41,7 +41,8 @@ module.exports = function(options){
 
     var seneca = this;
 
-    seneca.add("role:texts, cmd:readAll", function ActionTextReadAll(args, done){
+
+    seneca.add("role:texts2, cmd:readAll", function actionTextReadAll(args, done){
 
         Utils.logCallsite(Hoek.callStack()[0]);
 
@@ -57,7 +58,7 @@ module.exports = function(options){
     });
 
 
-    seneca.add("role:texts, cmd:read", function ActionTextRead(args, done){
+    seneca.add("role:texts2, cmd:read", function actionTextRead(args, done){
 
         Utils.logCallsite(Hoek.callStack()[0]);
 
@@ -78,7 +79,7 @@ module.exports = function(options){
     });
 
 
-    seneca.add("role:texts, cmd:create", function ActionTextCreate(args, done){
+    seneca.add("role:texts2, cmd:create", function actionTextCreate(args, done){
 
         Utils.logCallsite(Hoek.callStack()[0]);
 
@@ -115,7 +116,7 @@ module.exports = function(options){
     });
 
 
-    seneca.add("role:texts, cmd:update", function ActionTextUpdate(args, done){
+    seneca.add("role:texts2, cmd:update", function actionTextUpdate(args, done){
 
         Utils.logCallsite(Hoek.callStack()[0]);
 
@@ -164,7 +165,7 @@ module.exports = function(options){
     });
 
 
-    seneca.add("role:texts, cmd:delete", function ActionTextDelete(args, done){
+    seneca.add("role:texts2, cmd:delete", function actionTextDelete(args, done){
 
         Utils.logCallsite(Hoek.callStack()[0]);
 
