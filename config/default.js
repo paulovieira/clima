@@ -1,4 +1,25 @@
 var Path = require("path");
+var Nunjucks = require('hapi-nunjucks');
+
+var internals = {
+    rootDir:      Path.resolve(__dirname, ".."),
+    viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
+    staticsDir:   Path.resolve(__dirname, "..", "lib/web/client/static"),
+    dbActionsDir: Path.resolve(__dirname, "..", "database/actions")
+};
+
+
+Nunjucks.configure(internals.viewsDir, {
+    watch: false
+    //    autoescape: true 
+});
+
+Nunjucks.addGlobal("lang", "pt");
+
+Nunjucks.addFilter('stringify', function(str) {
+    return JSON.stringify(str);
+});
+
 
 module.exports = {
 
@@ -12,11 +33,14 @@ module.exports = {
     // the default language is the first in the array below
     allowedLanguages: ["pt", "en"],
 
-    rootDir: Path.resolve(__dirname, ".."),
-    
-    actions: {
-        db: Path.resolve(__dirname, "..", "database/actions"),
+    rootDir: internals.rootDir,
+    viewsDir: internals.viewsDir,
+    staticsDir: internals.staticsDir,
+    actionsDir: {
+        db: internals.dbActionsDir,
     },
+
+    ironPassword: "fijuweojigsd324",
 
     hapi: {
 
@@ -32,15 +56,18 @@ module.exports = {
 
         // options for the views (to be used in the main index.js)
         views: {
-            path: global.rootPath + 'server/views',
+            path: internals.viewsDir,
+            allowAbsolutePaths: true,
             engines: {
-                "html": require('hapi-nunjucks')
-            }
+                "html": Nunjucks
+            },
         },
 
         auth: {
             mode: "try"
         },
+
+
 
         // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
         joi: {
@@ -115,7 +142,18 @@ module.exports = {
         },
 
         // ----------------------
-        
+        {
+            level1: "a",
+            level2: "b",
+        },
+        {
+            level1: "a"
+        },
+        {
+            level1: "a",
+            level2: "b",
+            level3: "c"
+        },
         {
             level1: "introducao",
             level2: "mensagem",
