@@ -3,6 +3,8 @@
 
 var Hoek = require("hoek");
 var Boom = require("boom");
+var Bcrypt = require("bcrypt");
+
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
 
@@ -12,47 +14,35 @@ module.exports = function(options){
 
     var seneca = this;
 
-    seneca.add("role:texts, cmd:readAll", internals.textsReadAll);
-    seneca.add("role:texts, cmd:read",    internals.textsRead);
-    seneca.add("role:texts, cmd:create",  internals.textsCreate);
-    seneca.add("role:texts, cmd:update",  internals.textsUpdate);
-    seneca.add("role:texts, cmd:delete",  internals.textsDelete);
+    seneca.add("role:users, cmd:readAll", internals.usersReadAll);
+    seneca.add("role:users, cmd:read",    internals.usersRead);
+    //seneca.add("role:users, cmd:create",  internals.usersCreate);
+    seneca.add("role:users, cmd:update",  internals.usersUpdate);
+    seneca.add("role:users, cmd:delete",  internals.usersDelete);
 };
 
 internals.transformMap = {
-
     // a) properties to be maintained
     "id": "id",
-    "tags": "tags",
-    "contents": "contents",
-    "lastUpdated": "last_updated",
+    "email": "email",
+    "firstName": "firstName",
+    "lastName": "lastName",
+    "createdAt": "createdAt",
+    "userTexts": "userTexts",
+    "userGroups": "userGroups"
 
-    // b) new properties (move properties from the nested object to the top object)
-    // NOTE: this is used to make the server-side templates lighter
-    //          "pt": "contents.pt",
-    //          "en": "contents.en",
-
-    // c) changed properties (some fields from authorData, such as pwHash, will be deleted)
-
-    // the changeCaseKeys is only changinf the 1st level keys
-    "authorData.id": "author_data.id",
-    "authorData.firstName": "author_data.first_name",
-    "authorData.lastName": "author_data.last_name",
-    "authorData.email": "author_data.email",
-
-    // d) deleted properties: "contentsDesc", "authorId", "active"
-
+    // d) deleted properties: "recover", "pwHash", "recoverValidUntil"
 };
 
 // action handlers for read, readAll, create, update and delete
 // (and possibly others); this is the place where we actually fetch the data from the database;
 
 
-internals.textsReadAll = function(args, done){
+internals.usersReadAll = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_read')
+    Db.func('users_read')
         .then(function(data) {
 
             return done(null, Hoek.transform(data, internals.transformMap));
@@ -63,11 +53,11 @@ internals.textsReadAll = function(args, done){
         });
 };
 
-internals.textsRead = function(args, done){
+internals.usersRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_read', JSON.stringify(args.ids))
+    Db.func('users_read', JSON.stringify(args.ids))
         .then(function(data) {
 
             if (data.length === 0) {
@@ -82,12 +72,15 @@ internals.textsRead = function(args, done){
         });
 };
 
-internals.textsCreate = function(args, done){
+/*
+TO BE DONE 
+
+internals.usersCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
     // 1) create the resources with the payload data
-    Db.func('texts_create', JSON.stringify(args.payload))
+    Db.func('users_create', JSON.stringify(args.payload))
 
         // 2) read the created resources (to obtain the joined data)
         .then(function(createdData) {
@@ -117,13 +110,15 @@ internals.textsCreate = function(args, done){
             return done(err.isBoom ? err : Boom.badImplementation(null, err));
         });
 };
+*/
 
-internals.textsUpdate = function(args, done){
+internals.usersUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
+
     // 1) read the resources to be updated (to verify that they exist)
-    Db.func('texts_read', JSON.stringify(args.ids))
+    Db.func('users_read', JSON.stringify(args.ids))
 
         // 2) update the resources with the payload data
         .then(function(data) {
@@ -132,9 +127,31 @@ internals.textsUpdate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            // TODO: verify that data.length === args.ids.length
+            // TODO: verify that data.length === args.ids.lengthxxx
 
-            return Db.func("texts_update", JSON.stringify(args.payload))
+
+            // if we are updating the password we must verify that the submitted current pw matches 
+            // with the one in the database
+            var currentPwSubmitted = args.payload[0]["current_pw"],
+                newPw              = args.payload[0]["new_pw"];
+            
+            if(newPw){
+                if(!currentPwSubmitted){
+                    throw Boom.forbidden("To change the password you must submit the current one.");
+                }
+
+                var currentPwHash = data[0]["pw_hash"];   // the pw hash in the database
+                var pwMatch = Bcrypt.compareSync(currentPwSubmitted, currentPwHash);
+
+                if(!pwMatch){
+                    throw Boom.forbidden("The submitted current password is wrong.");
+                }
+
+                // if the pw matches, hash the new password (blowfish) to be stored in the db
+                args.payload[0]["pw_hash"] = Bcrypt.hashSync(newPw, 10);
+
+            }
+            return Db.func("users_update", JSON.stringify(args.payload))
         })
 
         // 3) read again the updated resources (to obtain the joined data)
@@ -148,7 +165,7 @@ internals.textsUpdate = function(args, done){
                 return { id: obj.id }; 
             });
 
-            return Db.func("texts_read", JSON.stringify(updatedIds));
+            return Db.func("users_read", JSON.stringify(updatedIds));
         })
 
         // 4) apply the object transform and reply
@@ -166,11 +183,12 @@ internals.textsUpdate = function(args, done){
         });
 };
 
-internals.textsDelete = function(args, done){
+
+internals.usersDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_delete', JSON.stringify(args.ids))
+    Db.func('users_delete', JSON.stringify(args.ids))
         .then(function(data) {
 
             if (data.length === 0) {
