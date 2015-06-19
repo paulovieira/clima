@@ -4,7 +4,7 @@
 var Hoek = require("hoek");
 var Boom = require("boom");
 var Bcrypt = require("bcrypt");
-
+var ChangeCase = require("change-case-keys");
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
 
@@ -25,11 +25,11 @@ internals.transformMap = {
     // a) properties to be maintained
     "id": "id",
     "email": "email",
-    "firstName": "firstName",
-    "lastName": "lastName",
-    "createdAt": "createdAt",
-    "userTexts": "userTexts",
-    "userGroups": "userGroups"
+    "firstName": "first_name",
+    "lastName": "last_name",
+    "createdAt": "created_at",
+    "userTexts": "user_texts",
+    "userGroups": "user_groups",
 
     // d) deleted properties: "recover", "pwHash", "recoverValidUntil"
 };
@@ -45,11 +45,13 @@ internals.usersReadAll = function(args, done){
     Db.func('users_read')
         .then(function(data) {
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -57,20 +59,24 @@ internals.usersRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('users_read', JSON.stringify(args.ids))
+    Db.func('users_read', JSON.stringify(args.query))
         .then(function(data) {
 
             if (data.length === 0) {
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
+
+
 
 /*
 TO BE DONE 
@@ -107,7 +113,8 @@ internals.usersCreate = function(args, done){
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 */
@@ -116,9 +123,13 @@ internals.usersUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-
+    ChangeCase(args.query, "underscored");
+    var ids = args.query.map(function(obj){ 
+        return { id: obj.id };
+    });
+    
     // 1) read the resources to be updated (to verify that they exist)
-    Db.func('users_read', JSON.stringify(args.ids))
+    Db.func('users_read', JSON.stringify(ids))
 
         // 2) update the resources with the payload data
         .then(function(data) {
@@ -127,13 +138,13 @@ internals.usersUpdate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            // TODO: verify that data.length === args.ids.lengthxxx
+            // TODO: verify that data.length === args.query.length
 
 
             // if we are updating the password we must verify that the submitted current pw matches 
             // with the one in the database
-            var currentPwSubmitted = args.payload[0]["current_pw"],
-                newPw              = args.payload[0]["new_pw"];
+            var currentPwSubmitted = args.query[0]["current_pw"],
+                newPw              = args.query[0]["new_pw"];
             
             if(newPw){
                 if(!currentPwSubmitted){
@@ -148,10 +159,10 @@ internals.usersUpdate = function(args, done){
                 }
 
                 // if the pw matches, hash the new password (blowfish) to be stored in the db
-                args.payload[0]["pw_hash"] = Bcrypt.hashSync(newPw, 10);
+                args.query[0]["pw_hash"] = Bcrypt.hashSync(newPw, 10);
 
             }
-            return Db.func("users_update", JSON.stringify(args.payload))
+            return Db.func("users_update", JSON.stringify(args.query))
         })
 
         // 3) read again the updated resources (to obtain the joined data)
@@ -175,11 +186,13 @@ internals.usersUpdate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -188,18 +201,19 @@ internals.usersDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('users_delete', JSON.stringify(args.ids))
-        .then(function(data) {
+    Db.func('users_delete', JSON.stringify(args.query))
+        .then(function(deletedData) {
 
-            if (data.length === 0) {
+            if (deletedData.length === 0) {
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, data);
+            return done(null, deletedData);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 

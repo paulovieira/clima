@@ -19,9 +19,11 @@
     "hoek": "^2.14.0",
     "joi": "^6.4.3",
     "json-format": "0.0.1",
+    "node-uuid": "^1.4.3",
     "pg-monitor": "^0.2.0",
     "pg-promise": "^1.2.1",
     "q": "^1.4.1",
+    "rimraf": "^2.4.0",
     "strip-json-comments": "^1.0.2",
     "underscore": "^1.8.3",
     "underscore.string": "^3.0.3"

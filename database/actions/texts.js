@@ -3,6 +3,7 @@
 
 var Hoek = require("hoek");
 var Boom = require("boom");
+var ChangeCase = require("change-case-keys");
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
 
@@ -55,11 +56,13 @@ internals.textsReadAll = function(args, done){
     Db.func('texts_read')
         .then(function(data) {
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -67,18 +70,20 @@ internals.textsRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_read', JSON.stringify(args.ids))
+    Db.func('texts_read', JSON.stringify(args.query))
         .then(function(data) {
 
             if (data.length === 0) {
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -86,8 +91,10 @@ internals.textsCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
+    ChangeCase(args.query, "underscored");
+
     // 1) create the resources with the payload data
-    Db.func('texts_create', JSON.stringify(args.payload))
+    Db.func('texts_create', JSON.stringify(args.query))
 
         // 2) read the created resources (to obtain the joined data)
         .then(function(createdData) {
@@ -110,11 +117,13 @@ internals.textsCreate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -122,8 +131,13 @@ internals.textsUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
+    ChangeCase(args.query, "underscored");
+    var ids = args.query.map(function(obj){ 
+        return { id: obj.id };
+    });
+
     // 1) read the resources to be updated (to verify that they exist)
-    Db.func('texts_read', JSON.stringify(args.ids))
+    Db.func('texts_read', JSON.stringify(ids))
 
         // 2) update the resources with the payload data
         .then(function(data) {
@@ -134,7 +148,7 @@ internals.textsUpdate = function(args, done){
 
             // TODO: verify that data.length === args.ids.length
 
-            return Db.func("texts_update", JSON.stringify(args.payload))
+            return Db.func("texts_update", JSON.stringify(args.query))
         })
 
         // 3) read again the updated resources (to obtain the joined data)
@@ -158,11 +172,13 @@ internals.textsUpdate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, Hoek.transform(data, internals.transformMap));
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
@@ -170,18 +186,19 @@ internals.textsDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_delete', JSON.stringify(args.ids))
-        .then(function(data) {
+    Db.func('texts_delete', JSON.stringify(args.query))
+        .then(function(deletedData) {
 
-            if (data.length === 0) {
+            if (deletedData.length === 0) {
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, data);
+            return done(null, deletedData);
         })
         .catch(function(err) {
 
-            return done(err.isBoom ? err : Boom.badImplementation(null, err));
+            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            return done(err);
         });
 };
 
