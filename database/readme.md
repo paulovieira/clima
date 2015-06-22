@@ -1,7 +1,7 @@
-# Clima Database 
+# Clima - database 
 
 ## Introduction 
-For every table we have 4 function (relative to 4 fundamental operations)
+For every table we have 4 postgres function (relative to 4 fundamental operations)
 
 	- tablename_read(json options)  [options will be used in the WHERE clause]
 	- tablename_create(json input_data, json options)  [options should be ignored for now]
@@ -13,6 +13,25 @@ To interact with the tables using these functions we must use the json format.
 For input: the json argument should a string of json (either an object or an array of objects).
 
 For output: all functions return the a json string (an array of objects as well), because that's what the node-postgres module returns. 
+
+
+To acess the data from node we add corresponding actions to the seneca instance:
+ - read
+ - readAll
+ - create
+ - update
+ - delete
+
+The postgres functions are called in these actions handlers. Among the actions for the different tables have some patterns in common:
+
+ - readAll: we just call tablename_read and apply Hoek transform
+ - read: if the returned array has 0 length, we send 404;
+ - create: we call tablename_create with the payload data; the created data is returned from the postgres function; we extract the ids of the new rows and call tablename_read with those ids (because we want to send the joined data as well, which is available only through tablename_read)
+ - update: first we make a call to tablename_read with the ids of the payload data (to make sure the data really exists); then we call tablename_update with the payload data; then we call tablename_read again, to have the newly updated data along with the joined data
+ - delete: first we make a call to tablename_read to the ids (to make sure the data really exists); then we call tablename_delete
+
+
+
 
 
 ## Read data

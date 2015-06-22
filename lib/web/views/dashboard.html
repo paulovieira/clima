@@ -63,7 +63,8 @@
         window.Clima = window.Clima || {};
         Clima.lang = "{{ lang }}";
         Clima.texts  = {{ ctx.textsArray | stringify }};
-        Clima.files  = {{ ctx.filesArray | stringify }};
+        //Clima.files  = {{ ctx.filesArray | stringify }};
+        Clima.files  = [];
         Clima.userId = {{ ctx.auth.credentials.id }};
     </script>
 {#

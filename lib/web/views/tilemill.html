@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+  <meta charset='UTF-8'/>
+  <meta name='viewport' content='user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0' />
+  <title>TileMill</title>
+
+  <link rel='shortcut icon' href='/assets/tilemill/images/favicon.ico' type='image/x-icon' />
+  <link rel='stylesheet' href='/assets/tilemill/css/vendor.css' type='text/css'/>
+  <link rel='stylesheet' href="/common/css/tilemill-override.css" type='text/css' />
+
+  <script src='/assets/bones/all.js' type='text/javascript'></script>
+  <script src='/assets/tilemill/js/vendor.js' type='text/javascript'></script>
+  <script src='/assets/tilemill/js/abilities.js' type='text/javascript'></script>
+  <script type='text/javascript'>$(Bones.start);</script>
+
+
+  
+</head>
+
+<body>
+
+
+<div class='bleed'>
+  <a class='home' href='/{{ ctx.lang }}/dashboard'><span class='icon i30 settings'></span>Clima Dashboard</a>
+  <a class='editor disabled'><span class='icon i30 editor'></span>Editor</a>
+  <a class='projects' href='#/'><span class='icon i30 projects'></span>Projects</a>
+  <a class='manual' href='#/manual'><span class='icon i30 manual'></span>Manual</a>
+  <a class='plugins' href='#/plugins'><span class='icon i30 plugins'></span>Plugins</a>
+  <a class='settings' href='#/settings'><span class='icon i30 settings'></span>Settings</a>
+</div>
+
+<div id='page' class='fill-e'></div>
+<div id='modal'></div>
+<div id='popup' class='pane scrolling'><h2 class='title'></h2>
+<a href='#close' class='close button'><span class='icon reverse close'>Close</span></a>
+<div class='content fill-s'></div>
+<div class='mask'></div>
+<a href='#restart' class='restart large button'><span class='icon reverse close labeled'></span>Cancel</a>
+</div>
+<div class='mask'></div>
+
+</body>
+</html>

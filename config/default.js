@@ -4,7 +4,6 @@ var Nunjucks = require('hapi-nunjucks');
 var internals = {
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
-    staticsDir:   Path.resolve(__dirname, "..", "lib/web/client/static"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions")
 };
 
@@ -35,7 +34,6 @@ module.exports = {
 
     rootDir: internals.rootDir,
     viewsDir: internals.viewsDir,
-    staticsDir: internals.staticsDir,
     actionsDir: {
         db: internals.dbActionsDir,
     },

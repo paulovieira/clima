@@ -6,8 +6,10 @@
 <script type="text/javascript">
 
     window.Clima = window.Clima || {};
+{#
     //Clima.lang = "{{ lang }}";
     //Clima.texts  = {{ ctx.textsArray | stringify }};
+#}
 
 	{#  simple polyfill for addEventListener (because it is not available in IE8)  #}
 	Clima.addEvent = function(evnt, elem, func) {
