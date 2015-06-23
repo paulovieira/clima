@@ -106,3 +106,29 @@ cd ~/clima-app/tilemill-clima
 pm2 start index.js --name "tilemill-clima" -- --server=true
 ```
 
+
+#### Compiling the client-side templates
+
+The client app uses nunjucks templates. Nunjucks should be installed (or updated) globally:
+
+```
+sudo npm install nunjucks -g
+```
+
+This will also make available the `nunjucks-precompile` script globally available. We can then precompile a whole directory of templates with:
+
+```
+nunjucks-precompile . > templates.js
+```
+
+The script will search recursively all subdirectories for the templates, includes, macros, etc.
+
+To load the templates in the browser, use nunjucks-slim.js. More informations:
+
+http://mozilla.github.io/nunjucks/api.html#browser-usage
+
+http://mozilla.github.io/nunjucks/getting-started.htmlpvieira@pvieira-FCUL:~/github/clima-madeira/client$ 
+
+NOTES: the `nunjucks-precompile` script is located at `/usr/local/bin/nunjucks-precompile`, which is a soft link to `../lib/node_modules/nunjucks/bin/precompile`. 
+
+So the `nunjucks-precompile` script is actually `/usr/local/lib/node_modules/nunjucks/bin/precompile`. This script will use the main Nunjucks module to proceed with the compilation.
