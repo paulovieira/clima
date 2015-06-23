@@ -585,8 +585,8 @@
         "id": 57,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/biodiversidade_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/biodiversidade_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/biodiversidade_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/biodiversidade_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -595,8 +595,8 @@
         "id": 58,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/risco-hidrologico-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/risco-hidrologico-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/risco-hidrologico-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/risco-hidrologico-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -605,8 +605,8 @@
         "id": 59,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/saude_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/saude_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/saude_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/saude_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -616,8 +616,8 @@
         "id": 60,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/turismo_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/turismo_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/turismo_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/turismo_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -627,8 +627,8 @@
         "id": 61,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/agricultura_florestas_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/agricultura_florestas_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/agricultura_florestas_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/agricultura_florestas_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -638,8 +638,8 @@
         "id": 62,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/energia_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/energia_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/energia_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/energia_w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -649,8 +649,8 @@
         "id": 63,
         "tags": [],
         "contents": {
-            "pt": "/common/images/logos/logo-drota_70px.jpg",
-            "en": "/common/images/logos/logo-drota_70px.jpg"
+            "pt": "/static/_images/logos/logo-drota_70px.jpg",
+            "en": "/static/_images/logos/logo-drota_70px.jpg"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -659,8 +659,8 @@
         "id": 64,
         "tags": [],
         "contents": {
-            "pt": "/common/images/logos/logo-cciam_70px.jpg",
-            "en": "/common/images/logos/logo-cciam_70px.jpg"
+            "pt": "/static/_images/logos/logo-cciam_70px.jpg",
+            "en": "/static/_images/logos/logo-cciam_70px.jpg"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -669,8 +669,8 @@
         "id": 65,
         "tags": [],
         "contents": {
-            "pt": "/common/images/logos/logo-fcul_70px.png",
-            "en": "/common/images/logos/logo-fcul_70px.png"
+            "pt": "/static/_images/logos/logo-fcul_70px.png",
+            "en": "/static/_images/logos/logo-fcul_70px.png"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -679,8 +679,8 @@
         "id": 66,
         "tags": [],
         "contents": {
-            "pt": "/common/images/logos/logo-ffcul_70px.jpg",
-            "en": "/common/images/logos/logo-ffcul_70px.jpg"
+            "pt": "/static/_images/logos/logo-ffcul_70px.jpg",
+            "en": "/static/_images/logos/logo-ffcul_70px.jpg"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -689,8 +689,8 @@
         "id": 67,
         "tags": [],
         "contents": {
-            "pt": "/common/images/placeholders/300x200.gif",
-            "en": "/common/images/placeholders/300x200.gif"
+            "pt": "/static/_images/placeholders/300x200.gif",
+            "en": "/static/_images/placeholders/300x200.gif"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -699,8 +699,8 @@
         "id": 68,
         "tags": [],
         "contents": {
-            "pt": "/common/images/placeholders/300x200.gif",
-            "en": "/common/images/placeholders/300x200.gif"
+            "pt": "/static/_images/placeholders/300x200.gif",
+            "en": "/static/_images/placeholders/300x200.gif"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -709,8 +709,8 @@
         "id": 69,
         "tags": [],
         "contents": {
-            "pt": "/common/images/placeholders/300x200.gif",
-            "en": "/common/images/placeholders/300x200.gif"
+            "pt": "/static/_images/placeholders/300x200.gif",
+            "en": "/static/_images/placeholders/300x200.gif"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -1022,8 +1022,8 @@
         "id": 100,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/sectores/qualidade-disponibilidade-agua-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/sectores/qualidade-disponibilidade-agua-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/sectores/qualidade-disponibilidade-agua-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/sectores/qualidade-disponibilidade-agua-w800.jpg\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -1033,8 +1033,8 @@
         "id": 101,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -1044,8 +1044,8 @@
         "id": 102,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/common/images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/common/images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },

@@ -7,11 +7,11 @@ we load those libraries only if they havent been loaded before
 {#
 
 {% if not underscore_is_loaded  %}
-<script src="/common/js/underscore-1.6.0.js"></script>
+<script src="/static/underscore/underscore-1.6.0.js"></script>
 {% endif %}
 
 {% if not q_is_loaded  %}
-<script src="/common/js/q-1.1.2.js"></script>
+<script src="/static/q/q-1.1.2.js"></script>
 {% endif %}
 
 #}
@@ -21,5 +21,5 @@ we load those libraries only if they havent been loaded before
 	Clima.texts  = {{ ctx.textsArray | stringify }};
 </script>
 
-<script src="/common/js/summernote-0.6.1.js"></script>
-<script src="/editor/js/summernote-save.js"></script> 
+<script src="/static/summernote/0.6.9/summernote.js"></script>
+<script src="/static/summernote/summernote-save.js"></script> 

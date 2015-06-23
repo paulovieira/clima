@@ -60,7 +60,6 @@
 
     {# editor javascript (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {# {% include "common/editor_scripts.html" %} #}
     {% include "common/summernote_scripts.html" %}
     {% endif %}
 
