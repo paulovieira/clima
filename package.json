@@ -14,7 +14,7 @@
     "good": "^6.1.2",
     "good-console": "^5.0.0",
     "hapi": "^8.6.1",
-    "hapi-auth-basic": "^2.0.0",
+    "hapi-auth-cookie": "^3.0.1",
     "hapi-nunjucks": "^0.0.5",
     "hoek": "^2.14.0",
     "joi": "^6.4.3",
