@@ -26,7 +26,9 @@ cp clima-settings.json.template clima-settings.json
 Then launch TileMill with
 ```sh
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
-./index.js --server=true --files=$TILEMILL_FILES_PATH
+export TILEMILL_HOSTNAME=clima.dev
+export TILEMILL_HOSTNAME=clima.fc.ul.pt
+node index.js start --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
 Note: the default ports for this service are 20008 and 20009.
@@ -87,15 +89,16 @@ node index.js
 
 ### Using pm2 to launch the services
 
-Make sure pm2 is installed and that the environment is set correctly
+Make sure pm2 is installed:
 ```sh
+pm2 list
 sudo npm install pm2 -g
-export NODE_ENV=production/dev
 ```
 
-Start the main app:
+Export the correct environment and start the main app:
 ```sh
 cd ~/clima-app/clima
+export NODE_ENV=production/dev
 pm2 start index.js --name "clima"
 ```
 
@@ -109,7 +112,8 @@ pm2 start index.js --name "tilestream-clima" -- --tiles=$MBTILES_PATH --tilePort
 Start TileMill:
 ```sh
 cd ~/clima-app/tilemill-clima
-pm2 start index.js --name "tilemill-clima" -- --server=true
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_PATH
 ```
 
 
