@@ -10,7 +10,7 @@ module.exports = function(grunt) {
             dashboard: {
                 baseDir: 'lib/web/client/dashboard3',
                 src: ['lib/web/client/dashboard3/**/*.html'],
-                dest: 'lib/web/client/dashboard3/templates.js',
+                dest: 'lib/web/client/dashboard3/templates_dashboard.js',
                 options: {
                     autoescape: true
                 }
@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             ferramenta: {
                 baseDir: 'client/ferramenta',
                 src: ['client/ferramenta/**/*.html'],
-                dest: 'client/ferramenta/templates.js',
+                dest: 'client/ferramenta/templates_ferramenta.js',
                 options: {}
             },
         },

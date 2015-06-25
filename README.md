@@ -21,7 +21,8 @@ sudo npm install
 Then launch TileMill with
 
 ```
-./index.js --server=true
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+./index.js --server=true --files=$TILEMILL_FILES_PATH
 ```
 
 Note: the default ports for this service are 20008 and 20009.
@@ -37,7 +38,7 @@ sudo npm install
 
 Then launch TileStream with
 ```
-export MBTILES_PATH=...
+export MBTILES_PATH=$HOME/tilemill-files/export
 ./index.js start --tiles=$MBTILES_PATH --tilePort=8001
 ```
 
@@ -109,26 +110,5 @@ pm2 start index.js --name "tilemill-clima" -- --server=true
 
 #### Compiling the client-side templates
 
-The client app uses nunjucks templates. Nunjucks should be installed (or updated) globally:
+The client apps use [nunjucks](https://mozilla.github.io/nunjucks/) as the templating engine templates. Nunjucks should be installed globally. The `README.d` file in lib/web/client has more details on how to use nunjucks.
 
-```
-sudo npm install nunjucks -g
-```
-
-This will also make available the `nunjucks-precompile` script globally available. We can then precompile a whole directory of templates with:
-
-```
-nunjucks-precompile . > templates.js
-```
-
-The script will search recursively all subdirectories for the templates, includes, macros, etc.
-
-To load the templates in the browser, use nunjucks-slim.js. More informations:
-
-http://mozilla.github.io/nunjucks/api.html#browser-usage
-
-http://mozilla.github.io/nunjucks/getting-started.htmlpvieira@pvieira-FCUL:~/github/clima-madeira/client$ 
-
-NOTES: the `nunjucks-precompile` script is located at `/usr/local/bin/nunjucks-precompile`, which is a soft link to `../lib/node_modules/nunjucks/bin/precompile`. 
-
-So the `nunjucks-precompile` script is actually `/usr/local/lib/node_modules/nunjucks/bin/precompile`. This script will use the main Nunjucks module to proceed with the compilation.
