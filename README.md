@@ -26,8 +26,8 @@ cp clima-settings.json.template clima-settings.json
 Then launch TileMill with
 ```sh
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
-export TILEMILL_HOSTNAME=clima.dev
-(or export TILEMILL_HOSTNAME=clima.fc.ul.pt)
+export TILEMILL_HOSTNAME=clima.dev  (in local machine)
+export TILEMILL_HOSTNAME=clima.fc.ul.pt  (in production server)
 node index.js start --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
@@ -113,8 +113,8 @@ Start TileMill:
 ```sh
 cd ~/clima-app/tilemill-clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
-export TILEMILL_HOSTNAME=clima.dev
-(or export TILEMILL_HOSTNAME=clima.fc.ul.pt)
+export TILEMILL_HOSTNAME=clima.dev  (in local machine)
+export TILEMILL_HOSTNAME=clima.fc.ul.pt  (in production server)
 pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 

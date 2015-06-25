@@ -1,4 +1,4 @@
 {
 	"ext": "js,html",
-	"ignore": ["lib/web/client/*", "data/*", "database/*"]
+	"ignore": ["lib/web/client/*", "data/*", "database/sql/*", "database/populate_initial_data/*"]
 }

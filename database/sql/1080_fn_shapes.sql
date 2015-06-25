@@ -13,7 +13,7 @@ CREATE FUNCTION shapes_read(options json DEFAULT '[{}]')
 -- return table, uses the definition of the shapes table + extra data from the join
 RETURNS TABLE(
 	id INT,
-	code TEXT,
+	table_name TEXT,
 	srid INT,
 	description JSONB,
 	file_id INT,
@@ -35,8 +35,8 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id INT;
-	code TEXT;
-	code_starts_with TEXT;
+	table_name TEXT;
+	table_name_starts_with TEXT;
 BEGIN
 
 shape_columns_data_cte := '
@@ -50,7 +50,7 @@ shape_columns_data_cte := '
 			
 		FROM shapes s
 		LEFT JOIN pg_attribute a
-			ON a.attrelid = (s.schema_name || ''.'' || s.code)::regclass
+			ON a.attrelid = (s.schema_name || ''.'' || s.table_name)::regclass
 		AND    a.attnum > 0
 		AND    NOT a.attisdropped
 		GROUP BY shape_id
@@ -85,8 +85,8 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')   INTO id;
-	SELECT json_extract_path_text(options_row, 'code') INTO code;
-	SELECT json_extract_path_text(options_row, 'code_starts_with') INTO code_starts_with;
+	SELECT json_extract_path_text(options_row, 'table_name') INTO table_name;
+	SELECT json_extract_path_text(options_row, 'table_name_starts_with') INTO table_name_starts_with;
 
 	number_conditions := 0;
 
@@ -100,24 +100,24 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: code
-	IF code IS NOT NULL THEN
+	-- criteria: table_name
+	IF table_name IS NOT NULL THEN
 		IF number_conditions = 0 THEN  command = command || ' WHERE';
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' s.code = %L', code);
+		command = format(command || ' s.table_name = %L', table_name);
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: code starts with
-	IF code_starts_with IS NOT NULL THEN
+	-- criteria: table_name starts with
+	IF table_name_starts_with IS NOT NULL THEN
 		IF number_conditions = 0 THEN  command = command || ' WHERE';
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		code_starts_with := code_starts_with || '%';
-		command = format(command || ' s.code ILIKE %L', code_starts_with);
+		table_name_starts_with := table_name_starts_with || '%';
+		command = format(command || ' s.table_name ILIKE %L', table_name_starts_with);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -182,7 +182,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 
 		INSERT INTO shapes(
 			id,
-			code,
+			table_name,
 			srid, 
 			description, 
 			file_id,
@@ -191,7 +191,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('shapes', 'id'))),
-			input_row.code, 
+			input_row.table_name, 
 			COALESCE(input_row.srid, 4326),
 			COALESCE(input_row.description, '{}'::jsonb),
 			input_row.file_id,
@@ -207,7 +207,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 
 	ELSE
 		current_row.id = new_id;
-		current_row.code = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
+		current_row.table_name = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
 
 		RAISE WARNING 'A row with the given id exists already present. Data will not be inserted (id=%)', current_row.id;
 
@@ -226,7 +226,7 @@ LANGUAGE plpgsql;
 select * from shapes order by id desc
 
 select * from shapes_create('{
-	"code": "precepitacao_ref",
+	"table_name": "precepitacao_ref",
 	"title": {"pt": "fwefwef", "en": "fwefwef fewfw"},
 	"owner_id": 2,
 	"schema_name": "geo"
@@ -265,8 +265,8 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 	command := 'UPDATE shapes SET ';
 
 	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
-	-- IF input_row.code IS NOT NULL THEN
-	-- 	command = format(command || 'code = %L, ', input_row.code);
+	-- IF input_row.table_name IS NOT NULL THEN
+	-- 	command = format(command || 'table_name = %L, ', input_row.table_name);
 	-- END IF;
 	-- IF input_row.srid IS NOT NULL THEN
 	-- 	command = format(command || 'srid = %L, ', input_row.srid);
@@ -356,8 +356,8 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	
 	IF id_to_delete IS NOT NULL THEN
 
-		-- drop the associate table in the geo schema (the name is the code)
-		SELECT code FROM shapes WHERE id = id_to_delete INTO geotable_name;
+		-- drop the associate table in the geo schema (the name is the table_name)
+		SELECT table_name FROM shapes WHERE id = id_to_delete INTO geotable_name;
 		EXECUTE 'DROP TABLE geo.' || geotable_name || ';';
 
 		DELETE FROM shapes

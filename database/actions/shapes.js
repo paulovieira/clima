@@ -9,9 +9,6 @@ var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Config = require("config");
 var Rimraf = require("rimraf");
-var RandomString = require("randomstring");
-var _ = require("underscore");
-var _s = require("underscore.string");
 var ChangeCase = require("change-case-keys");
 
 var Db = require("..");
@@ -23,42 +20,47 @@ module.exports = function(options){
 
     var seneca = this;
 
-    seneca.add("role:files, cmd:readAll", internals.filesReadAll);
-    seneca.add("role:files, cmd:read",    internals.filesRead);
-    seneca.add("role:files, cmd:create",  internals.filesCreate);
-    seneca.add("role:files, cmd:update",  internals.filesUpdate);
-    seneca.add("role:files, cmd:delete",  internals.filesDelete);
+    seneca.add("role:shapes, cmd:readAll", internals.shapesReadAll);
+    seneca.add("role:shapes, cmd:read",    internals.shapesRead);
+    // seneca.add("role:shapes, cmd:create",  internals.shapesCreate);
+     seneca.add("role:shapes, cmd:update",  internals.shapesUpdate);
+    seneca.add("role:shapes, cmd:delete",  internals.shapesDelete);
 };
 
 internals.transformMap = {
 
     // a) properties to be maintained
     "id": "id",
-    "name": "name",
-    "logicalPath": "logical_path",
-    "tags": "tags",
+    "code": "code",
+    "srid": "srid",
     "description": "description",
-    "properties":"properties",
-    "uploadedAt":"uploaded_at",
+    "fileId": "file_id",
+    "schemaName": "schema_name",
+    "ownerId": "owner_id",
+    "createdAt": "created_at",
 
     // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
+    "fileData.id": "file_data.id",
+    "fileData.name": "file_data.name",
+    "fileData.logical_path": "file_data.logical_path",
+
     "ownerData.id": "owner_data.id",
     "ownerData.email": "owner_data.email",
     "ownerData.firstName": "owner_data.first_name",
     "ownerData.lastName": "owner_data.last_name",
 
-    // d) deleted properties: "physicalPath"
+    "shapeColumnsData": "shape_columns_data"
 };
 
 // action handlers for read, readAll, create, update and delete
 // (and possibly others); this is the place where we actually fetch the data from the database;
 
 
-internals.filesReadAll = function(args, done){
+internals.shapesReadAll = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('files_read')
+    Db.func('shapes_read')
         .then(function(data) {
 
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
@@ -71,11 +73,11 @@ internals.filesReadAll = function(args, done){
         });
 };
 
-internals.filesRead = function(args, done){
+internals.shapesRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('files_read', JSON.stringify(args.query))
+    Db.func('shapes_read', JSON.stringify(args.dbQuery))
         .then(function(data) {
 
             if (data.length === 0) {
@@ -92,28 +94,18 @@ internals.filesRead = function(args, done){
         });
 };
 
-
+/*
 //TO BE DONE 
 
 internals.filesCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // note: the filename has already been slugified in the client, but we do it here as well (it is an idempotent function)
     var filename     = args.payload.filename;
-
-    var extname      = Path.extname(filename);
-    var basename     = _s.slugify(Path.basename(filename, extname));
-    filename = basename + extname;
-
     var shapeCode    = args.payload.shapeCode;
+    var logicalPath  = Config.get("uploads.logicalPath");
     var physicalPath = Config.get("uploads.physicalPath");
     var rootDir      = Config.get("rootDir");
-
-    // check if we already have a file with this name
-    if(_.findWhere(args.pre.files, {name: filename})){
-        filename = basename + "_" + RandomString.generate(5) + extname;
-    }
 
     if(typeof physicalPath!=="string" || typeof filename!=="string"){
         return done(Boom.badRequest("filename and physical path must be strings"));
@@ -127,10 +119,10 @@ debugger;
 
         var dbData = {
             name: filename,
-            logicalPath: Config.get("uploads.logicalPath"),
+            logicalPath: logicalPath,
             physicalPath: physicalPath,
             tags: args.payload.tags,
-            ownerId: args.payload.ownerId
+            ownerId: args.auth.credentials.id
         };
 
         ChangeCase(dbData, "underscored");
@@ -194,18 +186,19 @@ debugger;
 };
 
 
+*/
 
-internals.filesUpdate = function(args, done){
+internals.shapesUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    ChangeCase(args.query, "underscored");
-    var ids = args.query.map(function(obj){ 
+    ChangeCase(args.dbQuery, "underscored");
+    var ids = args.dbQuery.map(function(obj){ 
         return { id: obj.id };
     });
 
     // 1) read the resources to be updated (to verify that they exist)
-    Db.func('files_read', JSON.stringify(ids))
+    Db.func('shapes_read', JSON.stringify(ids))
 
         // 2) update the resources with the payload data
         .then(function(data) {
@@ -214,9 +207,9 @@ internals.filesUpdate = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            // TODO: verify that data.length === args.query.lengthxxx
+            // TODO: verify that data.length === args.ids.length
 
-            return Db.func("files_update", JSON.stringify(args.query))
+            return Db.func("shapes_update", JSON.stringify(args.dbQuery))
         })
 
         // 3) read again the updated resources (to obtain the joined data)
@@ -230,7 +223,7 @@ internals.filesUpdate = function(args, done){
                 return { id: obj.id }; 
             });
 
-            return Db.func("files_read", JSON.stringify(updatedIds));
+            return Db.func("shapes_read", JSON.stringify(updatedIds));
         })
 
         // 4) apply the object transform and reply
@@ -252,48 +245,12 @@ internals.filesUpdate = function(args, done){
 
 
 
-internals.filesDelete = function(args, done){
+internals.shapesDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // first read the data, because we need to know the file path
-    Db.func("files_read", JSON.stringify(args.query))
-        .then(function(data){
-
-            if (data.length === 0) {
-                throw Boom.notFound("The resource does not exist.");
-            }
-
-            // TODO: currently only the first file will be deleted by rimraf; if we make a DELETE request such as
-            //  /api/v1/files/3,5, only the file with id 3 will be deleted
-            
-            var rootDir = Config.get("rootDir"), 
-                physicalPath = data[0]["physical_path"],
-                name = data[0]["name"];
-
-            var fileFullPath = Path.join(rootDir, physicalPath, name);
-            Utils.log(["rimraf"], "rimraf will delete " + fileFullPath);
-
-            var deferred = Q.defer();
-
-            // note: if there if no file corresponding to the given fileFullPath, Rimraf will return successfully, 
-            // ("err" will be null) since the desired outcome is already the case
-            Rimraf(fileFullPath, function(err){
-
-                if(err){
-                    return deferred.reject(err);
-                }
-
-                return deferred.resolve();
-            });
-
-            return deferred.promise;
-        })
-        .then(function(){
-
-            return Db.func("files_delete", JSON.stringify(args.query));
-        })
-        .then(function(deletedData){
+    Db.func('shapes_delete', JSON.stringify(args.dbQuery))
+        .then(function(deletedData) {
 
             if (deletedData.length === 0) {
                 throw Boom.notFound("The resource does not exist.");

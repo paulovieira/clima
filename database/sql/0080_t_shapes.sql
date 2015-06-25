@@ -1,7 +1,7 @@
 
 CREATE TABLE IF NOT EXISTS shapes( 
 	id SERIAL PRIMARY KEY,
-	code TEXT NOT NULL UNIQUE,  -- the name of the table will be the code
+	table_name TEXT NOT NULL UNIQUE,  -- the name of the file and the name of the shape might be slightly different
 	srid INT REFERENCES spatial_ref_sys(srid) default 4326,
 	description JSONB default '{}',
 	file_id INT references files(id)  on update cascade on delete set null,
