@@ -1,6 +1,13 @@
 # CLIMA Web App
 
 
+### Pre-requisites:
+  - postgres + postgis
+  - node
+  - shp2pgsql
+  
+
+  
 ### First time installation
 
 Clima is composed of several different services. They will all be installed inside the  `clima-app` folder:

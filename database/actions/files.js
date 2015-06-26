@@ -9,7 +9,6 @@ var Bcrypt = require("bcrypt");
 var Q = require("q");
 var Config = require("config");
 var Rimraf = require("rimraf");
-var RandomString = require("randomstring");
 var _ = require("underscore");
 var _s = require("underscore.string");
 var ChangeCase = require("change-case-keys");
@@ -35,7 +34,7 @@ internals.transformMap = {
     // a) properties to be maintained
     "id": "id",
     "name": "name",
-    "logicalPath": "logical_path",
+    "webPath": "web_path",
     "tags": "tags",
     "description": "description",
     "properties":"properties",
@@ -66,10 +65,12 @@ internals.filesReadAll = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
+
+
 
 internals.filesRead = function(args, done){
 
@@ -87,32 +88,34 @@ internals.filesRead = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
 
 
-//TO BE DONE 
 
 internals.filesCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // note: the filename has already been slugified in the client, but we do it here as well (it is an idempotent function)
+    // note: filename has already been slugified in the client, but we do it here as well (it is an idempotent function)
     var filename     = args.payload.filename;
 
     var extname      = Path.extname(filename);
-    var basename     = _s.slugify(Path.basename(filename, extname));
+    var basename     = _s(Path.basename(filename, extname)).slugify().replaceAll("-", "_").value();
+
+    // replace the original filename (basename has been slugified)
     filename = basename + extname;
 
+    // TODO: shapeCode should be a boolean flag instead
     var shapeCode    = args.payload.shapeCode;
-    var physicalPath = Config.get("uploads.physicalPath");
+    var physicalPath = Config.get("uploadsDir.relative");
     var rootDir      = Config.get("rootDir");
 
     // check if we already have a file with this name
     if(_.findWhere(args.pre.files, {name: filename})){
-        filename = basename + "_" + RandomString.generate(5) + extname;
+        filename = basename + "_" + Utils.getRandomString() + extname;
     }
 
     if(typeof physicalPath!=="string" || typeof filename!=="string"){
@@ -124,10 +127,10 @@ debugger;
 
     ws.on("finish", function(){
 
-
+        // the upload data has been sucessfully saved in disk; now add the corersponding entry in the database;
         var dbData = {
             name: filename,
-            logicalPath: Config.get("uploads.logicalPath"),
+            webPath: Config.get("uploadsDir.webPath"),
             physicalPath: physicalPath,
             tags: args.payload.tags,
             ownerId: args.payload.ownerId
@@ -178,7 +181,7 @@ debugger;
             })
             .catch(function(err) {
 debugger;
-                err = err.isBoom ? err : Boom.badImplementation(null, err);
+                err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
                 return done(err);
             });
 
@@ -187,9 +190,6 @@ debugger;
     ws.on("error", function(err){
         return done(Boom.badImplementation(err.message));
     });
-
-
-//    return done(null, {"ok": 0})
 
 };
 
@@ -245,7 +245,7 @@ internals.filesUpdate = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
@@ -272,7 +272,7 @@ internals.filesDelete = function(args, done){
                 name = data[0]["name"];
 
             var fileFullPath = Path.join(rootDir, physicalPath, name);
-            Utils.log(["rimraf"], "rimraf will delete " + fileFullPath);
+            Utils.serverLog(["rimraf"], "rimraf will delete " + fileFullPath);
 
             var deferred = Q.defer();
 
@@ -303,7 +303,7 @@ internals.filesDelete = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 

@@ -14,7 +14,7 @@ CREATE FUNCTION files_read(options json DEFAULT '[{}]')
 RETURNS TABLE(
 	id INT,
 	name TEXT,
-	logical_path TEXT,
+	web_path TEXT,
 	physical_path TEXT,	
 	tags JSONB,
 	description JSONB,
@@ -36,7 +36,7 @@ DECLARE
 	author_email TEXT;
 	tags TEXT;
 	name TEXT;
-	logical_path TEXT;
+	web_path TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -60,7 +60,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	SELECT json_extract_path_text(options_row, 'author_email') INTO author_email;
 	SELECT json_extract_path_text(options_row, 'tags')         INTO tags;
 	SELECT json_extract_path_text(options_row, 'name')         INTO name;
-	SELECT json_extract_path_text(options_row, 'logical_path') INTO logical_path;
+	SELECT json_extract_path_text(options_row, 'web_path')     INTO web_path;
 
 	number_conditions := 0;
 
@@ -104,13 +104,13 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: logical_path
-	IF logical_path IS NOT NULL THEN
+	-- criteria: web_path
+	IF web_path IS NOT NULL THEN
 		IF number_conditions = 0 THEN  command = command || ' WHERE';
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' f.logical_path = %L', logical_path);
+		command = format(command || ' f.web_path = %L', web_path);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -192,7 +192,7 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 		INSERT INTO files(
 			id,
 			name,
-			logical_path,
+			web_path,
 			physical_path,
 			tags, 
 			description,
@@ -202,7 +202,7 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('files', 'id'))),
 			input_row.name, 
-			input_row.logical_path, 
+			input_row.web_path, 
 			input_row.physical_path, 
 			COALESCE(input_row.tags, '[]'::jsonb),
 			COALESCE(input_row.description, '{}'::jsonb),
@@ -240,7 +240,7 @@ select * from files order by id desc
 select * from files_create('[
 {
 	"name": "relatório.pdf",
-	"logical_path": "/upload/paulo",
+	"web_path": "/upload/paulo",
 	"physical_path": "/data",
 	"tags": ["tag3", "tag4"],
 	"owner_id": 2
@@ -251,7 +251,7 @@ select * from files_create('[
 select * from files_create('[
 {
 	"name": "relatório3.pdf",
-	"logical_path": "/upload/paulo",
+	"web_path": "/upload/paulo",
 	"physical_path": "/data",
 	"owner_id": 2,
 	"id": 1
@@ -298,8 +298,8 @@ FOR input_row IN (select * from json_populate_recordset(null::files, input_data)
 	IF input_row.name IS NOT NULL THEN
 		command = format(command || 'name = %L, ', input_row.name);
 	END IF;
-	IF input_row.logical_path IS NOT NULL THEN
-		command = format(command || 'logical_path = %L, ', input_row.logical_path);
+	IF input_row.web_path IS NOT NULL THEN
+		command = format(command || 'web_path = %L, ', input_row.web_path);
 	END IF;
 	IF input_row.physical_path IS NOT NULL THEN
 		command = format(command || 'physical_path = %L, ', input_row.physical_path);

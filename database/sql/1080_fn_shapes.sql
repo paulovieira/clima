@@ -87,7 +87,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	SELECT json_extract_path_text(options_row, 'id')   INTO id;
 	SELECT json_extract_path_text(options_row, 'table_name') INTO table_name;
 	SELECT json_extract_path_text(options_row, 'table_name_starts_with') INTO table_name_starts_with;
-
+/**/
 	number_conditions := 0;
 
 	-- criteria: id

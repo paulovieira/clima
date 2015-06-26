@@ -50,7 +50,7 @@ internals.usersReadAll = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
@@ -71,7 +71,7 @@ internals.usersRead = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
@@ -113,7 +113,7 @@ internals.usersCreate = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
@@ -191,7 +191,7 @@ internals.usersUpdate = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };
@@ -212,7 +212,7 @@ internals.usersDelete = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(null, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
         });
 };

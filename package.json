@@ -23,11 +23,11 @@
     "pg-monitor": "^0.2.0",
     "pg-promise": "^1.2.1",
     "q": "^1.4.1",
-    "randomstring": "^1.0.6",
     "rimraf": "^2.4.0",
     "strip-json-comments": "^1.0.2",
     "underscore": "^1.8.3",
-    "underscore.string": "^3.0.3"
+    "underscore.string": "^3.0.3",
+    "unzip": "^0.1.11"
   },
   "devDependencies": {
     "grunt": "^0.4.5",

@@ -4,8 +4,11 @@
 var Hoek = require("hoek");
 var Boom = require("boom");
 var ChangeCase = require("change-case-keys");
-var Db = require("..");
+var Glob = require("glob");
+var ReadFiles = require('read-multiple-files');
+//var Db = require("..");
 var Utils = require("../../lib/common/utils");
+
 
 var internals = {};
 
@@ -13,15 +16,17 @@ module.exports = function(options){
 
     var seneca = this;
 
-    seneca.add("role:texts, cmd:readAll", internals.textsReadAll);
-    seneca.add("role:texts, cmd:read",    internals.textsRead);
-    seneca.add("role:texts, cmd:create",  internals.textsCreate);
-    seneca.add("role:texts, cmd:update",  internals.textsUpdate);
-    seneca.add("role:texts, cmd:delete",  internals.textsDelete);
+    seneca.add("role:maps, cmd:readAll", internals.mapsReadAll);
+    //seneca.add("role:maps, cmd:read",    internals.mapsRead);
+    // seneca.add("role:maps, cmd:create",  internals.mapsCreate);
+    // seneca.add("role:maps, cmd:update",  internals.mapsUpdate);
+    // seneca.add("role:maps, cmd:delete",  internals.mapsDelete);
 };
 
 internals.transformMap = {
-
+    "bounds": "bounds",
+    "format": "format"
+/*
     // a) properties to be maintained
     "id": "id",
     "tags": "tags",
@@ -42,6 +47,7 @@ internals.transformMap = {
     "authorData.email": "author_data.email",
 
     // d) deleted properties: "contentsDesc", "authorId", "active"
+*/
 
 };
 
@@ -49,28 +55,42 @@ internals.transformMap = {
 // (and possibly others); this is the place where we actually fetch the data from the database;
 
 
-internals.textsReadAll = function(args, done){
+internals.mapsReadAll = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_read')
-        .then(function(data) {
+    // Glob returns an array of paths
+    var projectFiles = Glob.sync(args.tilemillDir + "/**/project.mml");
 
-            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
-            return done(null, data);
-        })
-        .catch(function(err) {
+    var data = [];
+    ReadFiles(projectFiles, 'utf8', function(err, contentsArray) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-            return done(err);
+        if (err) {
+
+            return done(Boom.badImplementation(err.message, err));
+        }
+
+        contentsArray.forEach(function(json){
+            try {
+                data.push(JSON.parse(json));
+            }
+            catch(err){
+                return done(Boom.badImplementation("Invalid json in some .mml file: " + err.message));
+            }
+
         });
-};
 
-internals.textsRead = function(args, done){
+        data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+        return done(null, data);
+    });
+
+};
+/*
+internals.mapsRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('texts_read', JSON.stringify(args.query))
+    Db.func('maps_read', JSON.stringify(args.query))
         .then(function(data) {
 
             if (data.length === 0) {
@@ -82,10 +102,11 @@ internals.textsRead = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.message, err);
             return done(err);
         });
 };
+
 
 internals.textsCreate = function(args, done){
 
@@ -122,7 +143,7 @@ internals.textsCreate = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.message, err);
             return done(err);
         });
 };
@@ -177,7 +198,7 @@ internals.textsUpdate = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.message, err);
             return done(err);
         });
 };
@@ -197,8 +218,9 @@ internals.textsDelete = function(args, done){
         })
         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            err = err.isBoom ? err : Boom.badImplementation(err.message, err);
             return done(err);
         });
 };
 
+*/

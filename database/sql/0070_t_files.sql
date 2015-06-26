@@ -2,8 +2,8 @@
 CREATE TABLE IF NOT EXISTS files( 
 	id SERIAL PRIMARY KEY,
 	name TEXT NOT NULL,
-	logical_path TEXT NOT NULL,
-	physical_path TEXT NOT NULL,
+	web_path TEXT NOT NULL,
+	physical_path TEXT NOT NULL,  -- physical path relative to the main dir of clima
 	tags JSONB  default '[]',
 	description JSONB default '{}',
 	properties JSONB default '{}',	

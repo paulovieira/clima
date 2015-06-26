@@ -2,9 +2,17 @@ var Path = require("path");
 var Nunjucks = require('hapi-nunjucks');
 
 var internals = {
+
+    // absolute paths
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
-    dbActionsDir: Path.resolve(__dirname, "..", "database/actions")
+    dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
+    tilemillDir:  process.env.TILEMILL_FILES_PATH,
+    //tilemillDir:  process.env.NODE_ENV,
+
+    // relative paths
+    uploadsRelativeDir: "/data/uploads/public/",
+    uploadsWebPath:     "/uploads/public/"
 };
 
 
@@ -37,6 +45,12 @@ module.exports = {
     actionsDir: {
         db: internals.dbActionsDir,
     },
+    uploadsDir: {
+        relative: internals.uploadsRelativeDir,
+        webPath: internals.uploadsWebPath  // logical path (to be used in the urls)
+    },
+    tilemillDir: internals.tilemillDir,
+
 
     ironPassword: "fijuweojigsd324",
 
@@ -124,181 +138,8 @@ module.exports = {
                         this.database;
             }
         },
-    },
+    }
 
-    uploads: {
-        physicalPath: "/data/uploads/public/",
-        logicalPath: "/uploads/public/"
-    },
-
-    availableRoutes: [
-
-        {
-            level1: "",
-            level2: "",
-            level3: ""
-        },
-
-        // ----------------------
-        {
-            level1: "a",
-            level2: "b",
-        },
-        {
-            level1: "a"
-        },
-        {
-            level1: "a",
-            level2: "b",
-            level3: "c"
-        },
-        {
-            level1: "introducao",
-            level2: "mensagem",
-            level3: ""
-        },
-        {
-            level1: "introducao",
-            level2: "metodologia",
-            level3: ""
-        },
-        {
-            level1: "introducao",
-            level2: "workshops",
-            level3: ""
-        },            {
-            level1: "introducao",
-            level2: "equipa",
-            level3: ""
-        },
-
-        // ----------------------
-        
-        {
-            level1: "sumario-executivo",
-            level2: "",
-            level3: ""
-        },
-
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "clima",
-            level3: ""
-        },            
-        {
-            level1: "sectores",
-            level2: "clima",
-            level3: "forest-growth"
-        },            
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "adaptacao",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "adaptacao",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "saude",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "saude",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "turismo",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "turismo",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "energia",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "energia",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "biodiversidade",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "biodiversidade",
-            level3: "forest-growth" 
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "risco-hidrologico",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "risco-hidrologico",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "qualidade-disponibilidade-agua",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "qualidade-disponibilidade-agua",
-            level3: "forest-growth"
-        },
-        // ----------------------
-        {
-            level1: "sectores",
-            level2: "agricultura-florestas",
-            level3: ""
-        },
-        {
-            level1: "sectores",
-            level2: "agricultura-florestas",
-            level3: "forest-growth"
-        },
-
-        // ----------------------
-
-        // ----------------------
-        
-        {
-            level1: "cartografia",
-            level2: "",
-            level3: ""
-        },
-
-        // ----------------------
-        
-        {
-            level1: "estrategia-adaptacao",
-            level2: "",
-            level3: ""
-        }
-
-    ]
 
 
 };
