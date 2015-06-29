@@ -64,7 +64,7 @@ internals.addMissingKeys = function(args, obj){
     // and order them by data (the last one will be the most recent one)
 
     // TODO: cache the stat information
-    var mbtiles = Glob.sync(args.tilemillDir + "/export/" + obj.id + "*.mbtiles");
+    var mbtiles = Glob.sync(args.tilemillFilesDir + "/export/" + obj.id + "*.mbtiles");
     mbtiles.sort(function(a, b){
         return Fs.statSync(a).mtime.getTime() - Fs.statSync(b).mtime.getTime()
     })
@@ -155,7 +155,7 @@ internals.mapsReadAll = function(args, done){
     Utils.logCallsite(Hoek.callStack()[0]);
 
     // Glob returns an array of paths; note the "/" at the end - it will match only directories
-    var projectsDir  = Glob.sync(args.tilemillDir + "/project/*/");
+    var projectsDir  = Glob.sync(args.tilemillFilesDir + "/project/*/");
 
     var mapsIds = projectsDir
                     .map(function(path){
@@ -186,7 +186,7 @@ internals.mapsRead = function(args, done){
 
     // Glob returns an array of paths; note the "/" at the end - it will match only directories
     var projectsDir  = Glob
-                        .sync(args.tilemillDir + "/project/*/")
+                        .sync(args.tilemillFilesDir + "/project/*/")
                         .filter(function(path){
                             var temp = path.split("/");
                             var mapId = temp[temp.length-2];
@@ -222,9 +222,9 @@ internals.mapsCreate = function(args, done){
 
     // copy the directory with the default project to the "projects" directory;
     // for TileMill this will efectively create a new project
-    var defaultProjectDir = Path.join(args.tilemillDir, "default-project");
-    var newProjectDir     = Path.join(args.tilemillDir, "project", mapId);
-    var newProjectOptions = Path.join(args.tilemillDir, "project", mapId, "project.mml");
+    var defaultProjectDir = Path.join(Config.get("rootDir"), "data/tilemill-default-project");
+    var newProjectDir     = Path.join(args.tilemillFilesDir, "project", mapId);
+    var newProjectOptions = Path.join(args.tilemillFilesDir, "project", mapId, "project.mml");
 
     // step 1: copy the directory of the default project
     Fs.copyAsync(defaultProjectDir, newProjectDir)
@@ -270,8 +270,8 @@ internals.mapsDelete = function(args, done){
     }
 
     // delete the directory and all related files in exports
-    var projectDir = Path.join(args.tilemillDir, "project", mapId);
-    var exportsFiles = Path.join(args.tilemillDir, "export", mapId) + "*";
+    var projectDir = Path.join(args.tilemillFilesDir, "project", mapId);
+    var exportsFiles = Path.join(args.tilemillFilesDir, "export", mapId) + "*";
 
     console.log("projectDir: ", projectDir);
     console.log("exportsFiles: ", exportsFiles);

@@ -111,7 +111,7 @@ node database/populate-initial-data/
 ### Launch the main app
 
 ```sh
-export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
+            ??? export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export NODE_ENV=dev (or dev-no-auth, or production)
 
@@ -150,7 +150,7 @@ pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FI
 
 ```sh
 cd ~/clima-app/clima
-export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
+            ??? export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export NODE_ENV=production (or dev)
 

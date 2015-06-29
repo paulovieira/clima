@@ -7,8 +7,8 @@ var internals = {
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
-    tilemillDir:  process.env.TILEMILL_FILES_PATH,
-    //tilemillDir:  process.env.NODE_ENV,
+//    tilemillDir:       process.env.TILEMILL_PATH,
+    tilemillFilesDir:  process.env.TILEMILL_FILES_PATH,
 
     // relative paths
     uploadsRelativeDir: "/data/uploads/public/",
@@ -49,7 +49,8 @@ module.exports = {
         relative: internals.uploadsRelativeDir,
         webPath: internals.uploadsWebPath  // logical path (to be used in the urls)
     },
-    tilemillDir: internals.tilemillDir,
+    tilemillFilesDir: internals.tilemillFilesDir,
+    tilemillDir:      internals.tilemillDir,
 
 
     hapi: {
