@@ -1,1 +1,51 @@
-map menu!
+
+<div class="row" style="margin-top: 40px;">
+    <div class="col-sm-6 col-sm-offset-3">
+
+        <ul class="list-group map-groups" id="main">
+
+			{% for obj in items %}
+            <li class="list-group-item xmap-group" data-id="x" style="margin-top: 15px;">
+
+                <b>{{ obj['groupName']}}</b>
+                <ul class="list-group map-elems" id="x-list" style="margin-top: 5px;">
+
+                	{% for obj2 in obj['mapElements'] %}
+                		<li class="list-group-item" data-id="{{ obj2['id'] }}" data-name="{{ obj2['name'] }}">{{ obj2['name'] }}</li>
+					{% endfor %}                	
+
+                </ul>
+
+            </li>
+			{% endfor %}
+
+
+{#
+				            <li class="list-group-item xmap-group" data-id="x">
+				                <b>Published maps</b>
+				                <ul class="list-group map-elems" id="x-list" style="margin-top: 5px;">
+				                    <li class="list-group-item" data-id="a">a</li>
+				                    <li class="list-group-item" data-id="b">b</li>
+				                    <li class="list-group-item" data-id="c">c</li>
+				                </ul>
+				            </li>
+				            <li class="list-group-item xmap-group" data-id="y" style="margin-top: 15px;">
+				                <b>Unpublished maps</b>
+				                <ul class="list-group map-elems" id="y-list">
+				                    <li class="list-group-item" data-id="d">d</li>
+				                    <li class="list-group-item" data-id="e">e</li>
+				                </ul>
+				            </li>
+#}
+
+        </ul>
+
+    </div>
+</div>
+
+
+<div class="row" style="margin-top: 40px;">
+    <div class="col-sm-6 col-sm-offset-3">
+		<button type="button" class="btn btn-primary btn-block" id="js-save-map-menu">Save</button>
+    </div>
+</div>

@@ -4,7 +4,7 @@
 var Path = require("path");
 var Fs = require("fs");
 var Hoek = require("hoek");
-var Wreck = require('wreck');
+var Wreck = require("wreck");
 var Boom = require("boom");
 var Bcrypt = require("bcrypt");
 var Q = require("q");
@@ -113,7 +113,7 @@ internals.filesCreate = function(args, done){
 
 
     // TODO: shapeCode should be a boolean flag instead
-    var fileIsShape      = args.payload.isShape === true || args.payload.isShape === "true";
+    var fileIsShape  = args.payload.isShape === true || args.payload.isShape === "true";
     var physicalPath = Config.get("uploadsDir.relative");
     var rootDir      = Config.get("rootDir");
 
@@ -165,6 +165,7 @@ debugger;
                 filesRead = data;
 
                 // if the file is not a shape, return to the next fn in the chain
+                console.log("fileIsShape: ", fileIsShape)
                 if(!fileIsShape){ return; }
 
                 var deferred = Q.defer();
@@ -184,6 +185,9 @@ debugger;
                 };
 
                 Wreck.post(uri, options, function(err, response, payload){
+                    //console.log("response: ", response);
+                    console.log("payload: ", payload);
+
                     if(err){
                         return deferred.reject(Boom.badImplementation("Wreck error in request to /api/shapes: " + err.message));
                     }
@@ -192,11 +196,14 @@ debugger;
                         return deferred.reject(Boom.badRequest("Error creating the shape: " + payload.message || JSON.stringify(payload)));   
                     }
 
+                    if(response.statusCode === 401){
+                        return deferred.reject(Boom.unauthorized("Error creating the shape: " + payload.message || JSON.stringify(payload)));   
+                    }
+
                     if(response.statusCode === 500){
                         return deferred.reject(Boom.badImplementation("Error creating the shape: " + JSON.stringify(payload)));   
                     }
-                    //console.log("response: ", response);
-                    //console.log("payload: ", payload);
+
                     return deferred.resolve(payload);
                 })
 /*
@@ -217,13 +224,6 @@ debugger;
 */
 
                 return deferred.promise;
-            })
-
-            .then(function(data){
-                // if the file is not a shape, return to the next fn in the chain
-                if(!fileIsShape){ return; }
-
-                console.log("fileIsShape: ", fileIsShape)
             })
 
             // 3) apply the object transform and reply

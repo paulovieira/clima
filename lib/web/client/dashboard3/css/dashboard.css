@@ -9,3 +9,17 @@
 
 
 .table-dashboard th, table td { overflow: hidden; }
+
+
+
+/* rules for the jquery-sortable plugin*/
+body.dragging,
+body.dragging * {
+    cursor: move !important;
+}
+
+.dragged {
+    position: absolute;
+    opacity: 0.9;
+    z-index: 9000;
+}
