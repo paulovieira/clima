@@ -31,8 +31,9 @@ sudo npm install
 ```
 
 Then launch TileStream:
-```
+```sh
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
+
 ./index.js start --tiles=$TILEMILL_FILES_PATH/export --tilePort=8001
 ```
 
@@ -55,9 +56,11 @@ emacs clima-settings.json
 ```
 
 Then launch TileMill:
+
 ```sh
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export TILEMILL_HOSTNAME=clima.dev (or clima.fc.ul.pt)
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+
 node index.js --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
@@ -106,7 +109,12 @@ node database/populate-initial-data/
 ```
 
 ### Launch the main app
+
 ```sh
+export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export NODE_ENV=dev (or dev-no-auth, or production)
+
 cd ~/clima-app/clima
 node index.js
 ```
@@ -119,26 +127,33 @@ pm2 list
 sudo npm install pm2 -g
 ```
 
-Start TileStream (note that we have to pass the arguments after "--"):
+1) Start TileStream (note that we have to pass the arguments after "--"):
+
 ```sh
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
 cd ~/clima-app/tilestream-clima
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+
 pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_PATH/export --tilePort=8001
 ```
 
-Start TileMill:
+2) Start TileMill:
+
 ```sh
 cd ~/clima-app/tilemill-clima
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export TILEMILL_HOSTNAME=clima.dev (or clima.fc.ul.pt)
+export TILEMILL_FILES_PATH=$HOME/tilemill-files
+
 pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
-Start the main app:
+3) Start the main app:
+
 ```sh
 cd ~/clima-app/clima
+export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export NODE_ENV=production (or dev)
+
 pm2 start index.js --name "clima"
 ```
 
