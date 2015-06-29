@@ -27,7 +27,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id INT;
-	config_data_key TEXT;
+	key TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -42,7 +42,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')    INTO id;
-	SELECT json_extract_path_text(options_row, 'config_data_key')  INTO config_data_key;
+	SELECT json_extract_path_text(options_row, 'key')  INTO key;
 
 	number_conditions := 0;
 	
@@ -56,13 +56,13 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	-- criteria: config_data_key
-	IF config_data_key IS NOT NULL THEN
+	-- criteria: key
+	IF key IS NOT NULL THEN
 		IF number_conditions = 0 THEN  command = command || ' WHERE';  
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' config_data ? %L', config_data_key);
+		command = format(command || ' config_data ? %L', key);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -87,9 +87,9 @@ select * from config
 
 select * from  config_read('[{}]');
 
-select * from  config_read('[{"config_data_key": "adminEmail"} ]');
+select * from  config_read('[{"key": "adminEmail"} ]');
 
-select * from  config_read('[{"config_data_key": "adminEmail"}, {"config_data_key": "publicUrl"}]');
+select * from  config_read('[{"key": "adminEmail"}, {"key": "publicUrl"}]');
 
 
 */
@@ -241,6 +241,11 @@ select * from config_update('[
 	{"id": 5, "config_data": {"publicUrl": "http://yyy.com"} }
 ]');
 
+
+select * from config_update('{
+	"id": 1003, 
+	"config_data": { "iii": [ [{"a": 1}, {"b": 2}], [{"c": 3}, {"d": 5}]] }
+}')
 
 
 */

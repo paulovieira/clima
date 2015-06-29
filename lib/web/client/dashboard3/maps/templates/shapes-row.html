@@ -4,7 +4,11 @@
 </td>
 #}
 <td>
-    {{ code }}
+    {{ tableName }}
+</td>
+
+<td>
+    {{ srid }}
 </td>
 
 <td>
@@ -12,20 +16,21 @@
 </td>
 
 <td>
-    {{ description.pt }}
+    {{ ownerData.firstName }} {{ ownerData.lastName }}
 </td>
 
-
 <td>
-    {{ ownerData.firstName }} {{ ownerData.lastName }}
+    {{ createdAt }}
 </td>
 
 {#
 #}
 
 <td class="text-right">
+{#
     <button class="btn btn-primary btn-xs js-edit"><span class="glyphicon glyphicon-pencil"></span>
     </button>
+    #}
     <button class="btn btn-danger btn-xs js-delete"><span class="glyphicon glyphicon-trash"></span>
     </button>
 </td>

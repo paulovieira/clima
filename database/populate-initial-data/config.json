@@ -10,5 +10,11 @@
 		"configData": {
 			"noRowsForInitialData": 1000
 		} 
+	},
+	{
+		"id": 3,
+		"configData": {
+			"mapMenu": []
+		} 
 	}
 ]

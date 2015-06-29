@@ -35,12 +35,10 @@ internals.transformMap = {
 
     // a) properties to be maintained
     "id": "id",
-    "fileName": "file_name",
+    "tableName": "table_name",
     "srid": "srid",
     "description": "description",
-    "fileId": "file_id",
     "schemaName": "schema_name",
-    "ownerId": "owner_id",
     "createdAt": "created_at",
 
     // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)

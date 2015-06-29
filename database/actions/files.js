@@ -4,6 +4,7 @@
 var Path = require("path");
 var Fs = require("fs");
 var Hoek = require("hoek");
+var Wreck = require('wreck');
 var Boom = require("boom");
 var Bcrypt = require("bcrypt");
 var Q = require("q");
@@ -101,15 +102,18 @@ internals.filesCreate = function(args, done){
 
     // note: filename has already been slugified in the client, but we do it here as well (it is an idempotent function)
     var filename     = args.payload.filename;
-
     var extname      = Path.extname(filename);
     var basename     = _s(Path.basename(filename, extname)).slugify().replaceAll("-", "_").value();
 
     // replace the original filename (basename has been slugified)
     filename = basename + extname;
 
+// console.log("args.payload.isShape: ", args.payload.isShape)
+// console.log("args.payload.shapeDescription: ", args.payload.shapeDescription)
+
+
     // TODO: shapeCode should be a boolean flag instead
-    var shapeCode    = args.payload.shapeCode;
+    var fileIsShape      = args.payload.isShape === true || args.payload.isShape === "true";
     var physicalPath = Config.get("uploadsDir.relative");
     var rootDir      = Config.get("rootDir");
 
@@ -161,12 +165,65 @@ debugger;
                 filesRead = data;
 
                 // if the file is not a shape, return to the next fn in the chain
-                if(shapeCode===""){ return; }
+                if(!fileIsShape){ return; }
+
+                var deferred = Q.defer();
+
+                // echo '[{ "zipId": 1013, "srid": 4326  }]' \
+                //     | http -v POST clima.dev/api/v1/shapes
+
+                var uri = "http://localhost:" + Config.get("port") + "/api/v1/shapes";
+                
+                // TODO: the srid is currently hardcoded
+                var options = {
+                    payload: JSON.stringify({zipId: filesRead[0].id, srid: 4326}),
+                    headers: {
+                        "content-type": "application/json"
+                    },
+                    json: true
+                };
+
+                Wreck.post(uri, options, function(err, response, payload){
+                    if(err){
+                        return deferred.reject(Boom.badImplementation("Wreck error in request to /api/shapes: " + err.message));
+                    }
+
+                    if(response.statusCode === 400){
+                        return deferred.reject(Boom.badRequest("Error creating the shape: " + payload.message || JSON.stringify(payload)));   
+                    }
+
+                    if(response.statusCode === 500){
+                        return deferred.reject(Boom.badImplementation("Error creating the shape: " + JSON.stringify(payload)));   
+                    }
+                    //console.log("response: ", response);
+                    //console.log("payload: ", payload);
+                    return deferred.resolve(payload);
+                })
+/*
+                Wreck.request("POST", uri, options, function (err, res){
+                    if(err){
+                        return deferred.reject(Boom.badImplementation("Error in request to /api/shapes: " + err.message));
+                    }
+
+                    Wreck.read(res, {json :true}, function (err, body) {
+                        if(err){
+                            return deferred.reject(Boom.badImplementation("Error in reading the reading the response: " + err.message));
+                        }
+
+                        console.log("body: ", body);
+                        return deferred.resolve(body);
+                    });
+                });
+*/
+
+                return deferred.promise;
             })
 
-            .then(function(){
+            .then(function(data){
                 // if the file is not a shape, return to the next fn in the chain
-                if(shapeCode===""){ return; }
+                if(!fileIsShape){ return; }
+
+                console.log("fileIsShape: ", fileIsShape)
             })
 
             // 3) apply the object transform and reply

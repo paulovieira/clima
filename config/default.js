@@ -34,7 +34,7 @@ module.exports = {
     port: 3000,
     //debugEndpoint: "/debug/consol",  // endpoint to be used in the TV module
 
-    publicUri: "http://localhost",  // the domain name
+    publicUri: "http://clima.dev",  // the domain name
     publicPort: 3000,  // probably 80
 
     // the default language is the first in the array below
@@ -51,8 +51,6 @@ module.exports = {
     },
     tilemillDir: internals.tilemillDir,
 
-
-    ironPassword: "fijuweojigsd324",
 
     hapi: {
 

@@ -8,13 +8,15 @@
 	<p>Are you sure you want to delete this map?</p>
 
 	<div class="form-group" style="margin-top: 20px;">
-	    <label >Title (english)</label>
-	    <input class="form-control" value="{{ title.en }}" disabled>
+	    <label >Name</label>
+	    <input class="form-control" value="{{ name }}" disabled>
 	</div>
-	<div class="form-group">
-	    <label >Title (portuguese)</label>
-	    <input class="form-control" value="{{ title.pt }}" disabled>
-	</div>
+
+    <div class="form-group" style="margin-top: 20px;">
+        <label >Description</label>
+        <textarea class="form-control" rows="3" disabled>{{ description }}</textarea>
+    </div>
+
 
 </div>
 
