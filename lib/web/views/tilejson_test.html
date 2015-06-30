@@ -31,7 +31,11 @@
     L.mapbox.accessToken = 'dummyAccessToken';
 
 
-    var map = L.mapbox.map('map').setView([38.7, -9.1], 8);
+    //var map = L.mapbox.map('map').setView([38.7, -9.1], 8);
+    var map = L.mapbox.map('map', null, {
+        zoom: 6,
+        center: [38.75, -9.15],
+    });
 
     // var Clima = {};
     // Clima.tilesBaseUrl = "/api/v1/tiles/";
@@ -48,7 +52,6 @@
     tileLayer3.on("ready", function(){
         console.log(this.getTileJSON());
         map.addLayer(tileLayer3);
-        //tileLayer3.setOpacity(0.5);
         map.legendControl.addLegend(this.getTileJSON().legend);
     });
     tileLayer3.on("error", function(err){

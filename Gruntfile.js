@@ -16,11 +16,13 @@ module.exports = function(grunt) {
                 }
             },
 
-            ferramenta: {
-                baseDir: 'client/ferramenta',
-                src: ['client/ferramenta/**/*.html'],
-                dest: 'client/ferramenta/templates_ferramenta.js',
-                options: {}
+            visualizador: {
+                baseDir: 'lib/web/client/visualizador',
+                src: ['lib/web/client/visualizador/**/*.html'],
+                dest: 'lib/web/client/visualizador/templates.js',
+                options: {
+                    autoescape: true
+                }
             },
         },
 
@@ -101,10 +103,11 @@ module.exports = function(grunt) {
                 tasks: ['nunjucks:dashboard']
             },
 
-            "ferramenta templates": {
-                files: 'client/ferramenta/**/*.html',
-                tasks: ['nunjucks:ferramenta']
+            "visualizador templates": {
+                files: 'lib/web/client/visualizador/**/*.html',
+                tasks: ['nunjucks:visualizador']
             },
+
             // "compile-js-dev test": {
             //     files: 'client/test/js/**/*.js',
             //     tasks: ['browserify:test-dev']
@@ -132,7 +135,7 @@ module.exports = function(grunt) {
 
     // NOTE: "grunt compile-js:test" and "grunt browserify:test" are equivalent (will execute the same task:target)
     grunt.registerTask('default', ['watch']);
-    grunt.registerTask('compile-templates', ['nunjucks:dashboard', 'nunjucks:ferramenta']);
+    grunt.registerTask('compile-templates', ['nunjucks:dashboard', 'nunjucks:visualizador']);
     grunt.registerTask('compile-dashboard', ['browserify:dashboard2-dev', 'browserify:dashboard2-prod']);
 
 
