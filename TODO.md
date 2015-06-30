@@ -1,3 +1,7 @@
+#### after an update, migrate data from old database to a new one
+
+Do this one a table by table basis?
+
 #### ao fazer delete do projecto, aconteceu um erro no servidor
 
 #### paletes: acrescentar uma nova tab:
