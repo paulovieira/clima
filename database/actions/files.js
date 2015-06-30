@@ -183,21 +183,24 @@ debugger;
                     },
                     json: true
                 };
+                if(args.headers.cookie){
+                    options.headers.cookie = args.headers.cookie;
+                }
 
                 Wreck.post(uri, options, function(err, response, payload){
                     //console.log("response: ", response);
-                    console.log("payload: ", payload);
+                    //console.log("payload: ", payload);
 
                     if(err){
                         return deferred.reject(Boom.badImplementation("Wreck error in request to /api/shapes: " + err.message));
                     }
 
                     if(response.statusCode === 400){
-                        return deferred.reject(Boom.badRequest("Error creating the shape: " + payload.message || JSON.stringify(payload)));   
+                        return deferred.reject(Boom.badRequest("Error creating the shape: " + JSON.stringify(payload)));   
                     }
 
                     if(response.statusCode === 401){
-                        return deferred.reject(Boom.unauthorized("Error creating the shape: " + payload.message || JSON.stringify(payload)));   
+                        return deferred.reject(Boom.unauthorized("Error creating the shape: " + JSON.stringify(payload)));   
                     }
 
                     if(response.statusCode === 500){

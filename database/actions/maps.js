@@ -315,17 +315,27 @@ internals.mapsCreate = function(args, done){
         })
 
         .then(function(){
-            var deferred = Q.defer();
 
             var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
-            Wreck.get(uri, {json: true}, function(err, response, payload){
+            var options = {
+                json: true,
+                headers: {}
+            }
+            if(args.headers.cookie){
+                options.headers.cookie = args.headers.cookie;
+            }
+
+            var deferred = Q.defer();
+            Wreck.get(uri, options, function(err, response, payload){
 
                     if(err){
                         return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
                     }
-
-                    if(response.statusCode !== 200){
-                        return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + err.message));
+                    else if(response.statusCode === 401){
+                        return deferred.reject(Boom.unauthorized("API error in request to /api/maps: " + JSON.stringify(payload)));
+                    }
+                    else if(response.statusCode !== 200){
+                        return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + JSON.stringify(payload)));
                     }
 
                     // TODO: closure hack! we should be using Q.all or something similar
@@ -397,9 +407,17 @@ internals.mapsDelete = function(args, done){
         })
 
         .then(function(){
-            var deferred = Q.defer();
 
             var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
+            var options = {
+                json: true,
+                headers: {}
+            }
+            if(args.headers.cookie){
+                options.headers.cookie = args.headers.cookie;
+            }
+
+            var deferred = Q.defer();
             Wreck.get(uri, {json: true}, function(err, response, payload){
 
                     if(err){

@@ -92,13 +92,13 @@ touch config/$NODE_ENV.js
 emacs config/$NODE_ENV.js
 ```
 
-Edit the necessary options in the configuration files. In principle only these should be changed:
+Edit the necessary options in the configuration files. In principle only these should be changed for default.js:
 
   - for `config/default.js`: 
     + publicUri
     + publicPort
     + allowedLanguages
-  - for `config/dev.js` and `config/production.js`: copy-paste from the configuration files available in Dropbox
+  - for `config/dev.js` and `config/production.js`: copy-paste from the configuration files available in Dropbox.
 
 Create the database and populate with the initial data:
 ```
@@ -111,11 +111,9 @@ node database/populate-initial-data/
 ### Launch the main app
 
 ```sh
-            ??? export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
+cd ~/clima-app/clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export NODE_ENV=dev (or dev-no-auth, or production)
-
-cd ~/clima-app/clima
 node index.js
 ```
 

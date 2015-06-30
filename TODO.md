@@ -1,3 +1,9 @@
+#### add auth
+
+We can access this uri without authentication
+http://clima.dev/pt/tilemill#/project/energia-centrais-termoelectricas
+
+
 #### /api/shapes have authentication disabled
 
 When calling /api/shapes internally (to create a shape after the file upload), we are not sending the authentication headers when making the request with Wreck. This means the /api/shapes endpoints need to auth: false.
