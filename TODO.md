@@ -1,3 +1,5 @@
+#### whenever we are reading stuff in the middle of a promise chain, verify if we can move that into a pre-requisite method (if the reading fails, it will be more easy to catch)
+
 #### after an update, migrate data from old database to a new one
 
 Do this one a table by table basis?
@@ -61,6 +63,7 @@ http://clima.dev/pt/tilemill#/project/energia-centrais-termoelectricas
 
 The user uploads the zip file with shapes, but forgets to check the option in the select element. It be more robust to have a third tab "New shape file upload", which would be just like the other, but with the "file is shape" pre-selected
 
+#### after a resource is created with POST, we should return the status 201 with the "location" header
 
 
 
