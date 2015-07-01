@@ -1,20 +1,17 @@
 [
 	{
 		"id": 1,
-		"configData": {
-			"adminEmail": "paulovieira@gmail.com"
-		} 
+		"key": "adminEmail",
+		"value": "paulovieira@gmail.com"
 	},
 	{
 		"id": 2,
-		"configData": {
-			"noRowsForInitialData": 1000
-		} 
+		"key": "noRowsForInitialData",
+		"value": 1000
 	},
 	{
 		"id": 3,
-		"configData": {
-			"mapMenu": []
-		} 
+		"key": "mapMenu",
+		"value": [[], []]
 	}
 ]

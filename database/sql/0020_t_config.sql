@@ -1,11 +1,11 @@
 
 CREATE TABLE IF NOT EXISTS config( 
 	id SERIAL PRIMARY KEY,
-	config_data JSONB NOT NULL,
+	key TEXT NOT NULL UNIQUE,
+	value JSONB NOT NULL,
 
-	CONSTRAINT config_data_must_be_object CHECK (jsonb_typeof(config_data) = 'object')
+	CONSTRAINT config_value_must_be_object CHECK (jsonb_typeof(value) = 'object')
 );
-
 
 
 DO $$

@@ -14,8 +14,9 @@ CREATE FUNCTION config_read(options json DEFAULT '[{}]')
 
 -- return table using the definition of the config table
 RETURNS TABLE(
-	id          INT,
-	config_data JSONB
+	--id          INT,
+	key TEXT,
+	value JSONB
 )
 AS
 $BODY$
@@ -38,11 +39,11 @@ END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
-	command := 'SELECT * FROM config ';
+	command := 'SELECT key, value->''rootKey'' FROM config ';
 			
 	-- extract values to be (optionally) used in the WHERE clause
-	SELECT json_extract_path_text(options_row, 'id')    INTO id;
-	SELECT json_extract_path_text(options_row, 'key')  INTO key;
+	SELECT json_extract_path_text(options_row, 'id')  INTO id;
+	SELECT json_extract_path_text(options_row, 'key') INTO key;
 
 	number_conditions := 0;
 	
@@ -62,7 +63,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' config_data ? %L', key);
+		command = format(command || ' key = %L', key);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -78,30 +79,28 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
-
-
 /*
+insert into config (key, value) values
+	('key1',  '{ "rootKey": "paulovieira@gmail.com" }'),
+	('key2',  '{ "rootKey": {"name": "paulovieira@gmail.com" }}'),
+	('key3',  '{ "rootKey": [{ "x1": "paulovieira@gmail.com" },{ "x2": "paulovieira@gmail.com" }] }'),
+	('key4',  '{ "rootKey": [[{ "rootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]] }')
+
 
 select * from config
-
-select * from  config_read('[{}]');
-
-select * from  config_read('[{"key": "adminEmail"} ]');
-
-select * from  config_read('[{"key": "adminEmail"}, {"key": "publicUrl"}]');
-
-
 */
-
-
 
 
 /*
-
-	2. CREATE
-
+select * from  config_read('{"key": "key1"}');
+select * from  config_read('{"key": "key2"}');
+select * from  config_read('{"key": "key3"}');
+select * from  config_read('{"key": "key4"}');
 */
+
+
+
+
 
 DROP FUNCTION IF EXISTS config_create(json, json);
 
@@ -110,40 +109,33 @@ RETURNS SETOF config AS
 $BODY$
 DECLARE
 	new_row config%ROWTYPE;
-	input_row config%ROWTYPE;
+	--input_row config%ROWTYPE;
 	current_row config%ROWTYPE;
 	new_id INT;
 BEGIN
 
-
--- convert the json argument from object to array of (one) objects
-IF  json_typeof(input_data) = 'object'::text THEN
-	input_data = ('[' || input_data::text ||  ']')::json;
-END IF;
-
-
-FOR input_row IN (select * from json_populate_recordset(null::config, input_data)) LOOP
-
-	SELECT input_row.id INTO new_id;
+	SELECT input_data->>'id' INTO new_id;
 	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM config WHERE id = new_id) THEN
 		INSERT INTO config(
 			id,
-			config_data
+			key,
+			value
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('config', 'id'))),
-			input_row.config_data
+			input_data->>'key',
+			json_build_object('rootKey', input_data->'value')::jsonb
 			)
 		RETURNING 
 			*
 		INTO STRICT 
 			new_row;
-	
+
 		RETURN NEXT new_row;
 	ELSE
 
 		current_row.id = new_id;
-		current_row.config_data = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
+		current_row.value = '"WARNING: a row with the given id exists already present. Data will not be inserted."';
 
 		RAISE WARNING 'A row with the given id exists already present. Data will not be inserted (id=%)', current_row.id;
 
@@ -151,38 +143,41 @@ FOR input_row IN (select * from json_populate_recordset(null::config, input_data
 
 	END IF;
 
-END LOOP;
-
 RETURN;
 END;
 $BODY$
 LANGUAGE plpgsql;
 
+
 /*
-select * from config order by id desc
+select * from config
 
-select * from config_create('[
-	{"config_data": {"publicUrl": "http://xxx.com"}}
-]');
+select * from config_create('{
+	"key": "key5",
+	"value": "paulovieira@gmail.com"
+}');
 
+select * from config_create('{
+	"key": "key6",
+	"value": {"name": "paulovieira@gmail.com" }
+}');
 
-select * from config_create('[
-	{"config_data": {"adminEmail": "paulo@gmail.com"}},
-	{"config_data": {"noRowsForInitialData": 1000 }}
-]');
+select * from config_create('{
+	"key": "key7",
+	"value": [{ "x1": "paulovieira@gmail.com" },{ "x2": "paulovieira@gmail.com" }]
+}');
 
-
-
+select * from config_create('{
+	"key": "key8",
+	"value": [[{ "rootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]]
+}');
 */
 
 
 
 
-/*
 
-	3. UPDATE
 
-*/
 
 DROP FUNCTION IF EXISTS config_update(json, json);
 
@@ -191,32 +186,16 @@ RETURNS SETOF config AS
 $$
 DECLARE
 	updated_row config%ROWTYPE;
-	input_row config%ROWTYPE;
+	--input_row config%ROWTYPE;
 	command text;
 BEGIN
 
+	-- generate a dynamic command: 
+	--   update config set value = json_build_object('rootKey', '{"x": 1}'::json)::jsonb where key = 'key8'
 
--- convert the json argument from object to array of (one) objects
-IF  json_typeof(input_data) = 'object'::text THEN
-	input_data = ('[' || input_data::text ||  ']')::json;
-END IF;
-
-
-FOR input_row IN (select * from json_populate_recordset(null::config, input_data)) LOOP
-
-	-- generate a dynamic command: first the base query
 	command := 'UPDATE config SET ';
-
-	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
-	IF input_row.config_data IS NOT NULL THEN
-		command = format(command || 'config_data = %L, ', input_row.config_data);
-	END IF;
-
-	-- remove the comma and space from the last if
-	command = left(command, -2);
-	command = format(command || ' WHERE id = %L RETURNING *;', input_row.id);
-
-	--RAISE NOTICE 'Dynamic command: %', command;
+	command = format(command || ' value = %L ', json_build_object('rootKey', input_data->'value'));
+	command = format(command || ' WHERE key = %L RETURNING *;', input_data->>'key');
 
 	EXECUTE 
 		command
@@ -227,7 +206,6 @@ FOR input_row IN (select * from json_populate_recordset(null::config, input_data
 
 	RETURN NEXT 
 		updated_row;
-END LOOP;
 
 RETURN;
 END;
@@ -236,34 +214,42 @@ LANGUAGE plpgsql;
 
 
 /*
+select * from config
 
-select * from config_update('[
-	{"id": 5, "config_data": {"publicUrl": "http://yyy.com"} }
-]');
+update config set value = json_build_object('rootKey', '{"x": 1}'::json)::jsonb where key = 'key8'
+
+
 
 
 select * from config_update('{
-	"id": 1003, 
-	"config_data": { "iii": [ [{"a": 1}, {"b": 2}], [{"c": 3}, {"d": 5}]] }
-}')
+	"key": "key5",
+	"value": "xpaulovieira@gmail.com"
+}');
 
+select * from config_update('{
+	"key": "key6",
+	"value": {"name": "paulovieira@gmail.com" }
+}');
 
+select * from config_update('{
+	"key": "key7",
+	"value": [{ "yx1": "paulovieira@gmail.com" },{ "x2": "paulovieira@gmail.com" }]
+}');
+
+select * from config_update('{
+	"key": "key8",
+	"value": [[{ "xrootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]]
+}');
 */
 
 
 
 
-
-/*
-
-	4. DELETE
-
-*/
 
 DROP FUNCTION IF EXISTS config_delete(json);
 
 CREATE FUNCTION config_delete(options json DEFAULT '[{}]')
-RETURNS TABLE(deleted_id int) AS
+RETURNS TABLE(deleted_id int, deleted_key text) AS
 $$
 DECLARE
 	deleted_row config%ROWTYPE;
@@ -271,6 +257,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
+	key_to_delete TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -283,6 +270,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id') INTO id_to_delete;
+	SELECT json_extract_path_text(options_row, 'key') INTO key_to_delete;
 	
 	IF id_to_delete IS NOT NULL THEN
 		DELETE FROM config
@@ -291,12 +279,25 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		INTO deleted_row;
 
 		deleted_id   := deleted_row.id;
+		deleted_key   := deleted_row.key;
 
 		IF deleted_id IS NOT NULL THEN
 			RETURN NEXT;
 		END IF;
+	
+	ELSEIF key_to_delete IS NOT NULL THEN
+		DELETE FROM config
+		WHERE key = key_to_delete
+		RETURNING *
+		INTO deleted_row;
+
+		deleted_id   := deleted_row.id;
+		deleted_key   := deleted_row.key;
+
+		IF deleted_key IS NOT NULL THEN
+			RETURN NEXT;
+		END IF;
 	END IF;
-		
 END LOOP;
 
 RETURN;
@@ -306,10 +307,11 @@ LANGUAGE plpgsql;
 
 
 /*
+select * from config
 
-select * from config order by id desc;
-select * from config_delete('[{"id": 3}]');
+select * from config_delete('{"key": "key6"}');
+
+select * from config_delete('[{"key": "key5"}, {"key": "key7"}]');
+
+select * from config_delete('[{"id": 2}, {"key": "key4"}]');
 */
-
-
-
