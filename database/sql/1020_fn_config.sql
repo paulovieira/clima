@@ -39,7 +39,7 @@ END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
-	command := 'SELECT key, value->''rootKey'' FROM config ';
+	command := 'SELECT key, value FROM config ';
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')  INTO id;
@@ -81,10 +81,10 @@ LANGUAGE plpgsql;
 
 /*
 insert into config (key, value) values
-	('key1',  '{ "rootKey": "paulovieira@gmail.com" }'),
-	('key2',  '{ "rootKey": {"name": "paulovieira@gmail.com" }}'),
-	('key3',  '{ "rootKey": [{ "x1": "paulovieira@gmail.com" },{ "x2": "paulovieira@gmail.com" }] }'),
-	('key4',  '{ "rootKey": [[{ "rootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]] }')
+	('key1',  '"paulovieira@gmail.com"'),
+	('key2',  '{"name": "paulovieira@gmail.com"}'),
+	('key3',  '[{ "x1": "a_paulovieira@gmail.com" },{ "x2": "b_paulovieira@gmail.com" }]'),
+	('key4',  '[[{ "name": "xpaulovieira@gmail.com" },{ "name": "ypaulovieira@gmail.com" }], [{ "name": "zpaulovieira@gmail.com" }]]')
 
 
 select * from config
@@ -102,14 +102,13 @@ select * from  config_read('{"key": "key4"}');
 
 
 
-DROP FUNCTION IF EXISTS config_create(json, json);
+DROP FUNCTION IF EXISTS config_create(json);
 
-CREATE FUNCTION config_create(input_data json, options json DEFAULT '[{}]')
+CREATE FUNCTION config_create(input_data json)
 RETURNS SETOF config AS
 $BODY$
 DECLARE
 	new_row config%ROWTYPE;
-	--input_row config%ROWTYPE;
 	current_row config%ROWTYPE;
 	new_id INT;
 BEGIN
@@ -124,7 +123,7 @@ BEGIN
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('config', 'id'))),
 			input_data->>'key',
-			json_build_object('rootKey', input_data->'value')::jsonb
+			(input_data->'value')::jsonb
 			)
 		RETURNING 
 			*
@@ -169,7 +168,7 @@ select * from config_create('{
 
 select * from config_create('{
 	"key": "key8",
-	"value": [[{ "rootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]]
+	"value": [[{ "name": "paulovieira@gmail.com" },{ "name": "paulovieira@gmail.com" }], [{ "name": "paulovieira@gmail.com" }]]
 }');
 */
 
@@ -179,9 +178,9 @@ select * from config_create('{
 
 
 
-DROP FUNCTION IF EXISTS config_update(json, json);
+DROP FUNCTION IF EXISTS config_update(json);
 
-CREATE FUNCTION config_update(input_data json, options json DEFAULT '[{}]')
+CREATE FUNCTION config_update(input_data json)
 RETURNS SETOF config AS
 $$
 DECLARE
@@ -191,10 +190,10 @@ DECLARE
 BEGIN
 
 	-- generate a dynamic command: 
-	--   update config set value = json_build_object('rootKey', '{"x": 1}'::json)::jsonb where key = 'key8'
+	--   update config set value = '{"x": 1}'::jsonb where key = 'key8'
 
 	command := 'UPDATE config SET ';
-	command = format(command || ' value = %L ', json_build_object('rootKey', input_data->'value'));
+	command = format(command || ' value = %L ', input_data->'value');
 	command = format(command || ' WHERE key = %L RETURNING *;', input_data->>'key');
 
 	EXECUTE 
@@ -228,17 +227,17 @@ select * from config_update('{
 
 select * from config_update('{
 	"key": "key6",
-	"value": {"name": "paulovieira@gmail.com" }
+	"value": {"name": "xpaulovieira@gmail.com" }
 }');
 
 select * from config_update('{
 	"key": "key7",
-	"value": [{ "yx1": "paulovieira@gmail.com" },{ "x2": "paulovieira@gmail.com" }]
+	"value": [{ "yx1": "xpaulovieira@gmail.com" },{ "x2": "xxpaulovieira@gmail.com" }]
 }');
 
 select * from config_update('{
 	"key": "key8",
-	"value": [[{ "xrootKey": "paulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]]
+	"value": [[{ "xrootKey": "xpaulovieira@gmail.com" },{ "rootKey": "paulovieira@gmail.com" }], [{ "rootKey": "paulovieira@gmail.com" }]]
 }');
 */
 

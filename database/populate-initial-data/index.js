@@ -59,22 +59,22 @@ var populate = {
 
 		 // dynamically constructed sequence of promises. 
 		 // more info: http://documentup.com/kriskowal/q/#sequences
-
-		var output = "";
+		var output = [];
 		configArray.forEach(function(obj, index){
 
 			var self = this;
 			promise = promise.then(function(resp){
 
-				output = output + jsonFormat(resp[0]);	
+				output.push(jsonFormat(resp[0]));	
 				return self.db.func("config_create", internals.stringify(obj))
 			});
 		}, this);
 
 		promise = promise.then(function(resp){
 
-			output = output + jsonFormat(resp[0]);
-			console.log("config table has been populated:\n\n", output);
+			output.push(jsonFormat(resp[0]));
+			output.shift();
+			console.log("config table has been populated:\n\n", output.join());
 			return resp;
 		});
 
@@ -234,24 +234,24 @@ populate.initialize(db)
 	.then(function(){
 		return populate.config();
 	})
-	// .then(function(){
-	// 	return populate.users();
-	// })
-	// .then(function(){
-	// 	return populate.groups();
-	// })
-	// .then(function(){
-	// 	return populate.users_groups();
-	// })
-	// .then(function(){
-	// 	return populate.texts();
-	// })
-	// .then(function(){
-	// 	return populate.files();
-	// })
-	// .then(function(){
-	// 	return populate.maps();
-	// })
+	.then(function(){
+		return populate.users();
+	})
+	.then(function(){
+		return populate.groups();
+	})
+	.then(function(){
+		return populate.users_groups();
+	})
+	.then(function(){
+		return populate.texts();
+	})
+	.then(function(){
+		return populate.files();
+	})
+	.then(function(){
+		return populate.maps();
+	})
 	.then(function(){
 		console.log("All done!");
 	})

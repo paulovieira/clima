@@ -357,12 +357,12 @@ internals.mapsCreate = function(args, done){
         .then(function(configRow){
 
             // mapMenu is the actual array with the menu configuration
-            var mapMenu = configRow[0]["config_data"]["mapMenu"];
+            var mapMenu = configRow[0]["value"];
 
             // changes will happen in place
             internals.updateMenu(mapMenu, allMaps);
 
-            return Db.func("config_update", JSON.stringify(configRow));
+            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
 
         })
 
@@ -446,13 +446,13 @@ internals.mapsDelete = function(args, done){
         // update the menu (add new map, remove deleted maps)
         .then(function(configRow){
 
-            // mapMenu is the actual array with the menu configuration
-            var mapMenu = configRow[0]["config_data"]["mapMenu"];
+            // get the actual array with the menu configuration 
+            var mapMenu = configRow[0]["value"];
 
             // changes will happen in place
             internals.updateMenu(mapMenu, allMaps);
 
-            return Db.func("config_update", JSON.stringify(configRow));
+            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
 
         })
 
@@ -476,7 +476,7 @@ internals.mapsReadMenu = function(args, done){
     Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
         .then(function(data) {
 
-            return done(null, data[0]["config_data"]["mapMenu"]);
+            return done(null, data[0]["value"]);
         })
         .catch(function(err) {
 
@@ -498,8 +498,7 @@ internals.mapsUpdateMenu = function(args, done){
     Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
         .then(function(data) {
 
-            dbData.id = data[0].id
-            dbData.config_data = {mapMenu: args.payload};
+
 /*
             var dummyPayload = [
                 {
@@ -549,10 +548,8 @@ internals.mapsUpdateMenu = function(args, done){
                 }
             ];
 
-            dbData.config_data = {mapMenu: dummyPayload};
-
 */
-            return Db.func("config_update", JSON.stringify(dbData))
+            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
             done(null, dbData);
 
         })
@@ -573,6 +570,7 @@ internals.mapsUpdateMenu = function(args, done){
 
 
 
-// select * from config_update('[
-//     {"id": 5, "config_data": {"publicUrl": "http://yyy.com"} }
-// ]');
+// select * from config_update('{
+//     "key": "...", 
+//     "value": {"publicUrl": "http://yyy.com"}
+// }');
