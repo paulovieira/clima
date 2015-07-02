@@ -53,7 +53,13 @@ var populate = {
 		if(this.argv && this.argv.indexOf("config")==-1){ return; }
 
 		var configArray = internals.readFile("./config.json");
-
+		// for(var i=4; i<1000; i++){
+		// 	configArray.push({
+		// 		"id": i,
+		// 		"key": "mapMenu" + i,
+		// 		"value": [{"key": i}]
+		// 	});
+		// }
 		// returns a promise that is fulfilled with the value 0
 		var promise = Q([""]);
 
@@ -234,24 +240,24 @@ populate.initialize(db)
 	.then(function(){
 		return populate.config();
 	})
-	.then(function(){
-		return populate.users();
-	})
-	.then(function(){
-		return populate.groups();
-	})
-	.then(function(){
-		return populate.users_groups();
-	})
-	.then(function(){
-		return populate.texts();
-	})
-	.then(function(){
-		return populate.files();
-	})
-	.then(function(){
-		return populate.maps();
-	})
+	// .then(function(){
+	// 	return populate.users();
+	// })
+	// .then(function(){
+	// 	return populate.groups();
+	// })
+	// .then(function(){
+	// 	return populate.users_groups();
+	// })
+	// .then(function(){
+	// 	return populate.texts();
+	// })
+	// .then(function(){
+	// 	return populate.files();
+	// })
+	// .then(function(){
+	// 	return populate.maps();
+	// })
 	.then(function(){
 		console.log("All done!");
 	})
