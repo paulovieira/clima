@@ -34,7 +34,7 @@ Then launch TileStream:
 ```sh
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 
-./index.js start --tiles=$TILEMILL_FILES_PATH/export --tilePort=8001
+./index.js start --tilePort=8001  --tiles=$TILEMILL_FILES_PATH/export 
 ```
 
 Note: the default port for this service is 8001
