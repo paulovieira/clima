@@ -124,7 +124,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	command := command || ' ORDER BY f.id;';
+	command := command || ' ORDER BY f.uploaded_at DESC;';
 
 	RETURN QUERY EXECUTE command;
 

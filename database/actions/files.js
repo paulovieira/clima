@@ -108,12 +108,12 @@ internals.filesCreate = function(args, done){
     // replace the original filename (basename has been slugified)
     filename = basename + extname;
 
-// console.log("args.payload.isShape: ", args.payload.isShape)
-// console.log("args.payload.shapeDescription: ", args.payload.shapeDescription)
+    var shapeData = {
+        fileIsShape: (args.payload.isShape + "") === "true",
+        srid: 4326,
+        description: args.payload.shapeDescription
+    }
 
-
-    // TODO: shapeCode should be a boolean flag instead
-    var fileIsShape  = args.payload.isShape === true || args.payload.isShape === "true";
     var physicalPath = Config.get("uploadsDir.relative");
     var rootDir      = Config.get("rootDir");
 
@@ -165,8 +165,7 @@ debugger;
                 filesRead = data;
 
                 // if the file is not a shape, return to the next fn in the chain
-                console.log("fileIsShape: ", fileIsShape)
-                if(!fileIsShape){ return; }
+                if(!shapeData.fileIsShape){ return; }
 
                 var deferred = Q.defer();
 
@@ -177,7 +176,11 @@ debugger;
                 
                 // TODO: the srid is currently hardcoded
                 var options = {
-                    payload: JSON.stringify({zipId: filesRead[0].id, srid: 4326}),
+                    payload: JSON.stringify({
+                        zipId: filesRead[0].id, 
+                        srid: shapeData.srid,
+                        description: shapeData.description
+                    }),
                     headers: {
                         "content-type": "application/json"
                     },

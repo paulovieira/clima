@@ -26,6 +26,7 @@ module.exports = function(options){
 
     seneca.add("role:shapes, cmd:readAll", internals.shapesReadAll);
     seneca.add("role:shapes, cmd:read",    internals.shapesRead);
+    seneca.add("role:shapes, cmd:readStats", internals.shapesReadStats);
     seneca.add("role:shapes, cmd:create",  internals.shapesCreate);
     seneca.add("role:shapes, cmd:update",  internals.shapesUpdate);
     seneca.add("role:shapes, cmd:delete",  internals.shapesDelete);
@@ -51,8 +52,22 @@ internals.transformMap = {
     "ownerData.firstName": "owner_data.first_name",
     "ownerData.lastName": "owner_data.last_name",
 
+    "geometryType": "geometry_type",
     "shapeColumnsData": "shape_columns_data"
 };
+
+
+internals.transformMapStats = {
+
+    // a) properties to be maintained
+    "schemaName": "schema_name",
+    "tableName": "table_name",
+    "columnName": "column_name",
+    "columnType": "column_type",
+    "min": "min",
+    "max": "max"
+};
+
 
 // action handlers for read, readAll, create, update and delete
 // (and possibly others); this is the place where we actually fetch the data from the database;
@@ -114,17 +129,40 @@ internals.shapesRead = function(args, done){
 };
 
 
+internals.shapesReadStats = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+console.log("args: ", args.payload);
+    Db.func('shapes_read_stats', JSON.stringify(args.payload))
+        .then(function(data) {
+
+            if (data.length === 0) {
+                throw Boom.notFound("The resource does not exist.");
+            }
+
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMapStats);
+            return done(null, data);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+};
+
+
 internals.shapesCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    var zipId = args.payload[0].zipId;
-    // var shapes  = args.pre.shapes,
     var shapesSchema = "geo";
-    var srid  = args.payload[0]["srid"];
+    var zipId        = args.payload[0]["zipId"];
+    var srid         = args.payload[0]["srid"];
+    var description  = args.payload[0]["description"];
 
+    console.log("description: ", description)
+    console.log("args.payload[0]: ", args.payload[0])
 
-//    return done(null, {"abc": 123})
 
     var zipFile = _.findWhere(args.pre.files, {id: zipId});
 
@@ -255,6 +293,7 @@ internals.shapesCreate = function(args, done){
         .then(function(){
 
             var dbData = {
+                description: description,
                 tableName: tableName,
                 srid: srid,
                 fileId: zipId,

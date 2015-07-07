@@ -1,4 +1,5 @@
 
+
 /*
 
 	1. READ
@@ -22,6 +23,7 @@ RETURNS TABLE(
 	created_at timestamptz,
 	file_data JSON,
 	owner_data JSON,
+	geometry_type TEXT,
 	shape_columns_data JSON
 	)
 AS
@@ -32,6 +34,7 @@ DECLARE
 	command text;
 	number_conditions INT;
 	shape_columns_data_cte TEXT;
+	shape_geom_type_cte TEXT;
 
 	-- fields to be used in WHERE clause
 	id INT;
@@ -46,11 +49,12 @@ shape_columns_data_cte := '
 			json_agg(json_build_object(
 				''column_number'', a.attnum, 
 				''column_name'', a.attname,
-				''data_type'', a.atttypid::regtype::text)) as shape_columns_data
+				''data_type'', a.atttypid::regtype::text)
+					) as shape_columns_data
 			
 		FROM shapes s
 		LEFT JOIN pg_attribute a
-			ON a.attrelid = (s.schema_name || ''.'' || s.table_name)::regclass
+			ON a.attrelid = (s.schema_name || ''.'' || ''"'' || s.table_name || ''"'')::regclass
 		AND    a.attnum > 0
 		AND    NOT a.attisdropped
 		GROUP BY shape_id
@@ -58,6 +62,19 @@ shape_columns_data_cte := '
 	)
 ';
 
+shape_geom_type_cte := '
+	shape_geom_type_cte AS (
+		SELECT
+			s.id AS shape_id,
+			gc.type::TEXT as geometry_type
+		FROM shapes s
+		LEFT JOIN geometry_columns gc
+		on gc.f_table_schema = format(''%I'', s.schema_name)
+		AND gc.f_table_name = format(''%I'', s.table_name)
+		and gc.f_geometry_column = ''geom''
+		ORDER  BY s.id
+	) 
+';
 
 -- convert the json argument from object to array of (one) objects
 IF  json_typeof(options) = 'object'::text THEN
@@ -67,17 +84,23 @@ END IF;
 
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
+	BEGIN -- begin block to catch exceptions
 
 	command := 'WITH '
-		|| shape_columns_data_cte
+		|| shape_columns_data_cte || ', '
+		|| shape_geom_type_cte
 		|| 'SELECT 
 			s.*, 
 			(select row_to_json(_dummy_) from (select f.*) as _dummy_) as file_data,
 			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data,
+			sgt.geometry_type as geometry_type,
 			scd.shape_columns_data as shape_columns_data
+
 		FROM shapes s 
 		INNER JOIN shape_columns_data_cte scd
 			ON s.id = scd.shape_id
+		INNER JOIN shape_geom_type_cte sgt
+			ON s.id = sgt.shape_id
 		LEFT JOIN users u
 			ON s.owner_id = u.id
 		INNER JOIN files f
@@ -96,7 +119,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' s.id = %L', id);
+		command = command || format(' s.id = %L', id);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -106,7 +129,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		ELSE                           command = command || ' AND';
 		END IF;
 
-		command = format(command || ' s.table_name = %L', table_name);
+		command = command || format(' s.table_name = %L', table_name);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -117,13 +140,21 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		END IF;
 
 		table_name_starts_with := table_name_starts_with || '%';
-		command = format(command || ' s.table_name ILIKE %L', table_name_starts_with);
+		command = command || format(' s.table_name ILIKE %L', table_name_starts_with);
 		number_conditions := number_conditions + 1;
 	END IF;
 
-	command := command || ' ORDER BY s.id;';
+	command := command || ' ORDER BY s.created_at DESC;';
 
 	RETURN QUERY EXECUTE command;
+
+	EXCEPTION 
+		WHEN undefined_table THEN  -- if table does not exist...
+			NULL;  -- the function will return no rows
+		WHEN invalid_schema_name THEN  -- schema does not exist
+			NULL;
+
+	END;  -- end block to catch the exception
 
 END LOOP;
 		
@@ -141,6 +172,102 @@ select * from shapes_read('{}');
 
 */
 
+
+
+	
+
+
+	 
+DROP FUNCTION IF EXISTS shapes_read_stats(options JSON);
+CREATE FUNCTION shapes_read_stats(options JSON DEFAULT '[{}]')
+
+RETURNS TABLE(
+	schema_name TEXT,
+	table_name  TEXT,
+	column_name TEXT,
+	column_type TEXT,
+	min NUMERIC,
+	max NUMERIC)
+AS
+$BODY$
+
+DECLARE
+	options_row JSON;
+	command TEXT;
+	schema_name TEXT;
+	table_name TEXT;
+	column_name TEXT;
+	column_type TEXT;
+	type_is_numeric BOOL;
+BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
+FOR options_row IN ( select json_array_elements(options) ) LOOP
+
+	BEGIN -- begin block to catch exceptions
+	
+	SELECT json_extract_path_text(options_row, 'schema_name')   INTO schema_name;
+	SELECT json_extract_path_text(options_row, 'table_name')   INTO table_name;
+	SELECT json_extract_path_text(options_row, 'column_name')   INTO column_name;
+
+	-- get the data type of the given table/column; if an exception is thrown (which happens
+	-- if the table does not exist), the code will jump imeditay to the "exception" section below
+	SELECT a.atttypid::regtype::text 
+		FROM pg_attribute a
+		WHERE a.attrelid = format('%I.%I', schema_name, table_name)::regclass
+			AND    a.attname = column_name
+			AND    a.attnum > 0
+			AND    NOT a.attisdropped
+		INTO column_type;
+
+	type_is_numeric := 
+		column_type ~* 'int' OR 
+		column_type ~* 'decimal' OR 
+		column_type ~* 'numeric' OR
+		column_type ~* 'double' OR
+		column_type ~* 'serial' OR
+		column_type ~* 'real';
+
+
+	IF type_is_numeric IS TRUE THEN
+		command := format('SELECT %L::text, %L::text, %L::text, %L::text, 
+					min(%s)::numeric, max(%s)::numeric
+					FROM %I.%I', schema_name, table_name, column_name, column_type, 
+					column_name, column_name, schema_name, table_name);
+		
+		--raise notice 'command: %', command;
+
+		RETURN QUERY EXECUTE command;
+	END IF;
+
+	EXCEPTION 
+		WHEN undefined_table THEN  -- if table does not exist...
+			NULL;  -- the function will return no rows
+		WHEN invalid_schema_name THEN  -- schema does not exist
+			NULL;
+
+	END;  -- end block to catch the exception
+	
+END LOOP;
+RETURN;
+
+
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+
+
+
+
+/*
+select * from shapes_read_stats('{"schema_name": "geox",  "table_name": "meteo_wgs84", "column_name": "gid"}');
+select * from shapes_read_stats('[{"schema_name": "geo",  "table_name": "meteo_wgs84", "column_name": "gid"}, {"schema_name": "geo",  "table_name": "meteo_wgs84", "column_name": "id"}]');
+*/
 
 
 
