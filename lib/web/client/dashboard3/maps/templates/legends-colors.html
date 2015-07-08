@@ -1,0 +1,66 @@
+
+<div class="row">
+    <div class="col-sm-8 col-sm-offset-2" style="border-style:none solid none; border-width: 1px; border-color: rgb(231, 231, 231);   padding: 20px 20px; margin-bottom: 50px;">
+
+        <ul style="margin-bottom: 10px;">
+            <li><b>Minimum:</b> {{ min }}</li>
+            <li><b>Maximum:</b> {{ max }}</li>
+        </ul>
+
+        {% if scale != false %}
+
+        <table class="table table-bordered">
+
+            <thead>
+                <tr>
+                    <th class="text-center">
+                        values
+                    </th >
+
+                    <th class="text-center">
+                        color
+                    </th>
+
+                    <th class="text-center">
+                        color (hex code)
+                    </th>
+
+                </tr>
+            </thead>
+
+            <tbody>
+
+                {% for class in scale %}
+
+                <tr>
+                    <td class="text-center">
+                        {{ class.valueClass | first }}
+                        {% if class.valueClass.length  > 1 %}
+                            &ndash; {{ class.valueClass | last }}
+                        {% endif %}
+                    </td>
+
+                    <td class="text-center" style="background-color: {{ class.colorHex }}; border: solid 1px rgb(215, 215, 215);">
+                        &nbsp;
+                    </td>
+
+                    <td class="text-center">
+                        {{ class.colorHex }}
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+        <button type="button" class="btn btn-default" id="js-invert-colors">Invert colors!</button>
+        <button type="button" class="btn btn-default" id="js-darken-colors">Darken colors!</button>
+
+        {% endif %}
+
+    </div>
+</div>
