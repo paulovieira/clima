@@ -56,9 +56,10 @@ internals.transformMap = {
     "attribution": "attribution",
     "tiles": "tiles",
     "grids": "grids",
-    "template": "template"
+    "template": "template",
+    "layer": "Layer"
 
-    // d) deleted properties: "Stylesheet", "Layer", "interactivity", "metatile"
+    // d) deleted properties: "Stylesheet", "interactivity", "metatile"
 
 };
 
@@ -176,7 +177,7 @@ internals.readProjectFiles = function(projectFiles, mapsIds, method, args, done)
             return done(Boom.badImplementation(err.message, err));
         }
 
-        // note:  the order in the elements in contentsArray, projectFiles and mapsIds match
+        // NOTE:  the order in the elements in contentsArray, projectFiles and mapsIds match
         contentsArray.forEach(function(json, index){
 
             try {

@@ -7,23 +7,13 @@
     <form>
 
         <div class="form-group">
-            <label for="js-edit-text-pt">Description (português)</label>
-            <input id="js-edit-desc-pt" class="form-control" name="edit-desc-pt" value="{{ description.pt }}">
-        </div>
-        <div class="form-group">
-            <label for="js-edit-text-en">Description (english)</label>
-            <input id="js-edit-desc-en" class="form-control" name="edit-desc-en" value="{{ description.en }}">
+            <label for="js-edit-text-en">Description</label>
+            <textarea id="js-edit-desc-en" class="form-control" name="edit-desc-en" >{{ description.en }}</textarea>
         </div>
 
         <hr>
 
         <div class="row">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label>Shape code</label>
-                    <input type="text" class="form-control" value="{{ code }}" disabled>
-                </div>
-            </div>
 
             <div class="col-sm-6">
                 <div class="form-group">
@@ -31,13 +21,22 @@
                     <input type="text" class="form-control" value="{{ srid }}" disabled>
                 </div>
             </div>
-        </div>
 
-        <div class="row">
             <div class="col-sm-6">
                 <div class="form-group">
                     <label>Original file</label>
                     <input type="text" class="form-control" value="{{ fileData.name }}" disabled>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Owner</label>
+                    <input type="text" class="form-control" value="{{ ownerData.firstName }} {{ ownerData.lastName }}" disabled>
                 </div>
             </div>
 
