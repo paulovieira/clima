@@ -57,8 +57,24 @@
 
         </table>
 
-        <button type="button" class="btn btn-default" id="js-invert-colors">Invert colors!</button>
-        <button type="button" class="btn btn-default" id="js-darken-colors">Darken colors!</button>
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="" id="js-invert-colors" {{ "checked" if invertColors }}>
+                Invert color ordering
+          </label>
+        </div>
+
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" value="" id="js-light-correction" {{ "checked" if lightCorrection }}>
+                Automatic lightness correction 
+          </label>
+        </div>
+
+        <button type="button" class="btn btn-default" id="js-darken-colors">Darken!</button>
+        <button type="button" class="btn btn-default" id="js-brighten-colors">Brigthen!</button>
+        <button type="button" class="btn btn-default" id="js-saturate-colors">Saturate!</button>
+        <button type="button" class="btn btn-default" id="js-desaturate-colors">Desaturate!</button>
 
         {% endif %}
 
