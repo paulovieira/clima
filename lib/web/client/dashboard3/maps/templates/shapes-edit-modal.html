@@ -48,35 +48,87 @@
             </div>
         </div>
 
-        <div class="form-group">
-            <label>Owner</label>
-            <input type="text" class="form-control" value="{{ ownerData.first_name }} {{ ownerData.last_name }}" disabled>
+        <div class="row">
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>PostGIS table</label>
+                    <input type="text" class="form-control" value="{{ tableName }}" disabled>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Geometry type</label>
+                    <input type="text" class="form-control" value="{{ geometryType }}" disabled>
+                </div>
+            </div>
         </div>
 
-    </form>
+        <div class="row">
+            <div class="col-sm-12">
 
+                <label>Attribute table informations</label>
+                <div class="row">
+                    <div class="col-sm-10 col-sm-offset-1">
+                        <div class="form-group">
+                            <table class="table table-striped table-condensed table-dashboard table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th  class="text-center" style="width: 25%">Column name</th>
+                                        <th  class="text-center" style="width: 25%">Data type</th>
+                                        <th  class="text-center" style="width: 25%">Min</th>
+                                        <th  class="text-center" style="width: 25%">Max</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    {% for column in attributesInfo %}
+
+                                        {% if column.column_name != "gid" and column.column_name != "geom" %}
+                                        <tr>
+                                            <td class="text-center">{{ column.column_name }}</td>
+                                            <td class="text-center">{{ column.data_type   }}</td>
+                                            <td class="text-center">{{ column.min if column.min != null else "&mdash;" }}</td>
+                                            <td class="text-center">{{ column.max if column.max != null else "&mdash;" }}</td>                                      
+                                        </tr>
+                                        {% endif %}
+
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+{#
     <hr>
 
         <div class="row">
             <div class="col-sm-10 col-sm-offset-1">
 
-                <h4 class="text-center">Column data</h4>
+                <h4 class="text-center">Attribute table informations</h4>
 
-                <table class="table table-striped table-condensed table-dashboard">
+                <table class="table table-striped table-condensed table-dashboard table-bordered">
                     <thead>
                         <tr>
-                            <th style="width: 50%">Column name</th>
-                            <th style="width: 50%">Data type</th>
+                            <th  class="text-center" style="width: 50%">Column name</th>
+                            <th  class="text-center" style="width: 50%">Data type</th>
                         </tr>
                     </thead>
 
                     <tbody>
-                        {% for column in shapeColumnsData %}
+                        {% for attribute in attributesInfo %}
 
-                        <tr>
-                            <td>{{ column.column_name }}</td>
-                            <td>{{ column.data_type }}</td>
-                        </tr>
+                            {% if attribute.column_name != "gid" and attribute.column_name != "geom" %}
+                            <tr>
+                                <td class="text-center">{{ attribute.column_name }}</td>
+                                <td class="text-center">{{ attribute.data_type }}</td>
+                            </tr>
+                            {% endif %}
 
                         {% endfor %}
                     </tbody>
@@ -84,7 +136,7 @@
 
             </div>
         </div>
-
+#}
 </div>
 
 <div class="modal-footer">

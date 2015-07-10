@@ -36,10 +36,13 @@ internals.transformMap = {
 
     // a) properties to be maintained
     "id": "id",
+    "schemaName": "schema_name",
     "tableName": "table_name",
     "srid": "srid",
+    "geometryType": "geometry_type",
+    "attributesInfo": "attributes_info",
     "description": "description",
-    "schemaName": "schema_name",
+
     "createdAt": "created_at",
 
     // c) changed properties (some fields from ownerData, such as pwHash, will be deleted)
@@ -50,10 +53,8 @@ internals.transformMap = {
     "ownerData.id": "owner_data.id",
     "ownerData.email": "owner_data.email",
     "ownerData.firstName": "owner_data.first_name",
-    "ownerData.lastName": "owner_data.last_name",
+    "ownerData.lastName": "owner_data.last_name"
 
-    "geometryType": "geometry_type",
-    "shapeColumnsData": "shape_columns_data"
 };
 
 
@@ -293,11 +294,12 @@ internals.shapesCreate = function(args, done){
         .then(function(){
 
             var dbData = {
-                description: description,
+                
+                schemaName: shapesSchema,
                 tableName: tableName,
                 srid: srid,
+                description: description,
                 fileId: zipId,
-                schemaName: shapesSchema,
                 ownerId: args.payload[0]["ownerId"]
             };
             ChangeCase(dbData, "underscored");

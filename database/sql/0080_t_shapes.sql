@@ -1,14 +1,15 @@
 
 CREATE TABLE IF NOT EXISTS shapes( 
 	id SERIAL PRIMARY KEY,
+	schema_name TEXT NOT NULL default 'geo',
 	table_name TEXT NOT NULL UNIQUE,  -- the name of the file and the name of the shape might be slightly different
 	srid INT REFERENCES spatial_ref_sys(srid) default 4326,
+	geometry_type TEXT NOT NULL,
+	attributes_info JSONB default '[]',
 	description JSONB default '{}',
 	file_id INT references files(id)  on update cascade on delete set null,
-	schema_name TEXT NOT NULL default 'geo',
-	owner_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+	owner_id INT REFERENCES users(id) ON DELETE SET NULL,
 	created_at timestamptz not null default now(),
-
 	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object')
 );
 

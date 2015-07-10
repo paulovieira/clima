@@ -175,3 +175,8 @@ client_max_body_size 0;
 
 (right below server_name, for instance)
 
+
+
+
+shapesReadAll - já nao é necessário
+refazer toda a logica das legendas

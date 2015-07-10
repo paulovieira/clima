@@ -14,17 +14,19 @@ CREATE FUNCTION shapes_read(options json DEFAULT '[{}]')
 -- return table, uses the definition of the shapes table + extra data from the join
 RETURNS TABLE(
 	id INT,
+	schema_name TEXT,
 	table_name TEXT,
 	srid INT,
+	geometry_type TEXT,
+	attributes_info JSONB,
 	description JSONB,
 	file_id INT,
-	schema_name TEXT,
 	owner_id INT,
 	created_at timestamptz,
 	file_data JSON,
-	owner_data JSON,
-	geometry_type TEXT,
-	shape_columns_data JSON
+	owner_data JSON
+--	geometry_type TEXT,
+--	shape_columns_data JSON
 	)
 AS
 $BODY$
@@ -33,15 +35,15 @@ DECLARE
 	options_row json;
 	command text;
 	number_conditions INT;
-	shape_columns_data_cte TEXT;
-	shape_geom_type_cte TEXT;
+--	shape_columns_data_cte TEXT;
+--	shape_geom_type_cte TEXT;
 
 	-- fields to be used in WHERE clause
 	id INT;
 	table_name TEXT;
 	table_name_starts_with TEXT;
 BEGIN
-
+/*
 shape_columns_data_cte := '
 	shape_columns_data_cte AS (
 		SELECT
@@ -75,7 +77,7 @@ shape_geom_type_cte := '
 		ORDER  BY s.id
 	) 
 ';
-
+*/
 -- convert the json argument from object to array of (one) objects
 IF  json_typeof(options) = 'object'::text THEN
 	options = ('[' || options::text ||  ']')::json;
@@ -85,7 +87,7 @@ END IF;
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	BEGIN -- begin block to catch exceptions
-
+/*
 	command := 'WITH '
 		|| shape_columns_data_cte || ', '
 		|| shape_geom_type_cte
@@ -104,6 +106,17 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		LEFT JOIN users u
 			ON s.owner_id = u.id
 		INNER JOIN files f
+			ON s.file_id = f.id';
+*/
+	command := 'SELECT 
+			s.*, 
+			(select row_to_json(_dummy_) from (select f.*) as _dummy_) as file_data,
+			(select row_to_json(_dummy_) from (select u.*) as _dummy_) as owner_data
+
+		FROM shapes s 
+		LEFT JOIN users u
+			ON s.owner_id = u.id
+		LEFT JOIN files f
 			ON s.file_id = f.id';
 			
 	-- extract values to be (optionally) used in the WHERE clause
@@ -174,30 +187,30 @@ select * from shapes_read('{}');
 
 
 
-	
 
 
-	 
-DROP FUNCTION IF EXISTS shapes_read_stats(options JSON);
-CREATE FUNCTION shapes_read_stats(options JSON DEFAULT '[{}]')
+
+
+DROP FUNCTION IF EXISTS shapes_read_stats2(options JSON);
+CREATE FUNCTION shapes_read_stats2(options JSON DEFAULT '[{}]')
 
 RETURNS TABLE(
-	schema_name TEXT,
-	table_name  TEXT,
-	column_name TEXT,
-	column_type TEXT,
-	min NUMERIC,
-	max NUMERIC)
+	value NUMERIC)
 AS
 $BODY$
 
 DECLARE
 	options_row JSON;
 	command TEXT;
+
+	function_name TEXT;
 	schema_name TEXT;
 	table_name TEXT;
 	column_name TEXT;
+
+	
 	column_type TEXT;
+	
 	type_is_numeric BOOL;
 BEGIN
 
@@ -209,7 +222,8 @@ END IF;
 FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	BEGIN -- begin block to catch exceptions
-	
+
+	SELECT json_extract_path_text(options_row, 'function_name')   INTO function_name;
 	SELECT json_extract_path_text(options_row, 'schema_name')   INTO schema_name;
 	SELECT json_extract_path_text(options_row, 'table_name')   INTO table_name;
 	SELECT json_extract_path_text(options_row, 'column_name')   INTO column_name;
@@ -234,10 +248,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 
 	IF type_is_numeric IS TRUE THEN
-		command := format('SELECT %L::text, %L::text, %L::text, %L::text, 
-					min(%s)::numeric, max(%s)::numeric
-					FROM %I.%I', schema_name, table_name, column_name, column_type, 
-					column_name, column_name, schema_name, table_name);
+		command := format('SELECT %s(%s)::numeric FROM %I.%I', function_name, column_name, schema_name, table_name);
 		
 		--raise notice 'command: %', command;
 
@@ -260,14 +271,13 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
-
-
-
-
 /*
-select * from shapes_read_stats('{"schema_name": "geox",  "table_name": "meteo_wgs84", "column_name": "gid"}');
-select * from shapes_read_stats('[{"schema_name": "geo",  "table_name": "meteo_wgs84", "column_name": "gid"}, {"schema_name": "geo",  "table_name": "meteo_wgs84", "column_name": "id"}]');
+select * from shapes_read_stats2('{"function_name": "max", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
+select * from shapes_read_stats2('{"function_name": "min", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
 */
+
+
+
 
 
 
@@ -276,6 +286,7 @@ select * from shapes_read_stats('[{"schema_name": "geo",  "table_name": "meteo_w
 	2. CREATE
 
 */
+
 
 
 DROP FUNCTION IF EXISTS shapes_create(json, json);
@@ -288,6 +299,8 @@ DECLARE
 	input_row shapes%ROWTYPE;
 	current_row shapes%ROWTYPE;
 	new_id INT;
+	geometry_type TEXT;
+	attributes_info_temp JSON;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -300,6 +313,50 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 
 	SELECT input_row.id INTO new_id;
 
+	-- get the geometry_type of the geom column (relative to the postgis table referenced by input_row.table_name)
+	SELECT 
+		lower(gc.type::TEXT)
+	FROM 
+		geometry_columns gc
+	WHERE
+		gc.f_table_schema = format('%I', 'geo') 
+		AND gc.f_table_name = format('%I', input_row.table_name)
+		AND gc.f_geometry_column = 'geom'
+	LIMIT 1
+	INTO geometry_type;
+
+
+	SELECT array_to_json(array_agg(row_to_json(t))) FROM (
+		SELECT
+			a.attnum AS column_number, 
+			lower(a.attname::text) AS column_name,
+			lower(a.atttypid::regtype::text) AS data_type,
+			(
+				select * from shapes_read_stats2(
+					format('{"function_name": "max", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
+							'geo'::text, 
+							input_row.table_name, 
+							a.attname::text
+					)::json )
+			) as max,
+			(
+				select * from shapes_read_stats2(
+					format('{"function_name": "min", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
+							input_row.schema_name, 
+							input_row.table_name, 
+							a.attname::text
+					)::json )
+			) as min
+		FROM 
+			pg_attribute a
+		WHERE 
+			a.attrelid = (input_row.schema_name || '.' || input_row.table_name)::regclass
+			AND    a.attnum > 0
+			AND    NOT a.attisdropped
+		) t
+	INTO attributes_info_temp;
+
+
 	-- we proceed with the insert in 2 cases: 
 	--   a) if the id was not given (in which case we retrieve a new id from the sequence); 
 	--   b) if the id was given and there is no record with that id
@@ -307,22 +364,27 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 	-- NOTE: if the id has not been given, the data comes from the user interface; otherwise, it comes from the initial data;
 	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM shapes WHERE id = new_id) THEN
 
+	
 		INSERT INTO shapes(
 			id,
+			schema_name,
 			table_name,
 			srid, 
+			geometry_type,
+			attributes_info,
 			description, 
 			file_id,
-			schema_name,
 			owner_id
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('shapes', 'id'))),
+			COALESCE(input_row.schema_name, 'geo'),
 			input_row.table_name, 
 			COALESCE(input_row.srid, 4326),
+			geometry_type, 
+			attributes_info_temp::jsonb,
 			COALESCE(input_row.description, '{}'::jsonb),
 			input_row.file_id,
-			COALESCE(input_row.schema_name, 'geo'),
 			input_row.owner_id
 			)
 		RETURNING 
@@ -330,6 +392,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 		INTO STRICT 
 			new_row;
 
+		
 		RETURN NEXT new_row;
 
 	ELSE
@@ -349,14 +412,16 @@ END;
 $BODY$
 LANGUAGE plpgsql;
 
+
 /*
 select * from shapes order by id desc
 
 select * from shapes_create('{
-	"table_name": "precepitacao_ref",
-	"title": {"pt": "fwefwef", "en": "fwefwef fewfw"},
-	"owner_id": 2,
 	"schema_name": "geo"
+	"table_name": "precepitacao_ref",
+	"description": {"en": "fwefwef fewfw"},
+	"owner_id": 2,
+
 }')
 
 */
@@ -514,3 +579,5 @@ select * from shapes order by id desc;
 
 select * from shapes_delete('{"id": 1003}');
 */
+
+
