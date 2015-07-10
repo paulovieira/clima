@@ -1,20 +1,17 @@
 <div class="row">
     <div class="col-sm-10 col-sm-offset-1" style="padding-top: 20px;">
-    Step 1: choose a web map
 
-    <select class="form-control js-all-maps">
-        <option value="">---</option>
-        {% for obj in items %}
-            <option value="{{ obj['id'] }}" >{{ obj['name'] }}</option>
-        {% endfor %}
-    </select>
+        <p>Step 1: choose a web map</p>
+        <select class="form-control js-all-maps">
+            <option value="">&mdash;</option>
+            {% for obj in items %}
+                <option value="{{ obj['id'] }}" >{{ obj['name'] }}</option>
+            {% endfor %}
+        </select>
    
     </div>
 </div>
 
-<div class="row">
-    <div class="col-sm-10 col-sm-offset-1" style="padding-top: 20px;" id="choose-shape-region">
-   
-    </div>
-</div>
+<div id="choose-shape-region"></div>
+
 
