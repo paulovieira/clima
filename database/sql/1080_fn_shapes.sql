@@ -247,8 +247,8 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		column_type ~* 'real';
 
 
-	IF type_is_numeric IS TRUE THEN
-		command := format('SELECT %s(%s)::numeric FROM %I.%I', function_name, column_name, schema_name, table_name);
+	IF type_is_numeric IS TRUE OR function_name = 'count' THEN
+		command := format('SELECT %s(%s)::numeric FROM %I.%I where %s IS NOT NULL', function_name, column_name, schema_name, table_name, column_name);
 		
 		--raise notice 'command: %', command;
 
@@ -346,7 +346,15 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 							input_row.table_name, 
 							a.attname::text
 					)::json )
-			) as min
+			) as min,
+			(
+				select * from shapes_read_stats2(
+					format('{"function_name": "count", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
+							input_row.schema_name, 
+							input_row.table_name, 
+							a.attname::text
+					)::json )
+			) as count
 		FROM 
 			pg_attribute a
 		WHERE 

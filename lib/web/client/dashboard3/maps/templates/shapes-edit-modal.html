@@ -75,10 +75,11 @@
                             <table class="table table-striped table-condensed table-dashboard table-bordered">
                                 <thead>
                                     <tr>
-                                        <th  class="text-center" style="width: 25%">Column name</th>
-                                        <th  class="text-center" style="width: 25%">Data type</th>
-                                        <th  class="text-center" style="width: 25%">Min</th>
-                                        <th  class="text-center" style="width: 25%">Max</th>
+                                        <th  class="text-center" style="width: 23%">Column name</th>
+                                        <th  class="text-center" style="width: 23%">Data type</th>
+                                        <th  class="text-center" style="width: 18%">Min</th>
+                                        <th  class="text-center" style="width: 18%">Max</th>
+                                        <th  class="text-center" style="width: 18%">Count</th>
                                     </tr>
                                 </thead>
 
@@ -91,6 +92,7 @@
                                             <td class="text-center">{{ column.data_type   }}</td>
                                             <td class="text-center">{{ column.min if column.min != null else "&mdash;" }}</td>
                                             <td class="text-center">{{ column.max if column.max != null else "&mdash;" }}</td>                                      
+                                            <td class="text-center">{{ column.count if column.count != null else "&mdash;" }}</td>                                      
                                         </tr>
                                         {% endif %}
 

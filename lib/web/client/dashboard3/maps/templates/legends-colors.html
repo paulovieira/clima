@@ -34,10 +34,12 @@
 
                 <tr>
                     <td class="text-center">
-                        {{ class.valueClass | first }}
-                        {% if class.valueClass.length  > 1 %}
-                            &ndash; {{ class.valueClass | last }}
+                        {{ class.valueClass[0] }}
+
+                        {% if class.valueClass[0] != class.valueClass[1] %}
+                            &ndash; {{ class.valueClass[1] }}
                         {% endif %}
+
                     </td>
 
                     <td class="text-center" style="background-color: {{ class.colorHex }}; border: solid 1px rgb(215, 215, 215);">

@@ -26,7 +26,7 @@ module.exports = function(options){
 
     seneca.add("role:shapes, cmd:readAll", internals.shapesReadAll);
     seneca.add("role:shapes, cmd:read",    internals.shapesRead);
-    seneca.add("role:shapes, cmd:readStats", internals.shapesReadStats);
+//    seneca.add("role:shapes, cmd:readStats", internals.shapesReadStats);
     seneca.add("role:shapes, cmd:create",  internals.shapesCreate);
     seneca.add("role:shapes, cmd:update",  internals.shapesUpdate);
     seneca.add("role:shapes, cmd:delete",  internals.shapesDelete);
@@ -130,26 +130,26 @@ internals.shapesRead = function(args, done){
 };
 
 
-internals.shapesReadStats = function(args, done){
+// internals.shapesReadStats = function(args, done){
 
-    Utils.logCallsite(Hoek.callStack()[0]);
-console.log("args: ", args.payload);
-    Db.func('shapes_read_stats', JSON.stringify(args.payload))
-        .then(function(data) {
+//     Utils.logCallsite(Hoek.callStack()[0]);
+// console.log("args: ", args.payload);
+//     Db.func('shapes_read_stats', JSON.stringify(args.payload))
+//         .then(function(data) {
 
-            if (data.length === 0) {
-                throw Boom.notFound("The resource does not exist.");
-            }
+//             if (data.length === 0) {
+//                 throw Boom.notFound("The resource does not exist.");
+//             }
 
-            data = args.raw === true ? data : Hoek.transform(data, internals.transformMapStats);
-            return done(null, data);
-        })
-        .catch(function(err) {
+//             data = args.raw === true ? data : Hoek.transform(data, internals.transformMapStats);
+//             return done(null, data);
+//         })
+//         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-            return done(err);
-        });
-};
+//             err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+//             return done(err);
+//         });
+// };
 
 
 internals.shapesCreate = function(args, done){
