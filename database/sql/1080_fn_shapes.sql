@@ -6,6 +6,13 @@
 
 */
 
+DROP VIEW IF EXISTS geo_tables;
+CREATE VIEW geo_tables AS
+	SELECT schemaname as "schema_name", tablename as "table_name"
+	FROM pg_tables pgt
+	WHERE pgt.schemaname = format('%I', 'geo');
+
+
 
 DROP FUNCTION IF EXISTS shapes_read(json);
 
@@ -23,6 +30,7 @@ RETURNS TABLE(
 	file_id INT,
 	owner_id INT,
 	created_at timestamptz,
+	inspire JSONB,
 	file_data JSON,
 	owner_data JSON
 --	geometry_type TEXT,
@@ -382,7 +390,8 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			attributes_info,
 			description, 
 			file_id,
-			owner_id
+			owner_id,
+			inspire
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('shapes', 'id'))),
@@ -393,7 +402,8 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			attributes_info_temp::jsonb,
 			COALESCE(input_row.description, '{}'::jsonb),
 			input_row.file_id,
-			input_row.owner_id
+			input_row.owner_id,
+			COALESCE(input_row.inspire, '{}'::jsonb)
 			)
 		RETURNING 
 			*
@@ -465,6 +475,9 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 	command := 'UPDATE shapes SET ';
 
 	-- then add (cumulatively) the fields to be updated; those fields must be present in the input_data json;
+	-- IF input_row.schema_name IS NOT NULL THEN
+	-- 	command = format(command || 'schema_name = %L, ', input_row.schema_name);
+	-- END IF;
 	-- IF input_row.table_name IS NOT NULL THEN
 	-- 	command = format(command || 'table_name = %L, ', input_row.table_name);
 	-- END IF;
@@ -474,15 +487,12 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 	IF input_row.description IS NOT NULL THEN
 		command = format(command || 'description = %L, ', input_row.description);
 	END IF;
-	-- IF input_row.file_id IS NOT NULL THEN
-	-- 	command = format(command || 'file_id = %L, ', input_row.file_id);
-	-- END IF;
-	-- IF input_row.schema_name IS NOT NULL THEN
-	-- 	command = format(command || 'schema_name = %L, ', input_row.schema_name);
-	-- END IF;
-	IF input_row.owner_id IS NOT NULL THEN
-		command = format(command || 'owner_id = %L, ', input_row.owner_id);
+	IF input_row.inspire IS NOT NULL THEN
+		command = format(command || 'inspire = %L, ', input_row.inspire);
 	END IF;
+	-- IF input_row.owner_id IS NOT NULL THEN
+	-- 	command = format(command || 'owner_id = %L, ', input_row.owner_id);
+	-- END IF;
 
 	-- remove the comma and space from the last if
 	command = left(command, -2);

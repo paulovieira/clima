@@ -1,11 +1,28 @@
+{% import "nunjucks-macros.html" as macros %}
+
+
 
 <div class="row" style="padding-left: 15px; padding-right: 15px;">
     <div class="col-sm-10 col-sm-offset-1" style="border-style:solid; border-radius: px; border-width: 1px; border-color: rgb(228, 228, 228);   padding: 20px 40px; margin-bottom: 50px; margin-top: 20px;">
 
         <ul style="margin-bottom: 10px;">
+            <li><b>Count:</b> {{ count }} (number of not null values)</li>
             <li><b>Minimum:</b> {{ min }}</li>
             <li><b>Maximum:</b> {{ max }}</li>
         </ul>
+
+        {% if count < countGeometries %}
+            
+            <div class="alert alert-danger" role="alert" style="padding-bottom: 0px;">
+                <b>Warning:</b> the shape has {{ countGeometries }} geometries, so there are {{ countGeometries - count }} entries in the {{ columnName }} column with null values. The visualization of these entries should be trated manually (otherwise they will be invisible). Use the following condition in the cartoCSS editor:
+                <pre style="margin-top: 10px;">
+#{{ tableName }}[{{ columnName }} = null] {
+    // now use the cartoCSS properties to identify null values
+    marker-fill: black;  // or line-color, or polygon-fill, etc
+}               </pre>
+            </div>
+
+        {% endif %}
 
         {% if scale != false %}
 
@@ -48,6 +65,7 @@
 
                     <td class="text-center">
                         {{ class.colorHex }}
+
                     </td>
 
 
@@ -65,18 +83,79 @@
                 Invert color ordering
           </label>
         </div>
-
+{#
         <div class="checkbox">
           <label>
             <input type="checkbox" value="" id="js-light-correction" {{ "checked" if lightCorrection }}>
                 Automatic lightness correction 
           </label>
         </div>
-
+#}
         <button type="button" style="margin-right: 10px;" class="btn btn-default" id="js-darken-colors">Darken!</button>
         <button type="button" style="margin-right: 10px;" class="btn btn-default" id="js-brighten-colors">Brigthen!</button>
         <button type="button" style="margin-right: 10px;" class="btn btn-default" id="js-saturate-colors">Saturate!</button>
         <button type="button" style="margin-right: 10px;" class="btn btn-default" id="js-desaturate-colors">Desaturate!</button>
+   
+
+        <hr>
+
+        <p>Copy-paste the following blocks to the <a target="_blank" href="/pt/tilemill#/project/{{ mapId }}">{{ mapName }}</a> map settings:</p>
+
+
+        <div class="row">
+        
+            <div class="col-sm-6">
+                <p style="margin-top: 15px; margin-bottom: 0px; ">CartoCSS </p>
+            </div>
+            <div class="col-sm-6">
+                <button type="button" class="pull-right btn btn-default js-select-code" id="code-carto">Select this block</button>        
+            </div>
+
+            <div class="col-sm-12">
+                <pre style="margin-top: 4px;"><code class="language-css">
+                    {{ macros.getCartoCode(scale, tableName, columnName, geometryTypePrimitive) | trim }}
+                </code></pre>
+            </div>
+
+        </div>
+
+
+        <div class="form-group" style="margin-top: 25px; margin-bottom: 0;">
+           <label style="margin-bottom: 0;">Legend style</label>
+
+           <div class="radio" style="margin-top: 0;">
+             <label>
+               <input type="radio" name="legend-style" value="horizontal" {{"checked" if legendStyle == "horizontal" }}>
+               Horizontal
+             </label>
+           </div>
+           <div class="radio" style="margin-top: -10px;">
+             <label>
+               <input type="radio" name="legend-style" value="vertical" {{"checked" if legendStyle == "vertical" }}>
+               Vertical
+             </label>
+           </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-sm-6">
+                <p style="margin-top: 15px; margin-bottom: 0px; ">HTML for the legend</p>
+            </div>
+            <div class="col-sm-6">
+                <button type="button" class="pull-right btn btn-default js-select-code" id="code-html">Select this block</button>        
+            </div>
+
+            <div class="col-sm-12">
+                <pre style="margin-top: 4px;"><code class="language-markup">
+                    {{ macros.getDefaultLegendHtml(scale, mapName, legendStyle) | trim | escape }}
+                </code></pre>
+            </div>
+
+        </div>
+
+
+ 
 
         {% endif %}
 

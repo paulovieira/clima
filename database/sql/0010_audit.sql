@@ -18,6 +18,9 @@ BEGIN
 
 
     -- github repo: https://github.com/2ndQuadrant/audit-trigger/
+    -- copy-paste from commit 341d504 (15.07.06)
+
+    -- -- -- -- -- -- -- -- BEGIN OF COPY-PASTE -- -- -- -- -- -- -- -- 
 
     -- An audit history is important on most tables. Provide an audit trigger that logs to
     -- a dedicated audit table for the major relations.
@@ -34,8 +37,6 @@ BEGIN
     -- Should really be converted into a relocatable EXTENSION, with control and upgrade files.
 
     CREATE EXTENSION IF NOT EXISTS hstore;
-
-    DROP SCHEMA IF EXISTS audit CASCADE;
 
     CREATE SCHEMA audit;
     REVOKE ALL ON SCHEMA audit FROM public;
@@ -73,7 +74,7 @@ BEGIN
         client_addr inet,
         client_port integer,
         client_query text,
-        action CHAR(1) NOT NULL CHECK (action IN ('I','D','U', 'T')),
+        action TEXT NOT NULL CHECK (action IN ('I','D','U', 'T')),
         row_data hstore,
         changed_fields hstore,
         statement_only boolean not null
@@ -209,15 +210,15 @@ BEGIN
       _q_txt text;
       _ignored_cols_snip text = '';
     BEGIN
-        EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_row ON ' || target_table;
-        EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_stm ON ' || target_table;
+        EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_row ON ' || quote_ident(target_table);
+        EXECUTE 'DROP TRIGGER IF EXISTS audit_trigger_stm ON ' || quote_ident(target_table);
 
         IF audit_rows THEN
             IF array_length(ignored_cols,1) > 0 THEN
                 _ignored_cols_snip = ', ' || quote_literal(ignored_cols);
             END IF;
             _q_txt = 'CREATE TRIGGER audit_trigger_row AFTER INSERT OR UPDATE OR DELETE ON ' || 
-                     target_table || 
+                     quote_ident(target_table) || 
                      ' FOR EACH ROW EXECUTE PROCEDURE audit.if_modified_func(' ||
                      quote_literal(audit_query_text) || _ignored_cols_snip || ');';
             RAISE NOTICE '%',_q_txt;
@@ -263,6 +264,7 @@ BEGIN
     Add auditing support to the given table. Row-level changes will be logged with full client query text. No cols are ignored.
     $body$;
 
+    -- -- -- -- -- -- -- -- END OF COPY-PASTE -- -- -- -- -- -- -- -- 
 
     INSERT INTO code_has_executed(code) VALUES(_flag);
 

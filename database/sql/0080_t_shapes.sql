@@ -13,6 +13,17 @@ CREATE TABLE IF NOT EXISTS shapes(
 	CONSTRAINT description_must_be_object CHECK (jsonb_typeof(description) = 'object')
 );
 
+-- change 15.07.13: add json column for the inspire metadata
+DO $$ 
+DECLARE
+BEGIN
+    BEGIN
+        ALTER TABLE shapes ADD COLUMN inspire JSONB default '{}';
+    EXCEPTION
+        WHEN duplicate_column THEN RAISE NOTICE 'column "inspire" already exists in "shapes", skipping';
+    END;
+END;
+$$
 
 
 DO $$

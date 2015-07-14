@@ -26,7 +26,7 @@ module.exports = function(options){
 
     seneca.add("role:shapes, cmd:readAll", internals.shapesReadAll);
     seneca.add("role:shapes, cmd:read",    internals.shapesRead);
-//    seneca.add("role:shapes, cmd:readStats", internals.shapesReadStats);
+    seneca.add("role:geoTables, cmd:readAll",    internals.geoTablesReadAll);
     seneca.add("role:shapes, cmd:create",  internals.shapesCreate);
     seneca.add("role:shapes, cmd:update",  internals.shapesUpdate);
     seneca.add("role:shapes, cmd:delete",  internals.shapesDelete);
@@ -67,6 +67,13 @@ internals.transformMapStats = {
     "columnType": "column_type",
     "min": "min",
     "max": "max"
+};
+
+internals.transformMapGeoTables = {
+
+    // a) properties to be maintained
+    "schemaName": "schema_name",
+    "tableName": "table_name",
 };
 
 
@@ -130,26 +137,23 @@ internals.shapesRead = function(args, done){
 };
 
 
-// internals.shapesReadStats = function(args, done){
+internals.geoTablesReadAll = function(args, done){
 
-//     Utils.logCallsite(Hoek.callStack()[0]);
-// console.log("args: ", args.payload);
-//     Db.func('shapes_read_stats', JSON.stringify(args.payload))
-//         .then(function(data) {
+    Utils.logCallsite(Hoek.callStack()[0]);
 
-//             if (data.length === 0) {
-//                 throw Boom.notFound("The resource does not exist.");
-//             }
+    Db.query('select * from geo_tables')
+        .then(function(data) {
 
-//             data = args.raw === true ? data : Hoek.transform(data, internals.transformMapStats);
-//             return done(null, data);
-//         })
-//         .catch(function(err) {
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMapGeoTables);
+            return done(null, data);
+        })
+        .catch(function(err) {
 
-//             err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-//             return done(err);
-//         });
-// };
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+};
+
 
 
 internals.shapesCreate = function(args, done){
@@ -255,7 +259,10 @@ internals.shapesCreate = function(args, done){
             // define the table name (based on the shape file basename, after being slugified)
             tableName = _s(shpBasename).slugify().replaceAll("-", "_").value();
 
-            if(_.findWhere(args.pre.shapes, {table_name: tableName})){
+            if(
+                _.findWhere(args.pre.shapes, {table_name: tableName}) || 
+                _.findWhere(args.pre.geoTables, {table_name: tableName})
+            ){
                 tableName = tableName + "_" + Utils.getRandomString();
             }
 

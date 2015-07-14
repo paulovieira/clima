@@ -257,6 +257,7 @@ populate.initialize(db)
 	})
 	.then(function(){
 		console.log("All done!");
+		console.log("Don't forget to mannually populate the shapes table (post request with upload of the .zip file)");
 	})
 	.catch(function(err){
     	console.log(err);
