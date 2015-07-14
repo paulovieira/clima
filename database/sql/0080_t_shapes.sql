@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS shapes(
 	geometry_type TEXT NOT NULL,
 	attributes_info JSONB default '[]',
 	description JSONB default '{}',
+	inspire JSONB default '{}',
 	file_id INT references files(id)  on update cascade on delete set null,
 	owner_id INT REFERENCES users(id) ON DELETE SET NULL,
 	created_at timestamptz not null default now(),
@@ -14,16 +15,17 @@ CREATE TABLE IF NOT EXISTS shapes(
 );
 
 -- change 15.07.13: add json column for the inspire metadata
-DO $$ 
-DECLARE
-BEGIN
-    BEGIN
-        ALTER TABLE shapes ADD COLUMN inspire JSONB default '{}';
-    EXCEPTION
-        WHEN duplicate_column THEN RAISE NOTICE 'column "inspire" already exists in "shapes", skipping';
-    END;
-END;
-$$
+-- DO $$
+-- DECLARE
+--     dummy INT;
+-- BEGIN
+--     BEGIN
+--         ALTER TABLE shapes ADD COLUMN inspire JSONB default '{}';
+--     EXCEPTION
+--         WHEN duplicate_column THEN RAISE NOTICE 'column "inspire" already exists in "shapes", skipping';
+--     END;
+-- END;
+-- $$;
 
 
 DO $$
@@ -54,5 +56,5 @@ BEGIN
 		INSERT INTO code_has_executed(code) VALUES(_flag);
 	end if;
 END
-$$
+$$;
 

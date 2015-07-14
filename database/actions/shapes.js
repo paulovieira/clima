@@ -297,7 +297,51 @@ internals.shapesCreate = function(args, done){
             return deferred.promise;
         })
 
-        // step 4-6: the usual
+        // step 4: execute shp2pgsql again, now with a different enconding (case the previous execution has failed)
+        .catch(function(err){
+
+            // check if we had the "Unable to convert field name to UTF-8" error
+            var encodingErr = /utf/i.test(err.message);
+            if(!encodingErr){
+                throw err;
+            }
+console.log("encodingErr: ", encodingErr);
+            var deferred = Q.defer();
+
+
+            // the command is now:  shp2pgsql -W LATIN1 -D -I -s <srid> <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
+            var command1 = _.template('shp2pgsql -W LATIN1 -D -I -s <%= srid %> "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            var command2 = _.template('psql --dbname=<%= dbName %>');
+
+            var command = command1({srid: srid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
+                        " | " + 
+                        command2({dbName: Config.get("db.postgres.database") });
+
+            Utils.serverLog(["shp2pgsql"], command);
+
+            // maxBuffer specifies the largest amount of data allowed on stdout or stderr (we set to 1mb)
+            Exec(command, {maxBuffer: 1024 * 1000}, function(err, stdout, stderr){
+
+                if(err){
+                    return deferred.reject(Boom.badImplementation("ChildProcess.exec error: " + err.message));
+                }
+
+                if(_s.include(stdout.toLowerCase(), "create index") && 
+                    _s.include(stdout.toLowerCase(), "commit")){
+                    return deferred.resolve();
+                }
+                else{
+                    // TODO: stderr might be big (if the shape if also big)?
+                    return deferred.reject(Boom.badImplementation("shp2pgsql error: " + stderr));
+                }
+
+            });
+
+            return deferred.promise;
+
+        })
+
+        // step 5-7: the usual
         .then(function(){
 
             var dbData = {

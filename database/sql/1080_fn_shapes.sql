@@ -27,10 +27,10 @@ RETURNS TABLE(
 	geometry_type TEXT,
 	attributes_info JSONB,
 	description JSONB,
+	inspire JSONB,
 	file_id INT,
 	owner_id INT,
 	created_at timestamptz,
-	inspire JSONB,
 	file_data JSON,
 	owner_data JSON
 --	geometry_type TEXT,
@@ -389,9 +389,9 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			geometry_type,
 			attributes_info,
 			description, 
+			inspire,
 			file_id,
-			owner_id,
-			inspire
+			owner_id
 			)
 		VALUES (
 			COALESCE(new_id, nextval(pg_get_serial_sequence('shapes', 'id'))),
@@ -401,9 +401,9 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			geometry_type, 
 			attributes_info_temp::jsonb,
 			COALESCE(input_row.description, '{}'::jsonb),
+			COALESCE(input_row.inspire, '{}'::jsonb),
 			input_row.file_id,
-			input_row.owner_id,
-			COALESCE(input_row.inspire, '{}'::jsonb)
+			input_row.owner_id
 			)
 		RETURNING 
 			*
