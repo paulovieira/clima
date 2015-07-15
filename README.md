@@ -148,7 +148,6 @@ pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FI
 
 ```sh
 cd ~/clima-app/clima
-            ??? export TILEMILL_PATH=$HOME/clima-app/tilemill-clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 export NODE_ENV=production (or dev)
 
@@ -158,9 +157,10 @@ pm2 start index.js --name "clima"
 #### Updating the app
 
 pm2 list
-pm2 stop
+pm2 stop x
+pm2 delete x
 git fetch and merge
-pm2 restart
+pm2 start ...
 
 #### Compiling the client-side templates
 

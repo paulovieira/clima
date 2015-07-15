@@ -1,0 +1,187 @@
+
+| "11853" | "ifram_wgs84"                                  | ""Biodiversidade/IFRAM/IFRAM_wgs84.*""                                                            |
+| "1541"  | "culturas_temporarias_de_regadio"              | ""Agricultura/COSRAM/culturas_temporarias_de_regadio.*""                                          |
+| "1179"  | "matos_densos_exoticos"                        | ""Florestas/COSRAM/matos_densos_exoticos.*""                                                      |
+| "1056"  | "ifram_portosanto_wgs84"                       | ""Biodiversidade/IFRAM/IFRAM_PortoSanto_wgs84.*""                                                 |
+| "941"   | "tecido_urbano_descontinuo"                    | ""Gerais/COSRAM/wgs84/tecido_urbano_descontinuo.*""                                               |
+| "928"   | "matos_pouco_densos_exoticos"                  | ""Florestas/COSRAM/matos_pouco_densos_exoticos.*""                                                |
+| "866"   | "rega_batata_500"                              | ""Agricultura/rega_exp/wgs84/rega_batata_500.*""                                                  |
+| "866"   | "rega_vinha_500"                               | ""Agricultura/rega_exp/wgs84/rega_vinha_500.*""                                                   |
+| "866"   | "rega_banana_500"                              | ""Agricultura/rega_exp/wgs84/rega_banana_500.*""                                                  |
+| "866"   | "npp_flor_nat_b2_2070"                         | ""Agricultura/produtividade_primaria_flor_natural/wgs84/npp_flor_nat_b2_2070.*""                  |
+| "866"   | "npp_flor_nat_a2_2070"                         | ""Agricultura/produtividade_primaria_flor_natural/wgs84/npp_flor_nat_a2_2070.*""                  |
+| "866"   | "npp_flor_exot_b2_ctr"                         | ""Agricultura/produtividade_primaria_flor_exotica/wgs84/npp_flor_exot_b2_ctr.*""                  |
+| "866"   | "npp_flor_exot_b2_2040"                        | ""Agricultura/produtividade_primaria_flor_exotica/wgs84/npp_flor_exot_b2_2040.*""                 |
+| "866"   | "npp_flor_exot_a1_2040"                        | ""Agricultura/produtividade_primaria_flor_exotica/wgs84/npp_flor_exot_a1_2040.*""                 |
+| "866"   | "npp_flor_nat_ctr"                             | ""Agricultura/produtividade_primaria_flor_natural/wgs84/npp_flor_nat_ctr.*""                      |
+| "866"   | "npp_flor_nat_b2_2040"                         | ""Agricultura/produtividade_primaria_flor_natural/wgs84/npp_flor_nat_b2_2040.*""                  |
+| "866"   | "npp_flor_nat_a1_2040"                         | ""Agricultura/produtividade_primaria_flor_natural/wgs84/npp_flor_nat_a1_2040.*""                  |
+| "866"   | "npp_flor_exot_b2_2070"                        | ""Agricultura/produtividade_primaria_flor_exotica/wgs84/npp_flor_exot_b2_2070.*""                 |
+| "866"   | "npp_flor_exot_a1_2070"                        | ""Agricultura/produtividade_primaria_flor_exotica/wgs84/npp_flor_exot_a1_2070.*""                 |
+| "866"   | "dta2l"                                        | ""Clima/SHP/DTA2L.*""                                                                             |
+| "866"   | "tref"                                         | ""Clima/SHP/Tref.*""                                                                              |
+| "866"   | "dpa2l"                                        | ""Clima/SHP/DPA2L.*""                                                                             |
+| "866"   | "pref"                                         | ""Clima/SHP/Pref.*""                                                                              |
+| "813"   | "tecido_urbano_descontinuo_esparso"            | ""Gerais/COSRAM/wgs84/tecido_urbano_descontinuo_esparso.*""                                       |
+| "782"   | "funchal"                                      | ""Gerais/CAOP2014/funchal.*""                                                                     |
+| "754"   | "pastagens_permanentes"                        | ""Gerais/COSRAM/wgs84/pastagens_permanentes.*""                                                   |
+| "754"   | "tecido_urbano_continuo_pred_horiz"            | ""Gerais/COSRAM/wgs84/tecido_urbano_continuo_pred_horiz.*""                                       |
+| "719"   | "vinhas"                                       | ""Agricultura/COSRAM/vinhas.*""                                                                   |
+| "643"   | "caop2014_limites"                             | ""Gerais/CAOP2014/CAOP2014_limites.*""                                                            |
+| "577"   | "sistemas_culturais_e_parcel_complexos"        | ""Gerais/COSRAM/wgs84/sistemas_culturais_e_parcel_complexos.*""                                   |
+| "539"   | "ondas_de_calor"                               | ""Saúde Humana/ondas_de_calor.*""                                                                 |
+| "539"   | "caop2014"                                     | ""Gerais/CAOP2014/CAOP2014.*""                                                                    |
+| "457"   | "bananal"                                      | ""Agricultura/COSRAM/bananal.*""                                                                  |
+| "351"   | "temps_a2_7099_banana"                         | ""Agricultura/rega_exp/wgs84/temps_a2_7099_banana.*""                                             |
+| "330"   | "equipamentos_publicos_e_privados"             | ""Gerais/COSRAM/wgs84/equipamentos_publicos_e_privados.*""                                        |
+| "308"   | "agricultura_mask"                             | ""Agricultura/rega_exp/wgs84/agricultura_mask.*""                                                 |
+| "307"   | "flor_de_pinheiro_bravo"                       | ""Florestas/COSRAM/flor_de_pinheiro_bravo.*""                                                     |
+| "276"   | "incendios_2006_2013_wgs84"                    | ""Florestas/Cartografia Incêndios 2006 2013/Incendios_2006_2013_wgs84.*""                         |
+| "273"   | "escolas"                                      | ""Gerais/infra-estruturas/wgs84/escolas.*""                                                       |
+| "271"   | "flor_de_pinheiro_bravo_com_folhosas"          | ""Gerais/COSRAM/wgs84/flor_de_pinheiro_bravo_com_folhosas.*""                                     |
+| "264"   | "temps_b2_7099_banana"                         | ""Agricultura/rega_exp/wgs84/temps_b2_7099_banana.*""                                             |
+| "245"   | "flor_de_eucalipto"                            | ""Florestas/COSRAM/flor_de_eucalipto.*""                                                          |
+| "243"   | "tecido_urbano_continuo_pred_vert"             | ""Gerais/COSRAM/wgs84/tecido_urbano_continuo_pred_vert.*""                                        |
+| "230"   | "habitats"                                     | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Habitats.*""                                            |
+| "228"   | "temps_a2_4069_banana"                         | ""Agricultura/rega_exp/wgs84/temps_a2_4069_banana.*""                                             |
+| "216"   | "igrejas"                                      | ""Gerais/infra-estruturas/wgs84/igrejas.*""                                                       |
+| "214"   | "vinhas_mask"                                  | ""Agricultura/rega_exp/wgs84/vinhas_mask.*""                                                      |
+| "208"   | "temps_b2_4069_banana"                         | ""Agricultura/rega_exp/wgs84/temps_b2_4069_banana.*""                                             |
+| "207"   | "empreendimentos_turisticos"                   | ""Gerais/infra-estruturas/wgs84/empreendimentos_turisticos.*""                                    |
+| "200"   | "freguesias"                                   | ""Gerais/Freguesias_wgs84/freguesias.*""                                                          |
+| "198"   | "industria"                                    | ""Gerais/COSRAM/wgs84/industria.*""                                                               |
+| "179"   | "flor_de_outras_folhosas"                      | ""Gerais/COSRAM/wgs84/flor_de_outras_folhosas.*""                                                 |
+| "169"   | "flor_natural_da_madeira"                      | ""Florestas/COSRAM/flor_natural_da_madeira.*""                                                    |
+| "162"   | "coelebs"                                      | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/coelebs.*""                                             |
+| "157"   | "vegetacao_herbacia_natural"                   | ""Gerais/COSRAM/wgs84/vegetacao_herbacia_natural.*""                                              |
+| "152"   | "agric_com_esp_nat_e_semi_nat"                 | ""Agricultura/COSRAM/agric_com_esp_nat_e_semi_nat.*""                                             |
+| "152"   | "madeirensis"                                  | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/madeirensis.*""                                         |
+| "151"   | "cultura_de_cana_de_acucar"                    | ""Agricultura/COSRAM/cultura_de_cana_de_acucar.*""                                                |
+| "147"   | "matos_densos_autoctones"                      | ""Florestas/COSRAM/matos_densos_autoctones.*""                                                    |
+| "146"   | "flor_de_especies_invasoras"                   | ""Agricultura/COSRAM/flor_de_especies_invasoras.*""                                               |
+| "136"   | "matos_pouco_densos_autoctones"                | ""Florestas/COSRAM/matos_pouco_densos_autoctones.*""                                              |
+| "131"   | "areas_em_construcao"                          | ""Gerais/COSRAM/wgs84/areas_em_construcao.*""                                                     |
+| "124"   | "buteo"                                        | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/buteo.*""                                               |
+| "120"   | "cinerea"                                      | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/cinerea.*""                                             |
+| "116"   | "rede_viaria_e_espacos_associados"             | ""Gerais/COSRAM/wgs84/rede_viaria_e_espacos_associados.*""                                        |
+| "112"   | "governo_regional"                             | ""Gerais/infra-estruturas/wgs84/governo_regional.*""                                              |
+| "112"   | "praias_dunas_e_areais_costeiros"              | ""Gerais/COSRAM/wgs84/praias_dunas_e_areais_costeiros.*""                                         |
+| "110"   | "banana_mask"                                  | ""Agricultura/rega_exp/wgs84/banana_mask.*""                                                      |
+| "109"   | "flor_de_eucalipto_com_folhosas"               | ""Gerais/COSRAM/wgs84/flor_de_eucalipto_com_folhosas.*""                                          |
+| "106"   | "estufas_e_viveiros"                           | ""Agricultura/COSRAM/estufas_e_viveiros.*""                                                       |
+| "102"   | "desporto"                                     | ""Gerais/infra-estruturas/wgs84/desporto.*""                                                      |
+| "95"    | "rocha_nua"                                    | ""Gerais/COSRAM/wgs84/rocha_nua.*""                                                               |
+| "95"    | "linhas_agua"                                  | ""Recursos Hídricos/PGRH10/linhas_agua.*""                                                        |
+| "87"    | "trocaz"                                       | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/trocaz.*""                                              |
+| "82"    | "caudais_nascentes"                            | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/Caudais_Nascentes.*""         |
+| "82"    | "outras_instalacoes_desportivas"               | ""Gerais/COSRAM/wgs84/outras_instalacoes_desportivas.*""                                          |
+| "79"    | "areas_de_estc_e_logradouros"                  | ""Gerais/COSRAM/wgs84/areas_de_estc_e_logradouros.*""                                             |
+| "70"    | "flor_de_especies_inva_com_folhosas"           | ""Gerais/COSRAM/wgs84/flor_de_especies_inva_com_folhosas.*""                                      |
+| "69"    | "parques_e_jardins"                            | ""Gerais/COSRAM/wgs84/parques_e_jardins.*""                                                       |
+| "67"    | "m_talbaanalisedadosglob"                      | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/M_TalbaAnalisedadosglob.*""                             |
+| "67"    | "novas_plantacoes"                             | ""Gerais/COSRAM/wgs84/novas_plantacoes.*""                                                        |
+| "66"    | "equip_culturais_e_zonas_historicas"           | ""Gerais/COSRAM/wgs84/equip_culturais_e_zonas_historicas.*""                                      |
+| "66"    | "flor_de_eucalipto_com_resinosas"              | ""Gerais/COSRAM/wgs84/flor_de_eucalipto_com_resinosas.*""                                         |
+| "65"    | "farmacias"                                    | ""Gerais/infra-estruturas/wgs84/farmacias.*""                                                     |
+| "64"    | "flor_de_outras_resinosas"                     | ""Gerais/COSRAM/wgs84/flor_de_outras_resinosas.*""                                                |
+| "64"    | "bertheloti"                                   | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/bertheloti.*""                                          |
+| "55"    | "paf_pop_percent"                              | ""Agricultura/areas agricolas/paf_pop_percent.*""                                                 |
+| "54"    | "juntas_freguesia"                             | ""Gerais/infra-estruturas/wgs84/juntas_freguesia.*""                                              |
+| "53"    | "centro_saude"                                 | ""Gerais/infra-estruturas/wgs84/centro_saude.*""                                                  |
+| "53"    | "centros_comerciais"                           | ""Gerais/infra-estruturas/wgs84/centros_comerciais.*""                                            |
+| "50"    | "bombas_gasolina"                              | ""Gerais/infra-estruturas/wgs84/bombas_gasolina.*""                                               |
+| "50"    | "flor_de_castanheiro"                          | ""Florestas/COSRAM/flor_de_castanheiro.*""                                                        |
+| "46"    | "pomares_de_frutos_frescos"                    | ""Agricultura/COSRAM/pomares_de_frutos_frescos.*""                                                |
+| "44"    | "flor_abertas_de_pinheiro_bravo"               | ""Florestas/COSRAM/flor_abertas_de_pinheiro_bravo.*""                                             |
+| "42"    | "pauis"                                        | ""Gerais/COSRAM/wgs84/pauis.*""                                                                   |
+| "41"    | "canais_artificiais"                           | ""Gerais/COSRAM/wgs84/canais_artificiais.*""                                                      |
+| "40"    | "flor_de_especies_invasoras_c_resinosas"       | ""Agricultura/COSRAM/flor_de_especies_invasoras_c_resinosas.*""                                   |
+| "39"    | "areas_ardidas"                                | ""Florestas/COSRAM/areas_ardidas.*""                                                              |
+| "39"    | "museus"                                       | ""Gerais/infra-estruturas/wgs84/museus.*""                                                        |
+| "39"    | "areas_aband_em_territ_artificializado"        | ""Agricultura/COSRAM/areas_aband_em_territ_artificializado.*""                                    |
+| "37"    | "pedreiras"                                    | ""Gerais/COSRAM/wgs84/pedreiras.*""                                                               |
+| "36"    | "aluvioes"                                     | ""Riscos Hidrogeomorfológicos/aluvioes.*""                                                        |
+| "34"    | "cortes_rasos"                                 | ""Gerais/COSRAM/wgs84/cortes_rasos.*""                                                            |
+| "34"    | "cursos_de_agua_naturais"                      | ""Gerais/COSRAM/wgs84/cursos_de_agua_naturais.*""                                                 |
+| "32"    | "comercio"                                     | ""Gerais/COSRAM/wgs84/comercio.*""                                                                |
+| "30"    | "cannabina1"                                   | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/cannabina1.*""                                          |
+| "28"    | "flor_abertas_de_outras_resinosas"             | ""Gerais/COSRAM/wgs84/flor_abertas_de_outras_resinosas.*""                                        |
+| "28"    | "cemiterios"                                   | ""Gerais/COSRAM/wgs84/cemiterios.*""                                                              |
+| "28"    | "bibliotecas"                                  | ""Gerais/infra-estruturas/wgs84/bibliotecas.*""                                                   |
+| "23"    | "outros_pomares"                               | ""Gerais/COSRAM/wgs84/outros_pomares.*""                                                          |
+| "23"    | "infra_estrut_trat_residuos_e_aguas_residuais" | ""Gerais/COSRAM/wgs84/infra_estrut_trat_residuos_e_aguas_residuais.*""                            |
+| "22"    | "forcas_seguranca"                             | ""Gerais/infra-estruturas/wgs84/forcas_seguranca.*""                                              |
+| "21"    | "infra_estrut_capt_trat_abast_agua_consumo"    | ""Gerais/COSRAM/wgs84/infra_estrut_capt_trat_abast_agua_consumo.*""                               |
+| "21"    | "cloretos_furos"                               | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/Cloretos_Furos.*""            |
+| "19"    | "terminais_portuarios_de_mar_e_de_rio"         | ""Gerais/COSRAM/wgs84/terminais_portuarios_de_mar_e_de_rio.*""                                    |
+| "17"    | "instalacoes_agricolas"                        | ""Agricultura/COSRAM/instalacoes_agricolas.*""                                                    |
+| "17"    | "bombeiros"                                    | ""Gerais/infra-estruturas/wgs84/bombeiros.*""                                                     |
+| "16"    | "flor_abertas_de_eucalipto"                    | ""Florestas/COSRAM/flor_abertas_de_eucalipto.*""                                                  |
+| "16"    | "pomares_de_frutos_tropicais"                  | ""Agricultura/COSRAM/pomares_de_frutos_tropicais.*""                                              |
+| "16"    | "flor_de_outra_folhosas_com_folhosas"          | ""Gerais/COSRAM/wgs84/flor_de_outra_folhosas_com_folhosas.*""                                     |
+| "16"    | "rede_natura2000"                              | ""Biodiversidade/Areas Classificadas/wgs84/rede_natura2000.*""                                    |
+| "15"    | "pomares_de_citrinos"                          | ""Agricultura/COSRAM/pomares_de_citrinos.*""                                                      |
+| "15"    | "conservatorias"                               | ""Gerais/infra-estruturas/wgs84/conservatorias.*""                                                |
+| "14"    | "cult_temp_regadio_assoc_vinha"                | ""Agricultura/COSRAM/cult_temp_regadio_assoc_vinha.*""                                            |
+| "13"    | "lixeiras_e_sucatas"                           | ""Gerais/COSRAM/wgs84/lixeiras_e_sucatas.*""                                                      |
+| "13"    | "flor_de_mist_de_folhosas_com_resinosas"       | ""Gerais/COSRAM/wgs84/flor_de_mist_de_folhosas_com_resinosas.*""                                  |
+| "13"    | "flor_de_outras_resinosas_com_folhosas"        | ""Gerais/COSRAM/wgs84/flor_de_outras_resinosas_com_folhosas.*""                                   |
+| "13"    | "flor_de_castanheiro_com_folhosas"             | ""Gerais/COSRAM/wgs84/flor_de_castanheiro_com_folhosas.*""                                        |
+| "13"    | "outros_equipamentos_de_lazer"                 | ""Gerais/COSRAM/wgs84/outros_equipamentos_de_lazer.*""                                            |
+| "12"    | "praias_dunas_e_areais_interiores"             | ""Gerais/COSRAM/wgs84/praias_dunas_e_areais_interiores.*""                                        |
+| "12"    | "consumos_necessidadesagua"                    | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/Consumos_NecessidadesAgua.*"" |
+| "12"    | "reserv_de_represas_ou_de_acudes"              | ""Gerais/COSRAM/wgs84/reserv_de_represas_ou_de_acudes.*""                                         |
+| "12"    | "niveispiezometricos_furos"                    | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/NiveisPiezometricos_Furos.*"" |
+| "12"    | "flor_abertas_de_pinh_bravo_c_folhosas"        | ""Gerais/COSRAM/wgs84/flor_abertas_de_pinh_bravo_c_folhosas.*""                                   |
+| "11"    | "camaras_municipais"                           | ""Gerais/infra-estruturas/wgs84/camaras_municipais.*""                                            |
+| "11"    | "marinas_e_docas_secas"                        | ""Gerais/COSRAM/wgs84/marinas_e_docas_secas.*""                                                   |
+| "11"    | "aterros"                                      | ""Gerais/COSRAM/wgs84/aterros.*""                                                                 |
+| "10"    | "tribunais"                                    | ""Gerais/infra-estruturas/wgs84/tribunais.*""                                                     |
+| "10"    | "cinerea2013"                                  | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/cinerea2013.*""                                         |
+| "9"     | "tentilhao"                                    | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Tentilhao.*""                                           |
+| "9"     | "flor_de_outras_resinosas_com_resinosas"       | ""Gerais/COSRAM/wgs84/flor_de_outras_resinosas_com_resinosas.*""                                  |
+| "7"     | "madeirensis2013"                              | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/madeirensis2013.*""                                     |
+| "7"     | "flor_abertas_de_castanheiro"                  | ""Florestas/COSRAM/flor_abertas_de_castanheiro.*""                                                |
+| "7"     | "flor_de_pinheiro_bravo_com_resinosas"         | ""Gerais/COSRAM/wgs84/flor_de_pinheiro_bravo_com_resinosas.*""                                    |
+| "7"     | "cult_temp_regadio_assoc_a_pomar"              | ""Agricultura/COSRAM/cult_temp_regadio_assoc_a_pomar.*""                                          |
+| "6"     | "floricultura"                                 | ""Gerais/COSRAM/wgs84/floricultura.*""                                                            |
+| "6"     | "tesourarias"                                  | ""Gerais/infra-estruturas/wgs84/tesourarias.*""                                                   |
+| "6"     | "infra_estrut_de_prod_de_energia_nao_renov"    | ""Gerais/COSRAM/wgs84/infra_estrut_de_prod_de_energia_nao_renov.*""                               |
+| "6"     | "a_berthelotii2013"                            | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/A_berthelotii2013.*""                                   |
+| "6"     | "infra_estrut_de_producao_de_energia_renov"    | ""Gerais/COSRAM/wgs84/infra_estrut_de_producao_de_energia_renov.*""                               |
+| "5"     | "flor_de_outra_folhosa_com_resinosas"          | ""Gerais/COSRAM/wgs84/flor_de_outra_folhosa_com_resinosas.*""                                     |
+| "5"     | "lagos_e_lagoas_interiores_artificiais"        | ""Gerais/COSRAM/wgs84/lagos_e_lagoas_interiores_artificiais.*""                                   |
+| "5"     | "caudais_galerias"                             | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/Caudais_Galerias.*""          |
+| "5"     | "viveiros_florestais"                          | ""Agricultura/COSRAM/viveiros_florestais.*""                                                      |
+| "4"     | "flor_abertas_de_outrras_folhosas"             | ""Gerais/COSRAM/wgs84/flor_abertas_de_outrras_folhosas.*""                                        |
+| "4"     | "caudais_tuneis"                               | ""Recursos Hídricos/CLIMA_Maderia_Shapefiles_RecursosHidricos/wgs84/Caudais_Tuneis.*""            |
+| "4"     | "reserva_natural"                              | ""Biodiversidade/Areas Classificadas/wgs84/reserva_natural.*""                                    |
+| "4"     | "pintarroxo"                                   | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Pintarroxo.*""                                          |
+| "4"     | "pombo_trocaz"                                 | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Pombo_trocaz_.*""                                       |
+| "4"     | "freira_do_bugio_2013am"                       | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Freira_do_Bugio__2013AM.*""                             |
+| "4"     | "cheias_suscetibilidade_wgs84"                 | ""Riscos Hidrogeomorfológicos/Cheias_suscetibilidade_wgs84.*""                                    |
+| "3"     | "flor_abertas_de_eucalipto_c_resinosas"        | ""Gerais/COSRAM/wgs84/flor_abertas_de_eucalipto_c_resinosas.*""                                   |
+| "3"     | "estaleiros_navais_e_docas_secas"              | ""Gerais/COSRAM/wgs84/estaleiros_navais_e_docas_secas.*""                                         |
+| "3"     | "hospitais"                                    | ""Gerais/infra-estruturas/wgs84/hospitais.*""                                                     |
+| "3"     | "campos_de_golfe"                              | ""Gerais/COSRAM/wgs84/campos_de_golfe.*""                                                         |
+| "3"     | "vegetacao_esparsa"                            | ""Gerais/COSRAM/wgs84/vegetacao_esparsa.*""                                                       |
+| "2"     | "flor_de_castanheiro_com_resinosas"            | ""Gerais/COSRAM/wgs84/flor_de_castanheiro_com_resinosas.*""                                       |
+| "2"     | "flor_de_mistura_de_resin_com_folhosas"        | ""Gerais/COSRAM/wgs84/flor_de_mistura_de_resin_com_folhosas.*""                                   |
+| "2"     | "flor_abertas_de_especies_invasoras"           | ""Gerais/COSRAM/wgs84/flor_abertas_de_especies_invasoras.*""                                      |
+| "2"     | "flor_abertas_especies_inv_c_folhosas"         | ""Gerais/COSRAM/wgs84/flor_abertas_especies_inv_c_folhosas.*""                                    |
+| "2"     | "aeroportos"                                   | ""Gerais/COSRAM/wgs84/aeroportos.*""                                                              |
+| "2"     | "vinhas_com_pomar"                             | ""Agricultura/COSRAM/vinhas_com_pomar.*""                                                         |
+| "2"     | "freira_da_madeira_2013am"                     | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/Freira_da_Madeira__2013AM.*""                           |
+| "2"     | "agricultura_interior"                         | ""Agricultura/COSRAM/agricultura_interior.*""                                                     |
+| "1"     | "agricultura_litoral"                          | ""Agricultura/COSRAM/agricultura_litoral.*""                                                      |
+| "1"     | "alba"                                         | ""Biodiversidade/Aves-CLIMA-MADEIRA/WGS84/alba.*""                                                |
+| "1"     | "flor_de_outros_carvalhos"                     | ""Florestas/COSRAM/flor_de_outros_carvalhos.*""                                                   |
+| "1"     | "rede_areas_marinhas"                          | ""Biodiversidade/Areas Classificadas/wgs84/rede_areas_marinhas.*""                                |
+| "1"     | "lagos_e_lagoas_interiores_naturais"           | ""Gerais/COSRAM/wgs84/lagos_e_lagoas_interiores_naturais.*""                                      |
+| "1"     | "saf_outras_esp_com_cult_temp_regadio"         | ""Gerais/COSRAM/wgs84/SAF_outras_esp_com_cult_temp_regadio.*""                                    |
+| "1"     | "lagoas_costeiras"                             | ""Gerais/COSRAM/wgs84/lagoas_costeiras.*""                                                        |
+| "1"     | "flor_abertas_de_especies_inv_c_resin"         | ""Gerais/COSRAM/wgs84/flor_abertas_de_especies_inv_c_resin.*""                                    |
+| "1"     | "municipios"                                   | ""Gerais/CAOP2014/municipios.*""                                                                  |
+| "1"     | "parques_de_campismo"                          | ""Gerais/COSRAM/wgs84/parques_de_campismo.*""                                                     |
+| "1"     | "culturas_temporarias_de_sequeiro"             | ""Agricultura/COSRAM/culturas_temporarias_de_sequeiro.*""                                         |
+| "1"     | "parque_natural"                               | ""Biodiversidade/Areas Classificadas/wgs84/parque_natural.*""                                     |

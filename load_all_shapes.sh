@@ -1,5 +1,5 @@
 # NOTE: the shapes in "Gerais" directory should be loaded first (so that they show up at the bottom in the list of shapes)
-
+# note: start temporaility the server in mode dev-no-auth
 
 # total: 93
 
@@ -28,7 +28,7 @@
 
 
 
-
+#export clima_host=clima.fc.ul.pt
 export clima_host=clima.dev
 export base_dir="/home/pvieira/clima-madeira/Mapas 150630"
 

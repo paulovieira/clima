@@ -1,6 +1,8 @@
+
 # total: 93
+# note: start temporaility the server in mode dev-no-auth
 
-
+#export clima_host=clima.fc.ul.pt
 export clima_host=clima.dev
 export base_dir="/home/pvieira/clima-madeira/Mapas 150630"
 
