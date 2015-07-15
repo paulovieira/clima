@@ -256,7 +256,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 
 	IF type_is_numeric IS TRUE OR function_name = 'count' THEN
-		command := format('SELECT %s(%s)::numeric FROM %I.%I where %s IS NOT NULL', function_name, column_name, schema_name, table_name, column_name);
+		command := format('SELECT %s(%I)::numeric FROM %I.%I where %I IS NOT NULL', function_name, column_name, schema_name, table_name, column_name);
 		
 		--raise notice 'command: %', command;
 

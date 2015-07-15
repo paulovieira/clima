@@ -110,7 +110,7 @@ internals.filesCreate = function(args, done){
 
     var shapeData = {
         fileIsShape: (args.payload.isShape + "") === "true",
-        srid: 4326,
+        fromSrid: args.payload.fromSrid,
         description: args.payload.shapeDescription
     }
 
@@ -169,16 +169,15 @@ debugger;
 
                 var deferred = Q.defer();
 
-                // echo '[{ "zipId": 1013, "srid": 4326  }]' \
+                // echo '[{ "zipId": 1013, "fromSrid": 4326  }]' \
                 //     | http -v POST clima.dev/api/v1/shapes
 
                 var uri = "http://localhost:" + Config.get("port") + "/api/v1/shapes";
                 
-                // TODO: the srid is currently hardcoded
                 var options = {
                     payload: JSON.stringify({
-                        zipId: filesRead[0].id, 
-                        srid: shapeData.srid,
+                        zipId:       filesRead[0].id, 
+                        fromSrid:    shapeData.fromSrid,
                         description: shapeData.description
                     }),
                     headers: {
@@ -186,6 +185,7 @@ debugger;
                     },
                     json: true
                 };
+
                 if(args.headers.cookie){
                     options.headers.cookie = args.headers.cookie;
                 }

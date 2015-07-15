@@ -17,12 +17,15 @@
 
 <div class="row">
 
-	<div class="col-sm-6">
+	<div class="col-sm-5">
         <div class="form-group">
             <label for="js-new-shape-srid">SRID (projection identifier)</label>
-            <input type="text" id="js-new-shape-srid" class="form-control" name="srid" value="4326">
+            <input type="text" id="js-new-shape-srid" class="form-control" name="from-srid" value="4326">
         </div>
 	</div>
+    <div class="col-sm-7" style="font-size: small;">
+    <b>Note:</b> you can check the EPSG SRID by opening the shapefile in QGIS or ArcGis. After the upload the geometries will be automatically converted to EPSG:4326 (if it isn't already).
+    </div>
 </div>
 <div class="row">    
 	<div class="col-sm-12">

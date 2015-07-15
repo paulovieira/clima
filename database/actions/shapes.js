@@ -162,10 +162,9 @@ internals.shapesCreate = function(args, done){
 
     var shapesSchema = "geo";
     var zipId        = args.payload[0]["zipId"];
-    var srid         = args.payload[0]["srid"];
+    var fromSrid     = args.payload[0]["fromSrid"];
     var description  = args.payload[0]["description"];
 
-    console.log("description: ", description)
     console.log("args.payload[0]: ", args.payload[0])
 
 
@@ -266,11 +265,20 @@ internals.shapesCreate = function(args, done){
                 tableName = tableName + "_" + Utils.getRandomString();
             }
 
-            // the command is:  shp2pgsql -D -I -s <srid> <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
-            var command1 = _.template('shp2pgsql -D -I -s <%= srid %> "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            // the command is:  shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
+
+            var command1;
+            if(fromSrid===4326){
+                command1 = _.template('shp2pgsql -D -I -s 4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            }
+            else{
+                // "reprojects from given SRID (cannot be used with -D)"
+                command1 = _.template('shp2pgsql -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            }
+
             var command2 = _.template('psql --dbname=<%= dbName %>');
 
-            var command = command1({srid: srid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
+            var command = command1({fromSrid: fromSrid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
                         " | " + 
                         command2({dbName: Config.get("db.postgres.database") });
 
@@ -305,15 +313,23 @@ internals.shapesCreate = function(args, done){
             if(!encodingErr){
                 throw err;
             }
-console.log("encodingErr: ", encodingErr);
+
             var deferred = Q.defer();
 
 
-            // the command is now:  shp2pgsql -W LATIN1 -D -I -s <srid> <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
-            var command1 = _.template('shp2pgsql -W LATIN1 -D -I -s <%= srid %> "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            // the command is now:  shp2pgsql -W "latin1" -D -I -s 4326 <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
+            var command1;
+            if(fromSrid===4326){
+                command1 = _.template('shp2pgsql -W "latin1" -D -I -s 4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            }
+            else{
+                // "reprojects from given SRID (cannot be used with -D)"
+                command1 = _.template('shp2pgsql -W "latin1" -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+            }
+
             var command2 = _.template('psql --dbname=<%= dbName %>');
 
-            var command = command1({srid: srid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
+            var command = command1({fromSrid: fromSrid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
                         " | " + 
                         command2({dbName: Config.get("db.postgres.database") });
 
@@ -348,7 +364,7 @@ console.log("encodingErr: ", encodingErr);
                 
                 schemaName: shapesSchema,
                 tableName: tableName,
-                srid: srid,
+                srid: 4326,
                 description: description,
                 fileId: zipId,
                 ownerId: args.payload[0]["ownerId"]
