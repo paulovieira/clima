@@ -1,5 +1,5 @@
 
-{% macro getCartoCode(scale, tableName, columnName, geometryTypePrimitive) %}
+{% macro getCartoCode(scale, tableName, columnName, geometryTypePrimitive, dataType) %}
 
 {% set cartoCode = "" %}
 
@@ -17,11 +17,34 @@
     
 
     {% else %}    
+        {% if dataType == "char" %}
+            {% if class.valueClass[0] == undefined %}
 
-        {% set cartoCode = cartoCode + 
-                        '#' + tableName + 
-                        '["' + columnName + '" = ' + class.valueClass[0] + ']{' + '\n'
-        %}
+                {% set cartoCode = cartoCode + 
+                                '#' + tableName + 
+                                '["' + columnName + '" = null]{' + '\n'
+                %}
+
+            {% else %}
+
+                {% set cartoCode = cartoCode + 
+                                '#' + tableName + 
+                                '["' + columnName + '" = "' + class.valueClass[0] + '"]{' + '\n'
+                %}
+
+            {% endif %}
+
+
+        {# if dataType is "int" or "real" #}
+        {% else %}  
+
+            {% set cartoCode = cartoCode + 
+                            '#' + tableName + 
+                            '["' + columnName + '" = ' + class.valueClass[0] + ']{' + '\n'
+            %}
+
+        {% endif %}
+
 
     {% endif %}
 

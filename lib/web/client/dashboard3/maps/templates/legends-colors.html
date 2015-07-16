@@ -5,11 +5,45 @@
 <div class="row" style="padding-left: 15px; padding-right: 15px;">
     <div class="col-sm-10 col-sm-offset-1" style="border-style:solid; border-radius: px; border-width: 1px; border-color: rgb(228, 228, 228);   padding: 20px 40px; margin-bottom: 50px; margin-top: 20px;">
 
+        {% if dataType == "int" or dataType == "real" %}
+
         <ul style="margin-bottom: 10px;">
             <li><b>Count:</b> {{ count }} (number of not null values)</li>
             <li><b>Minimum:</b> {{ min }}</li>
             <li><b>Maximum:</b> {{ max }}</li>
         </ul>
+
+        {% elif dataType == "char" %}
+
+            {% if distinctWords %}
+
+            <ul style="margin-bottom: 10px;">
+                <li><b>Count:</b> {{ count }} (number of not null values)</li>
+                <li><b>Distinct words:</b></li>
+                <ul>
+                    {% for word in distinctWords %}
+                    <li>
+                        {% if word == undefined %}
+                            <em style="color: gray;">NULL</em>
+                        {% else %}
+                            {{ word }}
+                        {% endif %}
+                        
+                    </li>
+                    {% endfor %}                
+                </ul>
+            </ul>
+
+            {% else  %}
+
+            <ul style="margin-bottom: 10px;">
+                <li><b>Count:</b> {{ count }} (number of not null values)</li>
+                <li><b>Distinct words:</b> too many, sorry! (the column must have at most 12 distinct words to be used in a legend, because the color scales have at most 12 colors)</li>
+            </ul>
+
+            {% endif %}
+
+        {% endif %}
 
 
 
@@ -102,7 +136,7 @@
 
             <div class="col-sm-12">
                 <pre style="margin-top: 4px;"><code id="js-carto-0" class="language-css">
-                    {{ macros.getCartoCode(scale, tableName, columnName, geometryTypePrimitive) | trim }}
+                    {{ macros.getCartoCode(scale, tableName, columnName, geometryTypePrimitive, dataType) | trim }}
                 </code></pre>
             </div>
 

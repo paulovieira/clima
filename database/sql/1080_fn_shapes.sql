@@ -199,8 +199,8 @@ select * from shapes_read('{}');
 
 
 
-DROP FUNCTION IF EXISTS shapes_read_stats2(options JSON);
-CREATE FUNCTION shapes_read_stats2(options JSON DEFAULT '[{}]')
+DROP FUNCTION IF EXISTS shapes_read_numeric_stats(options JSON);
+CREATE FUNCTION shapes_read_numeric_stats(options JSON DEFAULT '[{}]')
 
 RETURNS TABLE(
 	value NUMERIC)
@@ -280,12 +280,103 @@ $BODY$
 LANGUAGE plpgsql;
 
 /*
-select * from shapes_read_stats2('{"function_name": "max", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
-select * from shapes_read_stats2('{"function_name": "min", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
+select * from shapes_read_numeric_stats('{"function_name": "max", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
+select * from shapes_read_numeric_stats('{"function_name": "min", "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
 */
 
 
 
+
+
+
+
+
+DROP FUNCTION IF EXISTS shapes_read_distinct_words(options JSON);
+CREATE FUNCTION shapes_read_distinct_words(options JSON DEFAULT '[{}]')
+
+RETURNS TABLE(
+	--value bigint)
+	value text)
+AS
+$BODY$
+
+DECLARE
+	options_row JSON;
+	command TEXT;
+
+	--function_name TEXT;
+	schema_name TEXT;
+	table_name TEXT;
+	column_name TEXT;
+	max_distinct INT;
+	
+	num_of_distinct BIGINT;
+	column_type TEXT;
+	type_is_char BOOL;
+BEGIN
+
+-- convert the json argument from object to array of (one) objects
+IF  json_typeof(options) = 'object'::text THEN
+	options = ('[' || options::text ||  ']')::json;
+END IF;
+
+FOR options_row IN ( select json_array_elements(options) ) LOOP
+
+	BEGIN -- begin block to catch exceptions
+
+	--SELECT json_extract_path_text(options_row, 'function_name')   INTO function_name;
+	SELECT json_extract_path_text(options_row, 'max_distinct')  INTO max_distinct;
+	SELECT json_extract_path_text(options_row, 'schema_name')   INTO schema_name;
+	SELECT json_extract_path_text(options_row, 'table_name')    INTO table_name;
+	SELECT json_extract_path_text(options_row, 'column_name')   INTO column_name;
+
+	-- get the data type of the given table/column; if an exception is thrown (which happens
+	-- if the table does not exist), the code will jump imeditay to the "exception" section below
+	SELECT a.atttypid::regtype::text 
+		FROM pg_attribute a
+		WHERE a.attrelid = format('%I.%I', schema_name, table_name)::regclass
+			AND    a.attname = column_name
+			AND    a.attnum > 0
+			AND    NOT a.attisdropped
+		INTO column_type;
+
+	type_is_char := 
+		column_type ~* 'char' OR 
+		column_type ~* 'text';
+
+	IF type_is_char IS TRUE THEN
+
+		-- get the number of distinct words in the column; we only want columns with at most 12 distinct words (because of the map scales)
+		command := format('SELECT COUNT(*) FROM (SELECT DISTINCT %I FROM %I.%I) AS temp;', column_name, schema_name, table_name);
+		EXECUTE command INTO num_of_distinct;
+
+		if num_of_distinct <= max_distinct then
+			command := format('SELECT DISTINCT %I::TEXT FROM %I.%I;', column_name, schema_name, table_name);
+			RETURN QUERY EXECUTE command;
+		end if;
+
+	END IF;
+
+	EXCEPTION 
+		WHEN undefined_table THEN  -- if table does not exist...
+			NULL;  -- the function will return no rows
+		WHEN invalid_schema_name THEN  -- schema does not exist
+			NULL;
+
+	END;  -- end block to catch the exception
+	
+END LOOP;
+RETURN;
+
+
+END;
+$BODY$
+LANGUAGE plpgsql;
+
+/*
+select * from shapes_read_distinct_words('{"max_distinct": 12, "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
+select * from shapes_read_distinct_words('{"max_distinct": 12, "schema_name": "geo",  "table_name": "cirac_vul_cp4_fvi", "column_name": "gid"}');
+*/
 
 
 
@@ -340,7 +431,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 			lower(a.attname::text) AS column_name,
 			lower(a.atttypid::regtype::text) AS data_type,
 			(
-				select * from shapes_read_stats2(
+				select * from shapes_read_numeric_stats(
 					format('{"function_name": "max", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
 							'geo'::text, 
 							input_row.table_name, 
@@ -348,7 +439,7 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 					)::json )
 			) as max,
 			(
-				select * from shapes_read_stats2(
+				select * from shapes_read_numeric_stats(
 					format('{"function_name": "min", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
 							input_row.schema_name, 
 							input_row.table_name, 
@@ -356,13 +447,21 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 					)::json )
 			) as min,
 			(
-				select * from shapes_read_stats2(
+				select * from shapes_read_numeric_stats(
 					format('{"function_name": "count", "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
 							input_row.schema_name, 
 							input_row.table_name, 
 							a.attname::text
 					)::json )
-			) as count
+			) as count,
+			(
+				select json_agg(value) as value from shapes_read_distinct_words(
+					format('{"max_distinct": 12, "schema_name": "%s",  "table_name": "%s", "column_name": "%s"}', 
+							input_row.schema_name, 
+							input_row.table_name, 
+							a.attname::text
+					)::json )
+			) as distinct_words
 		FROM 
 			pg_attribute a
 		WHERE 
