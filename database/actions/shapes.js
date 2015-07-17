@@ -5,6 +5,7 @@ var Path = require("path");
 var Fs = require("fs");
 var Exec = require("child_process").exec;
 var Hoek = require("hoek");
+var Wreck = require("wreck");
 var Boom = require("boom");
 var Bcrypt = require("bcrypt");
 var Q = require("q");
@@ -403,6 +404,16 @@ internals.shapesCreate = function(args, done){
 
             err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
             return done(err);
+        })
+
+        // whatever happens, we always want to delete the temporary directory where the zip was extracted
+        .finally(function(){
+            console.log("delete temp dir");
+            Rimraf(tempDir, function(err){
+                if(err){
+                    // nothing to do!
+                }
+            });
         });
 
 };
@@ -475,7 +486,53 @@ internals.shapesDelete = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
-            return done(null, deletedData);
+            return deletedData;
+        })
+
+        // delete the zip file associated with this shape
+        .then(function(data){
+
+            var deletedShape = _.findWhere(args.pre.shapes, {id: data[0].deleted_id});
+            if(deletedShape.length == 0){
+                return deletedShape;
+            }
+
+            var deferred = Q.defer();
+
+            // http -v DELETE localhost:3000/api/v1/files/123
+
+            var uri = "http://localhost:" + Config.get("port") + "/api/v1/files/" + deletedShape.file_data.id;
+            
+            var options = {
+                headers: {
+                    "content-type": "application/json"
+                },
+                json: true
+            };
+
+            if(args.headers.cookie){
+                options.headers.cookie = args.headers.cookie;
+            }
+
+            Wreck.delete(uri, options, function(err, response, payload){
+                //console.log("payload from DELETE /api/v1/files/xxx:: ", payload);
+
+                if(response.statusCode === 200){
+                    data[0].deleted_file_id = payload[0].deleted_id;
+                }
+                else if(response.statusCode >= 400 && response.statusCode < 500){
+                    data[0].deleted_file_id = "None (" + payload.message + ")";
+                }
+
+                // even if there was an error deleting the file, we always want the deferred to be resolved
+                return deferred.resolve(data);
+            })
+
+            return deferred.promise;
+        })
+        .then(function(data){
+
+            return done(null, data);
         })
         .catch(function(err) {
 

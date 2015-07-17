@@ -23,3 +23,16 @@ body.dragging * {
     opacity: 0.9;
     z-index: 9000;
 }
+
+.file-drop-zone {
+	border-color: #C3C3C3;
+}
+
+.file-drop-zone-title {
+	margin-top: 35px;
+	margin-bottom: 35px;
+    color: "#C7C4C4";
+    line-height: 30px;
+    font-size: 25px;
+    padding: 30px 10px;
+}

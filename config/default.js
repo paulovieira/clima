@@ -7,7 +7,6 @@ var internals = {
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
-//    tilemillDir:       process.env.TILEMILL_PATH,
     tilemillFilesDir:  process.env.TILEMILL_FILES_PATH,
 
     // relative paths
@@ -15,6 +14,9 @@ var internals = {
     uploadsWebPath:     "/uploads/public/"
 };
 
+if(!internals.tilemillFilesDir){
+    throw new Error("TILEMILL_FILES_PATH is not defined")
+}
 
 Nunjucks.configure(internals.viewsDir, {
     watch: false
@@ -50,8 +52,7 @@ module.exports = {
         webPath: internals.uploadsWebPath  // logical path (to be used in the urls)
     },
     tilemillFilesDir: internals.tilemillFilesDir,
-    tilemillDir:      internals.tilemillDir,
-
+    
 
     hapi: {
 
@@ -83,8 +84,8 @@ module.exports = {
         // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
         joi: {
             abortEarly: false,  // returns all the errors found (does not stop on the first error)
-            allowUnknown: true, // allows object to contain unknown keys (they can be deleted or not - see the stripUnknown options)
-            stripUnknown: false,  // delete unknown keys
+            allowUnknown: false, // allows object to contain unknown keys (they can be deleted or not - see the stripUnknown options)
+            stripUnknown: true,  // delete unknown keys
             convert: true
     /*
 

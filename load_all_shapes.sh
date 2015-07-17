@@ -1048,6 +1048,7 @@ cd "$base_dir"
 
 export source_dir_rel="Agricultura/areas agricolas/"
 export wildcard_base="paf_pop_percent."
+# NOTE: this is the only shape that has EPSG different from 4326
 
 cd "$source_dir_rel"
 rm -rf "$wildcard_base".zip
@@ -1058,7 +1059,7 @@ eval $(echo http -v -f POST $clima_host/api/v1/files  \
     new_file@\'$wildcard_base.zip\'  \
     tags=\'shape\'  \
     isShape=true  \
-    fromSrid=4326  \
+    fromSrid=2942  \
     shapeDescription=\'{\"en\":\"$source_dir_rel$wildcard_base*\"}\')
 
 cd "$base_dir"

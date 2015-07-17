@@ -649,7 +649,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
-	geotable_name TEXT;
+	table_to_delete TEXT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -666,8 +666,10 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 	IF id_to_delete IS NOT NULL THEN
 
 		-- drop the associate table in the geo schema (the name is the table_name)
-		SELECT table_name FROM shapes WHERE id = id_to_delete INTO geotable_name;
-		EXECUTE 'DROP TABLE geo.' || geotable_name || ';';
+		SELECT table_name FROM shapes WHERE id = id_to_delete INTO table_to_delete;
+		IF table_to_delete IS NOT NULL THEN
+			EXECUTE 'DROP TABLE geo.' || table_to_delete || ';';
+		END IF;
 
 		DELETE FROM shapes
 		WHERE id = id_to_delete

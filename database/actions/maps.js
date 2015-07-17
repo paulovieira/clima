@@ -166,18 +166,31 @@ internals.addMissingKeys = function(args, obj){
 };
 
 
-internals.readProjectFiles = function(projectFiles, mapsIds, method, args, done){
+///internals.readProjectsFiles = function(projectFiles, mapsIds, method, args, done){
+internals.readProjectsFiles = function(tilemillDir, mapsIds, method, args, done){
+
+    var projectsFiles = mapsIds.map(function(id){
+        return tilemillDir + "/project/" + id + "/project.mml";
+    });
+
+    var infoFiles = mapsIds.map(function(id){
+        return tilemillDir + "/project/" + id + "/info.json";
+    });
+
+    // TODO: read infoFiles as well; concatenate projectsFiles and infoFiles and read all toghter
+    // instead of contentsArray.forEach use a for loop and acess the correct info.json file by using the index n + i
+    // the copy all the properties in the info.json (for in); this will allow to list the maps by date of creation
 
     // TODO: use ReadFilesAsync module using Bluebird promises
 
     var output = [];
-    ReadFiles(projectFiles, 'utf8', function(err, contentsArray) {
+    ReadFiles(projectsFiles, 'utf8', function(err, contentsArray) {
 
         if (err) {
             return done(Boom.badImplementation(err.message, err));
         }
 
-        // NOTE:  the order in the elements in contentsArray, projectFiles and mapsIds match
+        // NOTE:  the order in the elements in contentsArray, projectsFiles and mapsIds match
         contentsArray.forEach(function(json, index){
 
             try {
@@ -221,21 +234,30 @@ internals.mapsReadAll = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // Glob returns an array of paths; note the "/" at the end - it will match only directories
-    var projectsDir  = Glob.sync(args.tilemillFilesDir + "/project/*/");
+    // if some project directory is missing the "project.mml", Glob will not match; so 
+    // that directory will not be read
+    var projectsFiles = Glob.sync(args.tilemillFilesDir + "/project/*/project.mml");
+    var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
+ 
 
-    var mapsIds = projectsDir
-                    .map(function(path){
-                        var temp = path.split("/");
-                        return temp[temp.length-2];
-                    });
+    var extractMapId = function(path){
+        var temp = path.split("/");
+        return temp[temp.length-2];
+    };
 
-    var projectFiles = projectsDir
-                        .map(function(path){ 
-                            return path + "project.mml"; 
-                        });
+    // var mapsIds = projectsFiles.map(extractMapId);
+    // var mapsIds2 = infoFiles.map(extractMapId);
 
-    return internals.readProjectFiles(projectFiles, mapsIds, "readAll", args, done);
+    // it is required that the directory has both the project.mml and info.json files (because we will have to read
+    // those 2 files)
+    //mapsIds = _.intersection(mapsIds, mapsIds2);
+    var mapsIds = _.intersection(projectsFiles.map(extractMapId), infoFiles.map(extractMapId));
+
+    
+    console.log("mapsIds: ", mapsIds)
+
+    //return internals.readProjectsFiles(projectsFiles, mapsIds, "readAll", args, done);
+    return internals.readProjectsFiles(args.tilemillFilesDir, mapsIds, "readAll", args, done);
 };
 
 internals.mapsRead = function(args, done){
@@ -271,7 +293,7 @@ internals.mapsRead = function(args, done){
                             return path + "project.mml"; 
                         });
 
-    return internals.readProjectFiles(projectFiles, mapsIds, "read", args, done);
+    return internals.readProjectsFiles(projectFiles, mapsIds, "read", args, done);
 };
 
 
@@ -283,7 +305,10 @@ internals.mapsCreate = function(args, done){
 
     var mapName = args.payload[0].name;
     var mapDescription = args.payload[0].description;
+    var mapCenter = args.payload[0].center;
+    console.log("mapCenter: ", mapCenter)
     var mapId = _s.slugify(mapName);
+
 
     if(_.findWhere(args.pre.maps, {id: mapId})){
         mapId = mapId + "-" + Utils.getRandomString();
@@ -294,6 +319,7 @@ internals.mapsCreate = function(args, done){
     var defaultProjectDir = Path.join(Config.get("rootDir"), "data/tilemill-default-project");
     var newProjectDir     = Path.join(args.tilemillFilesDir, "project", mapId);
     var newProjectOptions = Path.join(args.tilemillFilesDir, "project", mapId, "project.mml");
+    var newProjectInfo    = Path.join(args.tilemillFilesDir, "project", mapId, "info.json");
 
     var allMaps = [];
 
@@ -312,7 +338,31 @@ internals.mapsCreate = function(args, done){
             obj["id"] = mapId;
             obj["name"] = mapName;
             obj["description"] = mapDescription;
+
+            // the "bounds" and "center" properties in the default project are from mainland portugal
+            if(mapCenter==="madeira"){
+                obj["bounds"] = [-17.5479, 32.3683, -16.0016, 33.2364];
+                obj["center"] = [-16.8393, 32.7203, 9];
+            }else if(mapCenter === "azores"){
+                obj["bounds"] = [-32.0279, 36.6563, -23.5904, 40.1673];
+                obj["center"] = [-27.9355, 38.5019, 7];
+            }
+
             return Fs.writeJsonAsync(newProjectOptions, obj);
+        })
+
+        // step 4 - save the extra informations about the map (such as creation date, user, etc) in a separate file
+        // (we have to do this because TileMill will delete the extra field everytime the project is saved)
+        .then(function(){
+            var obj = {
+                createdAt: Date.now()
+            };
+            if(args.credentials){
+                obj["ownerId"] = args.credentials.id;
+                obj["ownerName"] = args.credentials.firstName + " " + args.credentials.lastName;
+            }
+
+            return Fs.writeJsonAsync(newProjectInfo, obj);
         })
 
         .then(function(){
@@ -401,12 +451,17 @@ internals.mapsDelete = function(args, done){
     // console.log("exportsFiles: ", exportsFiles);
 
     var allMaps;
+
+    // step 1: remove the project file
     Fs.removeAsync(projectDir)
+
+        // step 2: remove all related exports
         .then(function(){
 
             return Fs.removeAsync(exportsFiles);
         })
 
+        // step 3: make an http get request (internal) to obtain the list of all maps (doesn't include the map that was deleted in step 1)
         .then(function(){
 
             var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
@@ -419,7 +474,7 @@ internals.mapsDelete = function(args, done){
             }
 
             var deferred = Q.defer();
-            Wreck.get(uri, {json: true}, function(err, response, payload){
+            Wreck.get(uri, options, function(err, response, payload){
 
                     if(err){
                         return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
