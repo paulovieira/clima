@@ -295,6 +295,8 @@ internals.mapsReadAll = function(args, done){
 
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
         .then(function(data){
+
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
             return done(null, data);
         })
         .catch(function(err) {
@@ -338,6 +340,7 @@ internals.mapsRead = function(args, done){
                 throw Boom.notFound("The resource does not exist.");
             }
 
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
             return done(null, data[0]);
         })
         .catch(function(err) {
