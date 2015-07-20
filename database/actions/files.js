@@ -114,6 +114,8 @@ internals.filesCreate = function(args, done){
         description: args.payload.shapeDescription
     }
 
+    console.log("shapeData: ", shapeData);
+
     var physicalPath = Config.get("uploadsDir.relative");
     var rootDir      = Config.get("rootDir");
 
