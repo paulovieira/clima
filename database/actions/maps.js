@@ -10,11 +10,11 @@ var Glob = require("glob");
 var Config = require("config");
 var Q = require("q");
 var Wreck = require("wreck");
-var ReadFiles = require('read-multiple-files');
+//var ReadFiles = require('read-multiple-files');
 var _ = require("underscore");
 var _s = require("underscore.string");
-// var Promise = require("bluebird");
-// var ReadFiles = Promise.promisifyAll(require('read-multiple-files'));
+var Bluebird = require("bluebird");
+var ReadFilesAsync = Bluebird.promisify(require('read-multiple-files'));
 
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
@@ -50,6 +50,8 @@ internals.transformMap = {
     "srs": "srs",
     "scale": "scale",
     "legend": "legend",
+    "createdAt": "createdAt",
+    "owner": "owner",
     
     // tileJson properties added in internals.addMissingKeys
     "tilejson": "tilejson",
@@ -125,16 +127,16 @@ internals.updateMenu = function(mapMenu, allMaps){
 
 
 // adds the missing TileJSON keys (not present in project.mml); only in read (not in readAll)
-internals.addMissingKeys = function(args, obj){
+internals.addMissingKeys = function(tilemillDir, obj){
 
     // get an array of all the mbtiles exports relative to this map,
     // and order them by data (the last one will be the most recent one)
 
     // TODO: cache the stat information
-    var mbtiles = Glob.sync(args.tilemillFilesDir + "/export/" + obj.id + "*.mbtiles");
-    mbtiles.sort(function(a, b){
-        return Fs.statSync(a).mtime.getTime() - Fs.statSync(b).mtime.getTime()
-    })
+    var mbtiles = Glob.sync(tilemillDir + "/export/" + obj.id + "*.mbtiles")
+                    .sort(function(a, b){
+                        return Fs.statSync(a).mtime.getTime() - Fs.statSync(b).mtime.getTime();
+                    });
 
     var tilesBaseAddress = "/api/v1/tiles/" + Path.basename(mbtiles.pop(), ".mbtiles");
 
@@ -167,7 +169,7 @@ internals.addMissingKeys = function(args, obj){
 
 
 ///internals.readProjectsFiles = function(projectFiles, mapsIds, method, args, done){
-internals.readProjectsFiles = function(tilemillDir, mapsIds, method, args, done){
+internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
 
     var projectsFiles = mapsIds.map(function(id){
         return tilemillDir + "/project/" + id + "/project.mml";
@@ -177,55 +179,101 @@ internals.readProjectsFiles = function(tilemillDir, mapsIds, method, args, done)
         return tilemillDir + "/project/" + id + "/info.json";
     });
 
-    // TODO: read infoFiles as well; concatenate projectsFiles and infoFiles and read all toghter
-    // instead of contentsArray.forEach use a for loop and acess the correct info.json file by using the index n + i
-    // the copy all the properties in the info.json (for in); this will allow to list the maps by date of creation
-
-    // TODO: use ReadFilesAsync module using Bluebird promises
-
+    var allFiles = projectsFiles.concat(infoFiles);
     var output = [];
-    ReadFiles(projectsFiles, 'utf8', function(err, contentsArray) {
 
+    // returns a promise (we used Bluebird's "promisify" above)
+    return ReadFilesAsync(allFiles, "utf8")
+        .then(function(allFilesContents){
+
+            // NOTE:  the order in the elements in allFiles and allFilesContents match
+            var l = mapsIds.length;
+            for(var i=0; i<l; i++){
+                try {
+                    var project = JSON.parse(allFilesContents[i]);
+                    var info    = JSON.parse(allFilesContents[i+l]);
+
+                    // the map id is the name of the directory
+                    project.id = mapsIds[i];
+
+                    // add the properties in the auxiliary info file
+                    project.createdAt = info.createdAt || 0;
+                    project.owner     = info.owner || "unknown";
+
+                    // TODO: when reading all maps should we also add missing keys?
+                    //if(method==="read"){
+                        internals.addMissingKeys(tilemillDir, project);
+                    //}
+                    output.push(project);
+                }
+                catch(e){
+
+                    e.message = e.message + "(Invalid json in either " + allFiles[i] + " or " + allFiles[i+l] + ")";
+                    throw e;
+                }
+            }
+
+            // reorder array (most recent first)
+            return output.sort(function(a, b){
+                return b.createdAt - a.createdAt;
+            });
+
+        });
+
+
+        /*
+    ReadFiles(allFiles, "utf8", function(err, contentsArray) {
         if (err) {
-            return done(Boom.badImplementation(err.message, err));
+            return done(Boom.badImplementation(err.message + " (error in ReadFiles)", err));
         }
 
         // NOTE:  the order in the elements in contentsArray, projectsFiles and mapsIds match
-        contentsArray.forEach(function(json, index){
-
+        var l = mapsIds.length;
+        for(var i=0; i<l; i++){
             try {
-                var obj = JSON.parse(json);
+                var project = JSON.parse(contentsArray[i]);
+                var info    = JSON.parse(contentsArray[i+l]);
 
                 // the map id is the name of the directory
-                obj.id = mapsIds[index];
+                project.id = mapsIds[i];
+                project.createdAt = info.createdAt || 0;
+                project.owner     = info.owner || "unknown";
 
+                // TODO: when reading all maps should we also add missing keys?
                 if(method==="read"){
-                    internals.addMissingKeys(args, obj);
+                    internals.addMissingKeys(args, project);
                 }
-                output.push(obj);
+                output.push(project);
             }
             catch(err){
                 return done(Boom.badImplementation("Invalid json in some .mml file: " + err.message));
             }
-        });
-
-        if (output.length === 0) {
-            throw Boom.notFound("The resource does not exist.");
         }
 
-        output = args.raw === true ? output : Hoek.transform(output, internals.transformMap);
+
+        //output = args.raw === true ? output : Hoek.transform(output, internals.transformMap);
+        return args.raw === true ? output : Hoek.transform(output, internals.transformMap);
 
         // if we are fetching only 1 map (which is the common case), we actually want
         // a json object (that's what mapbox.js is expecting for tilejson)
-        if(method==="read" && output.length === 1){
-            return done(null, output[0]);
+        if(method==="read"){
+            if(output.length === 0){
+                throw Boom.notFound("The resource does not exist.");
+            }
+            return done(null, output[0]);    
         }
 
-        return done(null, output);
+        // return done(null, output);
     });
-
+*/
 };
 
+
+internals.extractMapId = function(path){
+
+    var temp = path.split("/");
+    return temp[temp.length-2];
+};
 
 // action handlers for read, readAll, create, update and delete
 // (and possibly others); this is the place where we actually fetch the data from the database;
@@ -238,32 +286,32 @@ internals.mapsReadAll = function(args, done){
     // that directory will not be read
     var projectsFiles = Glob.sync(args.tilemillFilesDir + "/project/*/project.mml");
     var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
- 
-
-    var extractMapId = function(path){
-        var temp = path.split("/");
-        return temp[temp.length-2];
-    };
-
-    // var mapsIds = projectsFiles.map(extractMapId);
-    // var mapsIds2 = infoFiles.map(extractMapId);
 
     // it is required that the directory has both the project.mml and info.json files (because we will have to read
     // those 2 files)
-    //mapsIds = _.intersection(mapsIds, mapsIds2);
-    var mapsIds = _.intersection(projectsFiles.map(extractMapId), infoFiles.map(extractMapId));
+    var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
+                                    infoFiles.map(internals.extractMapId));
+
+
+    internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
+        .then(function(data){
+            return done(null, data);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
 
     
-    console.log("mapsIds: ", mapsIds)
-
-    //return internals.readProjectsFiles(projectsFiles, mapsIds, "readAll", args, done);
-    return internals.readProjectsFiles(args.tilemillFilesDir, mapsIds, "readAll", args, done);
 };
 
 internals.mapsRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
+    // the call might be done in forms: /api/maps/xyz or /api/maps/xyz.json
+    // (that's mapbox.js does it internally)
     args.ids = args.ids.map(function(obj){
 
         var id = obj.id;
@@ -273,27 +321,31 @@ internals.mapsRead = function(args, done){
         return obj;
     });
 
-    // Glob returns an array of paths; note the "/" at the end - it will match only directories
-    var projectsDir  = Glob
-                        .sync(args.tilemillFilesDir + "/project/*/")
-                        .filter(function(path){
-                            var temp = path.split("/");
-                            var mapId = temp[temp.length-2];
-                            return _.findWhere(args.ids, {id: mapId});
-                        });
+    // prettu much a copy-paste from the above mapsReadAll
+    var projectsFiles = Glob.sync(args.tilemillFilesDir + "/project/*/project.mml");
+    var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
 
-    var mapsIds = projectsDir
-                    .map(function(path){
-                        var temp = path.split("/");
-                        return temp[temp.length-2];
+    var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
+                                    infoFiles.map(internals.extractMapId))
+                    .filter(function(mapId){
+                        return !!_.findWhere(args.ids, {id: mapId});
                     });
 
-    var projectFiles = projectsDir
-                        .map(function(path){ 
-                            return path + "project.mml"; 
-                        });
+    internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "read" */)
+        .then(function(data){
 
-    return internals.readProjectsFiles(projectFiles, mapsIds, "read", args, done);
+            if(data.length === 0){
+                throw Boom.notFound("The resource does not exist.");
+            }
+
+            return done(null, data[0]);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+
 };
 
 
@@ -306,7 +358,7 @@ internals.mapsCreate = function(args, done){
     var mapName = args.payload[0].name;
     var mapDescription = args.payload[0].description;
     var mapCenter = args.payload[0].center;
-    console.log("mapCenter: ", mapCenter)
+    
     var mapId = _s.slugify(mapName);
 
 
