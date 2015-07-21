@@ -138,7 +138,7 @@ pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_PATH/exp
 
 ```sh
 cd ~/clima-app/tilemill-clima
-export TILEMILL_HOSTNAME=clima.dev (or clima.fc.ul.pt)
+export TILEMILL_HOSTNAME=clima.fc.ul.pt (or clima.dev)
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
 
 pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
@@ -149,7 +149,7 @@ pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FI
 ```sh
 cd ~/clima-app/clima
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
-export NODE_ENV=production (or dev)
+export NODE_ENV=dev (or production)
 
 pm2 start index.js --name "clima"
 ```
