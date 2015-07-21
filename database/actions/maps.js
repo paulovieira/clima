@@ -403,13 +403,23 @@ console.log("payload: ", payload);
             obj["name"] = mapName;
             obj["description"] = mapDescription;
 
-            // the "bounds" and "center" properties in the default project are from mainland portugal
             if(mapCenter==="madeira"){
                 obj["bounds"] = [-17.5479, 32.3683, -16.0016, 33.2364];
                 obj["center"] = [-16.8393, 32.7203, 9];
-            }else if(mapCenter === "azores"){
+                obj["minzoom"] = 8;
+                obj["maxzoom"] = 12;
+            }
+            else if(mapCenter === "azores"){
                 obj["bounds"] = [-32.0279, 36.6563, -23.5904, 40.1673];
                 obj["center"] = [-27.9355, 38.5019, 7];
+                obj["minzoom"] = 5;
+                obj["maxzoom"] = 12;
+            }
+            else if(mapCenter === "mainland"){
+                obj["bounds"] = [-9.5691, 36.8928, -6.1194, 42.2244];
+                obj["center"] = [-9.1338, 38.7546, 6];
+                obj["minzoom"] = 5;
+                obj["maxzoom"] = 16;
             }
 
             return Fs.writeJsonAsync(newProjectOptions, obj);

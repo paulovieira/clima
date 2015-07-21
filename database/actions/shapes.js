@@ -266,17 +266,21 @@ internals.shapesCreate = function(args, done){
                 tableName = tableName + "_" + Utils.getRandomString();
             }
 
-            // the command is:  shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
+            // the basic command is:  
+            //   shp2pgsql -D -I -s 4326 <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
 
-            var command1;
+            // however we might have to do srid conversion (option "-s", done in this step) and/or set the encoding to latin1 (option "-W", done in the next step)
+
+            var tplString;
             if(fromSrid===4326){
-                command1 = _.template('shp2pgsql -D -I -s 4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+                tplString = 'shp2pgsql -D -I -s 4326                 "<%= shapePath %>" <%= schema %>.<%= tableName %>';
             }
             else{
-                // "reprojects from given SRID (cannot be used with -D)"
-                command1 = _.template('shp2pgsql -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+                // psql --help: "reprojects from given SRID (cannot be used with -D)"
+                tplString = 'shp2pgsql    -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>';
             }
 
+            var command1 = _.template(tplString);
             var command2 = _.template('psql --dbname=<%= dbName %>');
 
             var command = command1({fromSrid: fromSrid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
@@ -285,8 +289,8 @@ internals.shapesCreate = function(args, done){
 
             Utils.serverLog(["shp2pgsql"], command);
 
-            // maxBuffer specifies the largest amount of data allowed on stdout or stderr (we set to 1mb)
-            Exec(command, {maxBuffer: 1024 * 1000}, function(err, stdout, stderr){
+            // maxBuffer specifies the largest amount of data allowed on stdout or stderr (we set to 5mb)
+            Exec(command, {maxBuffer: 1024 * 5000}, function(err, stdout, stderr){
 
                 if(err){
                     return deferred.reject(Boom.badImplementation("ChildProcess.exec error: " + err.message));
@@ -319,15 +323,16 @@ internals.shapesCreate = function(args, done){
 
 
             // the command is now:  shp2pgsql -W "latin1" -D -I -s 4326 <path-to-shp-file>  <name-of-schema>.<name-of-the-table>   |  psql --dbname=<name-of-the-database>
-            var command1;
+            var tplString;
             if(fromSrid===4326){
-                command1 = _.template('shp2pgsql -W "latin1" -D -I -s 4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+                tplString = 'shp2pgsql -W "latin1" -D -I -s 4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>';
             }
             else{
                 // "reprojects from given SRID (cannot be used with -D)"
-                command1 = _.template('shp2pgsql -W "latin1" -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>');
+                tplString = 'shp2pgsql -W "latin1" -I -s <%= fromSrid %>:4326 "<%= shapePath %>" <%= schema %>.<%= tableName %>';
             }
 
+            var command1 = _.template(tplString);
             var command2 = _.template('psql --dbname=<%= dbName %>');
 
             var command = command1({fromSrid: fromSrid, shapePath: Path.join(tempDir, shpFile), schema: shapesSchema, tableName: tableName}) + 
@@ -365,7 +370,7 @@ internals.shapesCreate = function(args, done){
                 
                 schemaName: shapesSchema,
                 tableName: tableName,
-                srid: 4326,
+                srid: fromSrid,
                 description: description,
                 fileId: zipId,
                 ownerId: args.payload[0]["ownerId"]
