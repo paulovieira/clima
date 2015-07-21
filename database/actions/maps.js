@@ -51,6 +51,7 @@ internals.transformMap = {
     "scale": "scale",
     "legend": "legend",
     "createdAt": "createdAt",
+    "_updated": "_updated",
     "owner": "owner",
     
     // tileJson properties added in internals.addMissingKeys
@@ -59,7 +60,10 @@ internals.transformMap = {
     "tiles": "tiles",
     "grids": "grids",
     "template": "template",
-    "layer": "Layer"
+    "Layer": "Layer",
+    "interactivity": "interactivity",
+    "metatile": "metatile",
+    "Stylesheet": "Stylesheet"
 
     // d) deleted properties: "Stylesheet", "interactivity", "metatile"
 
@@ -198,6 +202,7 @@ internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
 
                     // add the properties in the auxiliary info file
                     project.createdAt = info.createdAt || 0;
+                    project._updated = info.createdAt || 0;
                     project.owner     = info.owner || "unknown";
 
                     // TODO: when reading all maps should we also add missing keys?
@@ -358,9 +363,13 @@ internals.mapsCreate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    var mapName = args.payload[0].name;
-    var mapDescription = args.payload[0].description;
-    var mapCenter = args.payload[0].center;
+    var payload = _.isArray(args.payload) ? args.payload[0] : args.payload;
+console.log("args.payload: ", args.payload);
+console.log("payload: ", payload);
+
+    var mapName        = payload.name;
+    var mapDescription = payload.description;
+    var mapCenter      = payload.center;
     
     var mapId = _s.slugify(mapName);
 

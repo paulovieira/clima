@@ -1,10 +1,12 @@
-# NOTE: the shapes in "Gerais" directory should be loaded first (so that they show up at the bottom in the list of shapes)
-# note: we have to start temporaility the server in mode dev-no-auth
+# NOTE 1: the shapes in "Gerais" directoryare loaded first (so that they show up at the bottom in the list of shapes)
+# NOTE 2: to load the shapes in production, the easiest way is to temporarily start the server in "dev-no-auth" mode
+# NOTE 3: some tables have column names with broken characteres; those columns are changed manually at the buttom (after the tables have been loaded)
 
 
 #export clima_host=clima.fc.ul.pt
-#export clima_host=clima.dev
+export clima_host=clima.dev
 export base_dir="/home/pvieira/clima-madeira/Mapas 150630"
+export dbname="150608"
 
 source_dir_rel=()
 filename_base=()
@@ -774,3 +776,113 @@ for (( i=0; i < $l; i++ )) do
 	    shapeDescription=\'{ \"en\" : \"${source_dir_rel[$i]}/${filename_base[$i]}*\" }\')
 
 done
+
+
+# change the names of the columns
+
+echo '
+ALTER TABLE geo.paf_pop_percent  RENAME COLUMN "população" TO "populacao";
+ALTER TABLE geo.incendios_2006_2013_wgs84  RENAME COLUMN "marcaï¿½ï¿" TO "marcacao";
+ALTER TABLE geo.centro_saude  RENAME COLUMN "hor�rio" TO "horario";
+ALTER TABLE geo.bombeiros  RENAME COLUMN "telem�ve" TO "telemovel";
+ALTER TABLE geo.vegetacao_herbacia_natural  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.vegetacao_esparsa  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.terminais_portuarios_de_mar_e_de_rio  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.tecido_urbano_descontinuo  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.tecido_urbano_descontinuo_esparso  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.tecido_urbano_continuo_pred_vert  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.tecido_urbano_continuo_pred_horiz  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.sistemas_culturais_e_parcel_complexos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.saf_outras_esp_com_cult_temp_regadio  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.rocha_nua  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.reserv_de_represas_ou_de_acudes  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.rede_viaria_e_espacos_associados  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.praias_dunas_e_areais_interiores  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.praias_dunas_e_areais_costeiros  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pedreiras  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pauis  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pastagens_permanentes  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.parques_e_jardins  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.parques_de_campismo  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.outros_pomares  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.outros_equipamentos_de_lazer  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.outras_instalacoes_desportivas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.novas_plantacoes  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.marinas_e_docas_secas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.lixeiras_e_sucatas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.lagos_e_lagoas_interiores_naturais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.lagos_e_lagoas_interiores_artificiais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.lagoas_costeiras  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.infra_estrut_trat_residuos_e_aguas_residuais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.infra_estrut_de_producao_de_energia_renov  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.infra_estrut_de_prod_de_energia_nao_renov  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.infra_estrut_capt_trat_abast_agua_consumo  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.industria  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.floricultura  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_pinheiro_bravo_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_pinheiro_bravo_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outras_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outras_resinosas_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outras_resinosas_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outras_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outra_folhosas_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outra_folhosa_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_mistura_de_resin_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_mist_de_folhosas_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_eucalipto_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_eucalipto_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_especies_inva_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_castanheiro_com_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_castanheiro_com_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_especies_inv_c_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_pinh_bravo_c_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_outrras_folhosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_outras_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_eucalipto_c_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_especies_inv_c_resin  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_especies_invasoras  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.estaleiros_navais_e_docas_secas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.equip_culturais_e_zonas_historicas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.equipamentos_publicos_e_privados  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.cursos_de_agua_naturais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.cortes_rasos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.comercio  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.cemiterios  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.canais_artificiais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.campos_de_golfe  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.aterros  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.areas_de_estc_e_logradouros  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.aeroportos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.matos_pouco_densos_exoticos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.matos_pouco_densos_autoctones  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.matos_densos_exoticos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.matos_densos_autoctones  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_natural_da_madeira  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_pinheiro_bravo  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_outros_carvalhos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_eucalipto  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_castanheiro  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_pinheiro_bravo  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_eucalipto  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_abertas_de_castanheiro  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.areas_ardidas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.viveiros_florestais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.vinhas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.vinhas_com_pomar  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pomares_de_frutos_tropicais  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pomares_de_frutos_frescos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.pomares_de_citrinos  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.instalacoes_agricolas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_especies_invasoras  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.flor_de_especies_invasoras_c_resinosas  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.estufas_e_viveiros  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.culturas_temporarias_de_sequeiro  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.culturas_temporarias_de_regadio  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.cult_temp_regadio_assoc_vinha  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.cult_temp_regadio_assoc_a_pomar  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.bananal  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.areas_aband_em_territ_artificializado  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.agricultura_litoral  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.agricultura_interior  RENAME COLUMN "descriï¿½ï" TO "descricao";
+ALTER TABLE geo.agric_com_esp_nat_e_semi_nat  RENAME COLUMN "descriï¿½ï" TO "descricao";
+' | psql --dbname 150608
