@@ -3,7 +3,7 @@
 {% for obj in items %}
 
 	<a href="#{{ obj['itemCode'] }}" class="list-group-item" style="padding-top: 13px; padding-bottom: 13px;">
-		<span class="glyphicon {{ obj['itemIcon']}}"></span>&nbsp;
+    	<i class="fa {{ obj['itemIcon']}} fa-lg"></i>&nbsp;
 		{{ obj['itemTitle'][ obj['lang'] ] }}
 		<span class="arrow-container pull-right"></span>
 	</a>
@@ -11,7 +11,7 @@
 {% endfor %}
 
 <a href="/pt/tilemill" target="_blank" class="list-group-item" style="padding-top: 13px; padding-bottom: 13px;">
-    <span class="glyphicon glyphicon-map-marker"></span>&nbsp;
+    <i class="fa fa-map-marker fa-lg"></i>&nbsp;
     TileMill
     <span class="arrow-container pull-right"></span>
 </a>

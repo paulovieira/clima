@@ -12,7 +12,8 @@
 
 
 
-/* rules for the jquery-sortable plugin*/
+/* css for the jquery-sortable plugin */
+
 body.dragging,
 body.dragging * {
     cursor: move !important;
@@ -35,4 +36,21 @@ body.dragging * {
     line-height: 30px;
     font-size: 25px;
     padding: 30px 10px;
+}
+
+
+/* css for the bootstrap-colorpicker plugin */
+
+.colorpicker-2x .colorpicker-saturation {
+    width: 150px;
+    height: 150px;
+}
+.colorpicker-2x .colorpicker-hue,
+.colorpicker-2x .colorpicker-alpha {
+    width: 30px;
+    height: 150px;
+}
+.colorpicker-2x .colorpicker-color,
+.colorpicker-2x .colorpicker-color div{
+    height: 30px;
 }
