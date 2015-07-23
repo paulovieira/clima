@@ -33,7 +33,6 @@ sudo npm install
 Then launch TileStream:
 ```sh
 export TILEMILL_FILES_PATH=$HOME/tilemill-files
-
 ./index.js start --tilePort=8001  --tiles=$TILEMILL_FILES_PATH/export 
 ```
 
@@ -166,7 +165,7 @@ pm2 start ...
 
 The client apps use [nunjucks](https://mozilla.github.io/nunjucks/) as the templating engine templates. Nunjucks should be installed globally. The `README.d` file in lib/web/client has more details on how to use nunjucks.
 
-#### Other confirgurations
+#### Other configurations
 
 Nginx client_max_body_size
 in the sites-available nginx configuration for clima.fc.ul.pt, make sure the "server" block has:
@@ -174,4 +173,21 @@ in the sites-available nginx configuration for clima.fc.ul.pt, make sure the "se
 client_max_body_size 0;
 
 (right below server_name, for instance)
+
+### Installing TileMill plugins (manually)
+
+1) make sure the plugins directory exists:
+```sh
+    mkdir /home/pvieira/.tilemill/node_modules
+```
+
+2) install the plugins manually by cloning the github repos
+```sh
+    cd /home/pvieira/.tilemill/node_modules
+
+    git clone https://github.com/paulovieira/tilemill-easey-clima.git
+    git clone https://github.com/paulovieira/tilemill-tablesort-clima.git
+    git clone https://github.com/paulovieira/tilemill-lots-clima.git
+```
+
 
