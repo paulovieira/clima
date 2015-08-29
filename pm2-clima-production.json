@@ -1,0 +1,12 @@
+{
+  "name": "clima",
+  "script": "index.js",
+  "args": [
+  ],
+  "env": {
+    "NODE_ENV": "production",
+    "TILEMILL_FILES_PATH": "/home/pvieira/tilemill-files"
+  },
+  "max_memory_restart" : "300M",
+  "treekill": true
+}
