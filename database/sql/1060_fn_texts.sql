@@ -290,6 +290,7 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 	END IF;
 	IF input_row.contents IS NOT NULL THEN
 		command = format(command || 'contents = %L, ', input_row.contents);
+		--command = format(command || 'contents = %L, ', '{"x":"a"}');
 	END IF;
 	IF input_row.description IS NOT NULL THEN
 		command = format(command || 'description = %L, ', input_row.description);

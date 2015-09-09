@@ -26,6 +26,17 @@ var internals = {};
 //     });
 // }
 
+internals.encodePercentages = function(contents){
+
+    Object.keys(contents).forEach(function(lang){
+
+        // encode '%' characters otherwise postgres will break (because the format function will be used)
+        contents[lang] = Ent.encode(contents[lang], { special: {"%": true} });
+
+        console.log("contents[lang]: ", contents[lang])
+    });
+};
+
 internals.removeNewLines = function(contents){
 
     Object.keys(contents).forEach(function(lang){
@@ -183,6 +194,7 @@ internals.textsCreate = function(args, done){
 
     internals.removeNewLines(args.query[0].contents);
     internals.decodeImg(args.query[0].contents);
+    internals.encodePercentages(args.query[0].contents);
 
     // 1) create the resources with the payload data
     Db.func('texts_create', JSON.stringify(args.query))
@@ -231,7 +243,7 @@ internals.textsUpdate = function(args, done){
 
     internals.removeNewLines(args.query[0].contents);
     internals.decodeImg(args.query[0].contents);
-
+    internals.encodePercentages(args.query[0].contents);
 
     // 1) read the resources to be updated (to verify that they exist)
     Db.func('texts_read', JSON.stringify(ids))
