@@ -56,20 +56,27 @@
     </div>
     #}
 
+    <div class="col-sm-4">
+
+        <span class="is-editable" data-editable-id="sector-heading-editable-3">
+        {{ ctx.editableTexts['sector-heading-editable-3'][lang] | lorem('small')  }}
+        </span>
+
+    </div>
+
     <div class="col-sm-8">
         <div>
             <h1>
-
-                <span class="is-editable" data-editable-id="editable-1">{{ ctx.editableTexts['editable-1'][lang] | lorem('small')  }}</span>
+                {{ ctx.texts[data.title][lang] }}
                 
             </h1>
         </div>
 
-        <span class="is-editable" data-editable-id="editable-2">{{ ctx.editableTexts['editable-2'][lang] | lorem('medium')  }}</span>
+        <span class="is-editable" data-editable-id="sector-heading-editable-1">{{ ctx.editableTexts['sector-heading-editable-1'][lang] | lorem('big')  }}</span>
 
         <div class="collapse" id="hidden">
 
-            <span class="is-editable" data-editable-id="editable-3">{{ ctx.editableTexts['editable-3'][lang] | lorem('big')  }}</span>
+            <span class="is-editable" data-editable-id="sector-heading-editable-2">{{ ctx.editableTexts['sector-heading-editable-2'][lang] | lorem('big')  }}</span>
         </div>
 
 
