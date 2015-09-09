@@ -155,11 +155,15 @@ pm2 start index.js --name "clima"
 
 #### Updating the app
 
+```sh
 pm2 list
-pm2 stop x
-pm2 delete x
-git fetch and merge
-pm2 start ...
+pm2 stop N
+pm2 delete N
+git fetch
+git merge origin/master
+pm2 start pm2-clima-XXX.json
+cd ~/clima-app/backups && pg_dump --format=c --file=backup_YYMMDD.sqlc db_name
+```
 
 #### Compiling the client-side templates
 

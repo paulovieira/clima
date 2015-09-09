@@ -33,7 +33,7 @@ DECLARE
     dummy INT;
 BEGIN
     BEGIN
-        ALTER TABLE texts ADD COLUMN page_name TEXT NOT NULL;
+        ALTER TABLE texts ADD COLUMN page_name TEXT;
     EXCEPTION
         WHEN duplicate_column THEN RAISE NOTICE 'column "page_name" already exists in "texts", skipping';
     END;
@@ -46,7 +46,7 @@ DECLARE
     dummy INT;
 BEGIN
     BEGIN
-        ALTER TABLE texts ADD COLUMN editable_id TEXT NOT NULL;
+        ALTER TABLE texts ADD COLUMN editable_id TEXT;
     EXCEPTION
         WHEN duplicate_column THEN RAISE NOTICE 'column "editable_id" already exists in "texts", skipping';
     END;
