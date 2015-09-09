@@ -28,6 +28,8 @@ RETURNS TABLE(
 	properties JSONB,
 	active BOOL,	
 	last_updated timestamptz,
+	page_name TEXT,
+	editable_id TEXT,
 	author_data JSON)
 AS
 $BODY$
@@ -39,6 +41,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id INT;
+	page_name TEXT;
 	author_id INT;
 	author_email TEXT;
 	tags TEXT;
@@ -61,9 +64,10 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 			
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id')           INTO id;
+	SELECT json_extract_path_text(options_row, 'page_name')  INTO page_name;
 	SELECT json_extract_path_text(options_row, 'author_id')    INTO author_id;
 	SELECT json_extract_path_text(options_row, 'author_email') INTO author_email;
-	SELECT json_extract_path_text(options_row, 'tags')          INTO tags;
+	SELECT json_extract_path_text(options_row, 'tags')         INTO tags;
 
 	number_conditions := 0;
 
@@ -74,6 +78,16 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		END IF;
 
 		command = format(command || ' t.id = %L', id);
+		number_conditions := number_conditions + 1;
+	END IF;
+
+	-- criteria: page_name
+	IF page_name IS NOT NULL THEN
+		IF number_conditions = 0 THEN  command = command || ' WHERE';  
+		ELSE                           command = command || ' AND';
+		END IF;
+
+		command = format(command || ' t.page_name = %L', page_name);
 		number_conditions := number_conditions + 1;
 	END IF;
 
@@ -124,10 +138,11 @@ LANGUAGE plpgsql;
 /*
 select * from texts
 
-select * from texts_read('[{}]');
-select * from texts_read('[{"tags": "tag1"}]');
+select * from texts_read('{}');
+select * from  texts_read('{"id":"1"}');
+select * from  texts_read('{"page_name":"home"}');
+select * from texts_read('{"tags": "tag1"}');
 select * from  texts_read('[{"email":"paulovieira@gmail.com"}, {"id":"2"}]');
-select * from  texts_read('[{"id":"1"}]');
 
 */
 
@@ -151,6 +166,7 @@ DECLARE
 	input_row texts%ROWTYPE;
 	current_row texts%ROWTYPE;
 	new_id INT;
+	serial_next_id INT;
 BEGIN
 
 
@@ -171,21 +187,29 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 	-- NOTE: if the id has not been given, the data comes from the user interface; otherwise, it comes from the initial data;
 	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM texts WHERE id = new_id) THEN
 
+		SELECT nextval(pg_get_serial_sequence('texts', 'id')) INTO serial_next_id;
+
+
+
 		INSERT INTO texts(
 			id,
 			tags, 
 			contents, 
 			author_id,
 			description, 
-			properties
+			properties,
+			page_name,
+			editable_id
 			)
 		VALUES (
-			COALESCE(new_id, nextval(pg_get_serial_sequence('texts', 'id'))),
+			COALESCE(new_id, serial_next_id),
 			COALESCE(input_row.tags, '[]'::jsonb),
 			input_row.contents, 
 			input_row.author_id,
 			COALESCE(input_row.description, '{}'::jsonb),
-			COALESCE(input_row.properties, '{}'::jsonb)
+			COALESCE(input_row.properties, '{}'::jsonb),
+			COALESCE(input_row.page_name, 'dummy_page_name_'     || serial_next_id::TEXT),
+			COALESCE(input_row.editable_id, 'dummy_editable_id_' || serial_next_id::TEXT)
 			)
 		RETURNING 
 			*
@@ -276,6 +300,12 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 	IF input_row.author_id IS NOT NULL THEN
 		command = format(command || 'author_id = %L, ', input_row.author_id);
 	END IF;
+	IF input_row.page_name IS NOT NULL THEN
+		command = format(command || 'page_name = %L, ', input_row.page_name);
+	END IF;
+	IF input_row.editable_id IS NOT NULL THEN
+		command = format(command || 'editable_id = %L, ', input_row.editable_id);
+	END IF;
 /*
 	IF input_row.active IS NOT NULL THEN
 		command = format(command || 'active = %L, ', input_row.active);
@@ -307,8 +337,8 @@ LANGUAGE plpgsql;
 /*
 select * from texts order by id desc
 
-select * from texts_update('[{"id": 1, "tags": ["tag5"]}]');
-select * from texts_update('[{"id": 1, "tags": ["tag7"], "contents": {"pt": "xxx"}}]');
+select * from texts_update('{"id": 1, "tags": ["tag5"]}');
+select * from texts_update('{"id": 1, "tags": ["tag7"], "contents": {"pt": "xxx"}}');
 
 */
 

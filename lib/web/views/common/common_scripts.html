@@ -1,3 +1,5 @@
+{# TODO: do we really need underscore and q in all pages? or only when editing pages? #}
+
 <script src="/static/jquery/jquery-1.11.2.js"></script>
 <script src="/static/bootstrap/3.3.5-original/js/bootstrap.js"></script>
 <script src="/static/underscore/underscore-1.6.0.js"></script>
@@ -5,11 +7,7 @@
 
 <script type="text/javascript">
 
-    window.Clima = window.Clima || {};
-{#
-    //Clima.lang = "{{ lang }}";
-    //Clima.texts  = {{ ctx.textsArray | stringify }};
-#}
+	window.Clima = window.Clima || {};
 
 	{#  simple polyfill for addEventListener (because it is not available in IE8)  #}
 	Clima.addEvent = function(evnt, elem, func) {
@@ -102,4 +100,29 @@
 	}
 #}	
 
+	// Bootstrap Notify plugin - http://bootstrap-notify.remabledesigns.com/
+	Clima.notify = function(type, msg){
+
+		var iconClass = (type === "danger" ? "fa fa-remove" : "fa fa-check-square-o");
+		var delay = (type === "danger" ? 3500 : 1500);
+
+		$.notify({
+		    icon: iconClass,
+		    message: msg,
+		},{
+		    type: type,
+		    delay: delay
+		});
+	};
+
+	Clima.getErrorMessage = function(err){
+
+		var errMsg = err.responseJSON ? err.responseJSON.message : 
+		             err.message      ? err.message : 
+		             err.responseText ? err.responseText :
+		             "unknown error";
+
+		return errMsg;
+	}
+	
 </script>

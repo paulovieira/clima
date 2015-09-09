@@ -1,10 +1,11 @@
 var Q = require("q");
-var fs = require("fs");
+var Fs = require("fs");
 var Path = require('path');
 var stripJsonComments = require("strip-json-comments");
 var jsonFormat = require('json-format');
 var Bcrypt = require("bcrypt");
 var _ = require("underscore");
+var JSON5 = require("json5");
 var changeCase = require("change-case-keys");
 var db = require("../");
 
@@ -13,7 +14,7 @@ var internals = {
 	readFile: function(relativePath){
 		var array, dataPath = Path.join(__dirname, relativePath);
 		try{
-			array = JSON.parse(stripJsonComments(fs.readFileSync(dataPath, "utf-8")));	
+			array = JSON5.parse(Fs.readFileSync(dataPath, "utf-8"));
 		} 
 		catch(err){
 			console.log("Error parsing this file: " + dataPath);

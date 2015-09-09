@@ -26,6 +26,46 @@ CREATE TABLE IF NOT EXISTS  texts(
 	CONSTRAINT properties_must_be_object  CHECK (jsonb_typeof(properties) = 'object')
 );
 
+-- change 15.09.03: add page_name and editable_id columns + add unique constraint
+
+DO $$
+DECLARE
+    dummy INT;
+BEGIN
+    BEGIN
+        ALTER TABLE texts ADD COLUMN page_name TEXT NOT NULL;
+    EXCEPTION
+        WHEN duplicate_column THEN RAISE NOTICE 'column "page_name" already exists in "texts", skipping';
+    END;
+END;
+$$;
+
+
+DO $$
+DECLARE
+    dummy INT;
+BEGIN
+    BEGIN
+        ALTER TABLE texts ADD COLUMN editable_id TEXT NOT NULL;
+    EXCEPTION
+        WHEN duplicate_column THEN RAISE NOTICE 'column "editable_id" already exists in "texts", skipping';
+    END;
+END;
+$$;
+
+
+DO $$
+DECLARE
+    dummy INT;
+BEGIN
+    BEGIN
+        ALTER TABLE texts ADD CONSTRAINT page_name_editable_id_unique  UNIQUE(page_name, editable_id);
+    EXCEPTION
+        WHEN duplicate_table THEN RAISE NOTICE 'constraint "page_name_editable_id_unique" already exists in "texts", skipping';
+    END;
+END;
+$$;
+
 
 
 DO $$

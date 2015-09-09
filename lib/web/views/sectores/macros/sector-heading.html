@@ -2,6 +2,8 @@
 
 
 <div class="row">
+
+{#
     <div class="col-sm-4">
 
 
@@ -16,7 +18,6 @@
 
             <!-- Wrapper for slides -->
 
-            {# TODO: iterate over ctx.images[sectorName][n] #}
             <div class="carousel-inner" role="listbox">
 
 
@@ -53,18 +54,22 @@
         </div>
 
     </div>
+    #}
 
     <div class="col-sm-8">
         <div>
             <h1>
-                <span class="is-editable" data-text-id="{{ data.title }}">{{ ctx.texts[data.title][lang] }}</span>
+
+                <span class="is-editable" data-editable-id="editable-1">{{ ctx.editableTexts['editable-1'][lang] | lorem('small')  }}</span>
+                
             </h1>
         </div>
 
-        <span class="is-editable" data-text-id="{{ data.introParagraph }}">{{ ctx.texts[data.introParagraph][lang] }}</span>
+        <span class="is-editable" data-editable-id="editable-2">{{ ctx.editableTexts['editable-2'][lang] | lorem('medium')  }}</span>
 
         <div class="collapse" id="hidden">
-            <span class="is-editable" data-text-id="{{ data.restOfParagraph }}">{{ ctx.texts[data.restOfParagraph][lang] }}</span>
+
+            <span class="is-editable" data-editable-id="editable-3">{{ ctx.editableTexts['editable-3'][lang] | lorem('big')  }}</span>
         </div>
 
 

@@ -29,6 +29,27 @@ Nunjucks.addFilter('stringify', function(str) {
     return JSON.stringify(str);
 });
 
+Nunjucks.addFilter('lorem', function(str, size) {
+
+    var lorem = "";
+    if(!str){
+        size = size || "small";
+
+        if(size==="small"){
+            lorem = "Lorem ipsum dolor sit amet, mnesarchum reprehendunt ut usu. ";
+        }
+        else if(size==="medium"){
+            lorem = "Velit veniam munere his an, pri cu fuisset ponderum, nominavi appellantur ne mea. Vim eu malorum accumsan dissentiet. ";
+        }
+        else if(size==="big"){
+            lorem = "Vim te altera facete conclusionemque, est stet evertitur ad. Possit periculis ocurreret sit te, pri iracundia deseruisse ad. Eum at graecis liberavisse, pro natum novum movet at. Cu mucius aliquip adversarium pro, vidisse fuisset ei mel. Causae meliore necessitatibus cu eos, doming verterem vulputate ut sed, libris commodo laoreet nam at.";
+        }
+        return lorem;
+    }
+
+    return str;
+});
+
 
 module.exports = {
 

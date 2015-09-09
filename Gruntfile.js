@@ -8,9 +8,9 @@ module.exports = function(grunt) {
         nunjucks: {
 
             dashboard: {
-                baseDir: 'lib/web/client/dashboard3',
-                src: ['lib/web/client/dashboard3/**/*.html'],
-                dest: 'lib/web/client/dashboard3/templates_dashboard.js',
+                baseDir: 'lib/web/client/dashboard',
+                src: ['lib/web/client/dashboard/**/*.html'],
+                dest: 'lib/web/client/dashboard/templates_dashboard.js',
                 options: {
                     autoescape: true
                 }
@@ -99,7 +99,7 @@ module.exports = function(grunt) {
 
         watch: {
             "dashboard templates": {
-                files: 'lib/web/client/dashboard3/**/*.html',
+                files: 'lib/web/client/dashboard/**/*.html',
                 tasks: ['nunjucks:dashboard']
             },
 
@@ -112,18 +112,18 @@ module.exports = function(grunt) {
             //     files: 'client/test/js/**/*.js',
             //     tasks: ['browserify:test-dev']
             // },
-            "compile-js dashboard2": {
-                files: [
-                    'client/dashboard2/**/*.js', 
-                    '!client/dashboard2/node_modules/**/*.js', 
-                    '!client/dashboard2/app-dev.js', 
-                    '!client/dashboard2/app-prod.js'
-                ],
-                tasks: [
-                    'browserify:dashboard2-dev', 
-                    'browserify:dashboard2-prod'
-                ]
-            },
+            // "compile-js dashboard2": {
+            //     files: [
+            //         'client/dashboard2/**/*.js', 
+            //         '!client/dashboard2/node_modules/**/*.js', 
+            //         '!client/dashboard2/app-dev.js', 
+            //         '!client/dashboard2/app-prod.js'
+            //     ],
+            //     tasks: [
+            //         'browserify:dashboard2-dev', 
+            //         'browserify:dashboard2-prod'
+            //     ]
+            // },
         }
     });
 
@@ -136,7 +136,7 @@ module.exports = function(grunt) {
     // NOTE: "grunt compile-js:test" and "grunt browserify:test" are equivalent (will execute the same task:target)
     grunt.registerTask('default', ['watch']);
     grunt.registerTask('compile-templates', ['nunjucks:dashboard', 'nunjucks:visualizador']);
-    grunt.registerTask('compile-dashboard', ['browserify:dashboard2-dev', 'browserify:dashboard2-prod']);
+    //grunt.registerTask('compile-dashboard', ['browserify:dashboard2-dev', 'browserify:dashboard2-prod']);
 
 
 };

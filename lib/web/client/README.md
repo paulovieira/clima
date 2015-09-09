@@ -15,7 +15,7 @@ sudo npm install nunjucks -g
 
 This will also make available the `nunjucks-precompile` script globally available. We can then precompile a whole directory of templates with:
 ```
-export CLIENT_APP_PATH=lib/web/client/dashboard3
+export CLIENT_APP_PATH=lib/web/client/dashboard
 nunjucks-precompile $CLIENT_APP_PATH > $CLIENT_APP_PATH/templates_dashboard.js
 ```
 

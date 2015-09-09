@@ -25,7 +25,6 @@
 
     {# common css (included in all pages, but only after authentication and authorization) #}
     {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
-    {# {% include "common/kendo_stylesheets.html" %} #}
     {% include "common/summernote_stylesheets.html" %}
     {% endif %}
 
@@ -52,16 +51,33 @@
     </footer>
 
 
+
+
+    {# templates that extends from layouts/default.html must call super() in order to include the common scripts #}    
+
+    {% block scripts %}
+
     {# common javascript (included in all pages) #}
     {% include "common/common_scripts.html" %} 
 
-    {# custom scripts (specific for each page - to be overriden in that page) #}    
-    {% block scripts %}{% endblock %}
+    {# js for summer editor (included in all pages, but only after authentication and authorization) #}
 
-    {# editor javascript (included in all pages, but only after authentication and authorization) #}
-    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts %}
+    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts  %}
+
     {% include "common/summernote_scripts.html" %}
+    <script type="text/javascript">
+        window.Clima = window.Clima || {};
+        window.Clima.lang = "{{ lang }}";
+{#        window.Clima.texts = {{ ctx.texts | stringify }};   #}
+        window.Clima.editableTexts = {{ ctx.editableTexts | stringify }};  
+    </script>
+
     {% endif %}
+
+
+    {% endblock %}
+    
+
 
 </body>
 

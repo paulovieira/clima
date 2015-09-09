@@ -12,14 +12,16 @@
         <ol class="breadcrumb">
             <li><a href="/{{ lang}}">Home</a>
             </li>
-            <li class="active">{{ ctx.texts[85][lang] }}</li>
+            <li class="active">{{ ctx.editableTexts['editable-1'][lang] }}</li>
         </ol>
     </div>
 </div>
 
 <div class="row">
     <div class="col-sm-12 text-center">
-		<h1>{{ ctx.texts[501][lang] }}</h1>
+
+        <h1 class="is-editable" data-editable-id="editable-1">{{ ctx.editableTexts['editable-1'][lang] | lorem('small') }}</h1>
+        <p class="is-editable" data-editable-id="editable-2">{{ ctx.editableTexts['editable-2'][lang] | lorem('big') }}</p>
     </div>
 </div>
 

@@ -5,16 +5,16 @@
 
 <div class="sector-box">
 	<h4 class="text-center sector-title" >
-		<span class="is-editable" data-text-id="{{ data.title }}"> {{ ctx.texts[data.title][lang] | upper }}</span>
+		<span> {{ ctx.texts[data.title][lang] | upper }}</span>
 	</h4>
 	
 
 	<!-- <img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image"> -->
-	<span class="is-editable" data-text-id="{{ data.sectorImg }}">
+	<span>
 		{# IMPORTANT: the img tag itself is part of the text (including all the required classes); this makes the html coupled with the databasem, but will allow the user to change the image using summernote#}
 		{{ ctx.texts[data.sectorImg][lang] }}  
 	</span>
-	<span class="is-editable" data-text-id="{{ data.sectorDesc }}">
+	<span>
 		<p>{{ ctx.texts[data.sectorDesc][lang] }}</p>
 	</span>
 

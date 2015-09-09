@@ -45,7 +45,13 @@ module.exports.loadActions = function(senecaInstance){
 
     // we assume all modules in database/actions export a seneca action
     var actionsDir = Path.join(Config.get("rootDir"), "database/actions");
-    var filenames = Fs.readdirSync(actionsDir);
+
+    var filenames = Fs.readdirSync(actionsDir)
+                    .filter(function(filename){
+
+                        // remove hidden files (namely ".tern-port" files, created by ternjs)
+                        return filename.indexOf(".")===0 ? false : true;
+                    });
 
     filenames.forEach(function(name){
         senecaInstance.use(Path.join(actionsDir, name));

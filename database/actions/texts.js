@@ -1,13 +1,99 @@
 // Prepare yourself, this is where the dirty stuff lives!
 // access the database to interact with the data
 
+var Path = require("path");
+var Fs = require("fs");
 var Hoek = require("hoek");
 var Boom = require("boom");
+var Config = require("config");
+var Cheerio = require("cheerio");
+var Ent = require("ent");
 var ChangeCase = require("change-case-keys");
+var _s = require("underscore.string");
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
 
 var internals = {};
+
+// internals.removeTopLevelP = function(contents){
+
+//     Object.keys(contents).forEach(function(lang){
+//         debugger;
+//         var $ = Cheerio.load(contents[lang]);
+//         var $allp = $("p");
+//         var $p = $("p").first();
+//         var $parent = $p.parent();
+//     });
+// }
+
+internals.removeNewLines = function(contents){
+
+    Object.keys(contents).forEach(function(lang){
+
+        contents[lang] = Ent.decode(contents[lang])
+                            .replace(/(\r\n|\n|\r)/gm,"");
+    });
+};
+
+internals.decodeImg = function(contents){
+    var langKeys = Object.keys(contents),
+        foundImgBase64 = false;
+
+    Object.keys(contents).forEach(function(lang){
+        debugger;
+        var $ = Cheerio.load(contents[lang], {
+            normalizeWhitespace: true,
+            decodeEntities: true,
+            lowerCaseTags: true
+        });
+
+        var $images = $("img");
+        $images.each(function(){
+            debugger;
+            var src   = $(this).attr("src");
+            var index = src.indexOf("base64");
+
+            if(index !== -1){
+
+                var srcBase64 = src.substr(index + 7);  // +7 to include "base64,"
+                //var filename = $(this).data("filename") || "img_" + Date.now() + ".jpg";
+
+                var filename = $(this).data("filename") || "img.jpg";
+                var ext = Path.extname(filename).toLocaleLowerCase();
+                var base = Path.basename(filename, ext).toLocaleLowerCase();
+                filename = base + "-" + Utils.getRandomString() + ext;
+                
+                var imgPathPhysical = Path.join(Config.get("rootDir"), "/data/uploads/public/images/", filename);
+                var imgPathLogical = Path.join("/uploads/public/images/", filename);
+
+                try{
+                    Fs.writeFileSync(imgPathPhysical, new Buffer(srcBase64, "base64"));
+
+                    $(this).removeAttr("src");
+                    $(this).removeAttr("data-filename");
+
+                    $(this).attr("src", imgPathLogical);
+
+                    contents[lang] = $.html();
+                    
+                    //contents[lang] = _s( Ent.decode($.html()) ).trim().replace("\n", "").value();
+                    // contents[lang] = _s( Ent.decode($.html()) )
+                    //                     .trim()
+                    //                     .value()
+                    //                     .replace(/(\r\n|\n|\r)/gm,"");
+
+                    //console.log(lang + "\n" + contents[lang] + "\n\n")
+                    
+                }
+                catch(err){
+                    throw err;
+                }
+            }
+
+        });
+    });
+
+};
 
 module.exports = function(options){
 
@@ -27,6 +113,8 @@ internals.transformMap = {
     "tags": "tags",
     "contents": "contents",
     "lastUpdated": "last_updated",
+    "pageName": "page_name",
+    "editableId": "editable_id",
 
     // b) new properties (move properties from the nested object to the top object)
     // NOTE: this is used to make the server-side templates lighter
@@ -93,6 +181,9 @@ internals.textsCreate = function(args, done){
 
     ChangeCase(args.query, "underscored");
 
+    internals.removeNewLines(args.query[0].contents);
+    internals.decodeImg(args.query[0].contents);
+
     // 1) create the resources with the payload data
     Db.func('texts_create', JSON.stringify(args.query))
 
@@ -130,11 +221,17 @@ internals.textsCreate = function(args, done){
 internals.textsUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
+    debugger;
 
     ChangeCase(args.query, "underscored");
+
     var ids = args.query.map(function(obj){ 
         return { id: obj.id };
     });
+
+    internals.removeNewLines(args.query[0].contents);
+    internals.decodeImg(args.query[0].contents);
+
 
     // 1) read the resources to be updated (to verify that they exist)
     Db.func('texts_read', JSON.stringify(ids))
