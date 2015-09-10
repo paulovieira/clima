@@ -208,8 +208,10 @@ FOR input_row IN (select * from json_populate_recordset(null::texts, input_data)
 			input_row.author_id,
 			COALESCE(input_row.description, '{}'::jsonb),
 			COALESCE(input_row.properties, '{}'::jsonb),
-			COALESCE(input_row.page_name, 'dummy_page_name_'     || serial_next_id::TEXT),
-			COALESCE(input_row.editable_id, 'dummy_editable_id_' || serial_next_id::TEXT)
+			--COALESCE(input_row.page_name, 'dummy_page_name_'     || serial_next_id::TEXT),
+			--COALESCE(input_row.editable_id, 'dummy_editable_id_' || serial_next_id::TEXT)
+			input_row.page_name,
+			input_row.editable_id
 			)
 		RETURNING 
 			*

@@ -170,8 +170,8 @@
         "id": 17,
         "tags": [],
         "contents": {
-            "pt": "Introdução",
-            "en": "Introduction"
+            "pt": "Enquadramento",
+            "en": "Enquadramento"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -368,15 +368,6 @@
     // },
 
 
-    {
-        "id": 41,
-        "tags": [],
-        "contents": {
-            "pt": "Saúde",
-            "en": "Health"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
 
 
 
@@ -468,8 +459,8 @@
         "id": 53,
         "tags": [],
         "contents": {
-            "pt": "ENERGIA",
-            "en": "ENERGIA"
+            "pt": "Energia",
+            "en": "Energia"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -767,10 +758,7 @@
             "pt": "Mensagem de boas-vindas",
             "en": "Welcome message"
         },
-        "author_email": "paulovieira@gmail.com",
-        "page_name": "introducao/mensagem",
-        "editable_id": "editable-1"
-
+        "author_email": "paulovieira@gmail.com"
     },
 
     {
@@ -783,15 +771,7 @@
         "author_email": "paulovieira@gmail.com"
     },
 
-    {
-        "id": 85,
-        "tags": [],
-        "contents": {
-            "pt": "Sumário executivo",
-            "en": "Executive summary"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
+
 
     {
         "id": 86,
@@ -863,25 +843,6 @@
         "author_email": "paulovieira@gmail.com"
     },
 
-    {
-        "id": 93,
-        "tags": [],
-        "contents": {
-            "pt": "Risco Hidrológico", 
-            "en": "Hydrological Risk"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
-
-    {
-        "id": 94,
-        "tags": [],
-        "contents": {
-            "pt": "Qualidade e disponibilidade de água",
-            "en": "Water quality and availability"
-        },
-        "author_email": "paulovieira@gmail.com"
-    },
 
     {
         "id": 95,
@@ -951,8 +912,8 @@
         "id": 101,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/placeholders/800x530.gif\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/placeholders/800x530.gif\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -962,8 +923,8 @@
         "id": 102,
         "tags": [],
         "contents": {
-            "pt": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">",
-            "en": "<img src=\"/static/_images/placeholders/400x300.gif\" class=\"img-responsive img-thumbnail center-block\">"
+            "pt": "<img src=\"/static/_images/placeholders/800x530.gif\" class=\"img-responsive img-thumbnail center-block\">",
+            "en": "<img src=\"/static/_images/placeholders/800x530.gif\" class=\"img-responsive img-thumbnail center-block\">"
         },
         "author_email": "paulovieira@gmail.com"
     },
@@ -1047,8 +1008,8 @@
             "id": 109,
             "tags": [],
             "contents": {
-                "pt": "Vulnerabilidades & Adaptação",
-                "en": "Vulnerabilities & Adaptation"
+                "pt": "Relatórios",
+                "en": "Relatórios"
             },
             "author_email": "paulovieira@gmail.com",
             "properties": {
@@ -1063,22 +1024,9 @@
                 "pt": "Metodologia",
                 "en": "Framework"
             },
-            "author_email": "paulovieira@gmail.com",
-            "page_name": "introducao/metodologia",
-            "editable_id": "editable-1"
+            "author_email": "paulovieira@gmail.com"
         },
 
-        {
-            "id": 501,
-            "tags": [],
-            "contents": {
-                "pt": "Sumário executivo",
-                "en": "Executive summary"
-            },
-            "author_email": "paulovieira@gmail.com",
-            "page_name": "sumario-executivo",
-            "editable_id": "editable-1"
-        },
 
 
         {
@@ -1088,9 +1036,7 @@
                 "pt": "Estratégia de Adaptação",
                 "en": "Adaptation strategy"
             },
-            "author_email": "paulovieira@gmail.com",
-            "page_name": "estrategia-adaptacao",
-            "editable_id": "editable-1"
+            "author_email": "paulovieira@gmail.com"
         },
 
 
@@ -1101,9 +1047,7 @@
                 "pt": "Workshops",
                 "en": "Workshops"
             },
-            "author_email": "paulovieira@gmail.com",
-            "page_name": "introducao/workshops",
-            "editable_id": "editable-1"
+            "author_email": "paulovieira@gmail.com"
         },
 
         {
@@ -1132,8 +1076,8 @@
             "id": 511,
             "tags": [],
             "contents": {
-                "pt": "Saúde",
-                "en": "Saúde"
+                "pt": "Saúde humana",
+                "en": "Saúde humana"
             },
             "author_email": "paulovieira@gmail.com"
         },
@@ -1166,8 +1110,8 @@
             "id": 520,
             "tags": [],
             "contents": {
-                "pt": "Risco Hidrológico", 
-                "en": "Hydrological Risk"
+                "pt": "Riscos Hidrogeomorfológicos", 
+                "en": "Riscos Hidrogeomorfológicos"
             },
             "author_email": "paulovieira@gmail.com"
         },
@@ -1199,8 +1143,8 @@
             "id": 529,
             "tags": [],
             "contents": {
-                "pt": "Qualidade e disponibilidade de água",
-                "en": "Water quality and availability"
+                "pt": "Recursos Hídricos",
+                "en": "Recursos Hídricos"
             },
             "author_email": "paulovieira@gmail.com"
         },

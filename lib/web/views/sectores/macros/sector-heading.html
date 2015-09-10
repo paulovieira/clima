@@ -58,29 +58,36 @@
 
     <div class="col-sm-4">
 
-        <span class="is-editable" data-editable-id="sector-heading-editable-3">
+        <span  class="is-editable" data-editable-id="sector-heading-editable-3">
         {{ ctx.editableTexts['sector-heading-editable-3'][lang] | lorem('small')  }}
         </span>
 
     </div>
 
     <div class="col-sm-8">
-        <div>
-            <h1>
-                {{ ctx.texts[data.title][lang] }}
-                
-            </h1>
-        </div>
 
-        <span class="is-editable" data-editable-id="sector-heading-editable-1">{{ ctx.editableTexts['sector-heading-editable-1'][lang] | lorem('big')  }}</span>
+        <h1  style="margin-top: 0px;" class="is-editable" data-editable-id="sector-heading-editable-4">
+            {{ ctx.editableTexts['sector-heading-editable-4'][lang] | lorem(ctx.texts[data.title][lang]) }}
+            
+        </h1>
+
+
+        <div class="is-editable" data-editable-id="sector-heading-editable-1">
+            {{ ctx.editableTexts['sector-heading-editable-1'][lang] | lorem('big')  }}
+        </div>
 
         <div class="collapse" id="hidden">
-
-            <span class="is-editable" data-editable-id="sector-heading-editable-2">{{ ctx.editableTexts['sector-heading-editable-2'][lang] | lorem('big')  }}</span>
+            
+            
+            <span class="is-editable" data-editable-id="sector-heading-editable-2" >
+                {{ ctx.editableTexts['sector-heading-editable-2'][lang] | lorem('big')  }}
+            </span>
         </div>
 
 
-        <button type="button" class="center-block btn btn-primary btn-sm" data-toggle="collapse" data-target="#hidden" style="padding-left: 20px; padding-right: 20px; font-size: 16px; line-height: 1.2;">{{ ctx.texts[1][lang] }}</button>
+        <button type="button" class="center-block btn btn-primary btn-sm" data-toggle="collapse" data-target="#hidden" style="padding-left: 20px; padding-right: 20px; font-size: 18px; margin-top: 6px; line-height: 1.2;">
+            {{ ctx.texts[1][lang] }}
+        </button>
 
     </div>
 </div>

@@ -132,33 +132,13 @@ set turismoBoxData = {
 %}
 
 {% 
-set qualidadeDisponibilidadeAguaBoxData = {
+set recursosHidricos = {
     title: 529,
     sectorDesc: 97,
     sectorImg: 100,
-    sectorPath: "sectores/qualidade-disponibilidade-agua"
+    sectorPath: "sectores/recursos-hidricos"
 }
 %}
-
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, biodiversidadeBoxData) }} 
-    					</div>
-
- 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, turismoBoxData) }} 
-    					</div>
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, qualidadeDisponibilidadeAguaBoxData) }} 
-    					</div> 
-
-    				</div>
-
-				</div>
-
-
-				<div class="col-sm-6 col-md-4" style="xborder: 1px solid blue; padding: 0px 45px 0px 45px;">
-
-					<div class="row" style="">
 
 {% 
 set energiaBoxData = {
@@ -167,6 +147,7 @@ set energiaBoxData = {
     sectorImg: 62,
     sectorPath: "sectores/energia"
 }
+
 %}
 
 {% 
@@ -176,7 +157,6 @@ set agriculturaFlorestasBoxData = {
     sectorImg: 61,
     sectorPath: "sectores/agricultura-florestas"
 }
-
 %}
 
 {% 
@@ -188,16 +168,70 @@ set climaBoxData = {
 }
 %}
 
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, energiaBoxData) }} 
-    					</div>
+{% 
+set saudeBoxData = {
+    title: 511,
+    sectorDesc: 43,
+    sectorImg: 59,
+    sectorPath: "sectores/saude-humana"
+}
+%}
+
+{% 
+set riscosHidrogeomorfologicosBoxData = {
+    title: 520,
+    sectorDesc: 39,
+    sectorImg: 58,
+    sectorPath: "sectores/riscos-hidrogeomorfologicos"
+}
+%}
+
+{% 
+set adaptacaoBoxData = {
+    title: 523,
+    sectorDesc: 99,
+    sectorImg: 102,
+    sectorPath: "sectores/adaptacao"
+}
+
+%}
+
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, climaBoxData) }} 
+                        </div> 
+
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, energiaBoxData) }} 
+                        </div>
+
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, saudeBoxData) }} 
+                        </div>
+
+
+    				</div>
+
+				</div>
+
+
+				<div class="col-sm-6 col-md-4" style="xborder: 1px solid blue; padding: 0px 45px 0px 45px;">
+
+					<div class="row" style="">
+
+
+
+
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
 		    				{{ sectorBox(ctx, agriculturaFlorestasBoxData) }} 
     					</div>
 
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, climaBoxData) }} 
-    					</div> 
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, recursosHidricos) }} 
+                        </div> 
+
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, turismoBoxData) }} 
+                        </div>
 
     				</div>
     				
@@ -208,42 +242,13 @@ set climaBoxData = {
 
 					<div class="row" style="">
 
-{##}
-{% 
-set saudeBoxData = {
-    title: 511,
-    sectorDesc: 43,
-    sectorImg: 59,
-    sectorPath: "sectores/saude"
-}
-%}
 
-{% 
-set riscoHidrologicoBoxData = {
-    title: 520,
-    sectorDesc: 39,
-    sectorImg: 58,
-    sectorPath: "sectores/risco-hidrologico"
-}
-
-%}
-
-{% 
-set adaptacaoBoxData = {
-    title: 523,
-    sectorDesc: 99,
-    sectorImg: 102,
-    sectorPath: "sectores/adaptacao"
-}
-%}
-
-
- 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, saudeBoxData) }} 
-    					</div>
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, biodiversidadeBoxData) }} 
+                        </div>
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, riscoHidrologicoBoxData) }} 
+		    				{{ sectorBox(ctx, riscosHidrogeomorfologicosBoxData) }} 
     					</div>
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">

@@ -44,6 +44,10 @@ Nunjucks.addFilter('lorem', function(str, size) {
         else if(size==="big"){
             lorem = "Vim te altera facete conclusionemque, est stet evertitur ad. Possit periculis ocurreret sit te, pri iracundia deseruisse ad. Eum at graecis liberavisse, pro natum novum movet at. Cu mucius aliquip adversarium pro, vidisse fuisset ei mel. Causae meliore necessitatibus cu eos, doming verterem vulputate ut sed, libris commodo laoreet nam at.";
         }
+        else {
+            lorem = size;
+        }
+        
         return lorem;
     }
 
