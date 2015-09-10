@@ -159,18 +159,25 @@ pm2 start index.js --name "clima"
 # stop the process
 pm2 list
 pm2 stop N 
-pm2 delete N
+(pm2 delete N)
 
 # backup the database
 cd ~/clima-app/backups && pg_dump --format=c --file=backup_YYMMDD.sqlc db_name
 
 # delete the hardcoded texts (if necessary)
 (psql dbname)
+(select id, last_updated from texts order by last_updated desc limit 50;)
 (delete from texts where id < 1000;)
 
 # update and restart
 git fetch
 git merge origin/master
+
+export NODE_ENV=...
+export TILEMILL_FILES_PATH=~/tilemill-files/
+(./database/initialize_db.sh db_name)
+(node ./database/populate-initial-data/)
+
 pm2 start pm2-clima-XXX.json
 ```
 
