@@ -1,10 +1,4 @@
-{# top-level variables - to be used in the pages and includes #}
 
-{#
-{% set jquery_is_loaded     = false %} 
-{% set underscore_is_loaded = false %}
-{% set q_is_loaded          = false %}
-#}
 
 <!DOCTYPE html>
 <html lang="{{ lang }}">
@@ -61,15 +55,12 @@
     {# common javascript (included in all pages) #}
     {% include "common/common_scripts.html" %} 
 
-    {# js for summer editor (included in all pages, but only after authentication and authorization) #}
+    {# js for summernote editor (included in all pages, but only after authentication and authorization) #}
 
-    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts  %}
+    {% if ctx.auth.isAuthenticated and ctx.auth.credentials.canEditTexts and ctx.urlParam1 != "dashboard"  %}
 
     {% include "common/summernote_scripts.html" %}
     <script type="text/javascript">
-        window.Clima = window.Clima || {};
-        window.Clima.lang = "{{ lang }}";
-{#        window.Clima.texts = {{ ctx.texts | stringify }};   #}
         window.Clima.editableTexts = {{ ctx.editableTexts | stringify }};  
     </script>
 

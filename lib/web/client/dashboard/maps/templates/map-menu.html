@@ -4,6 +4,8 @@
 
         <ul class="list-group map-groups" id="main">
 
+
+{#
 			{% for obj in items %}
             <li class="list-group-item xmap-group" data-id="x" style="margin-top: 15px;">
 
@@ -18,25 +20,31 @@
 
             </li>
 			{% endfor %}
-
-
-{#
-				            <li class="list-group-item xmap-group" data-id="x">
-				                <b>Published maps</b>
-				                <ul class="list-group map-elems" id="x-list" style="margin-top: 5px;">
-				                    <li class="list-group-item" data-id="a">a</li>
-				                    <li class="list-group-item" data-id="b">b</li>
-				                    <li class="list-group-item" data-id="c">c</li>
-				                </ul>
-				            </li>
-				            <li class="list-group-item xmap-group" data-id="y" style="margin-top: 15px;">
-				                <b>Unpublished maps</b>
-				                <ul class="list-group map-elems" id="y-list">
-				                    <li class="list-group-item" data-id="d">d</li>
-				                    <li class="list-group-item" data-id="e">e</li>
-				                </ul>
-				            </li>
 #}
+
+
+				            <li class="list-group-item map-elems-group" style="margin-bottom: 15px;">
+				                <b>Published maps</b>
+				                <i class="fa fa-arrows"></i>
+				                
+				                <ul class="list-group xmap-elems" style="margin-bottom: 15px;">
+				                    <li class="list-group-item">a</li>
+				                    <li class="list-group-item">b</li>
+				                    <li class="list-group-item">c</li>
+				                </ul>
+				                {##}
+				            </li>
+				            <li class="list-group-item map-elems-group" style="margin-bottom: 15px;">
+				                <b>Unpublished maps</b>
+				                <i class="fa fa-arrows"></i>
+				                
+				                <ul class="list-group xmap-elems" id="y-list">
+				                    <li class="list-group-item">d</li>
+				                    <li class="list-group-item">e</li>
+				                </ul>
+				                {##}
+				            </li>
+
 
         </ul>
 

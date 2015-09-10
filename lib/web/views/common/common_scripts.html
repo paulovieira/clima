@@ -2,30 +2,12 @@
 
 <script src="/static/jquery/jquery-1.11.2.js"></script>
 <script src="/static/bootstrap/3.3.5-original/js/bootstrap.js"></script>
-<script src="/static/underscore/underscore-1.6.0.js"></script>
-<script src="/static/q/q-1.1.2.js"></script>
-<script src="/static/_js/main.js"></script>
+
 
 <script type="text/javascript">
 window.Clima = window.Clima || {};
 Clima.lang = "{{ lang }}";
-
-{# manually adjust the height of main column (but not in the dashboard page) #}
-
-{% if ctx.urlParam1 != "dashboard" %}
-
-Clima.mainContainerHeight = $("#main-container").outerHeight(true);
-Clima.mainContainerPaddingTop = parseInt($("#main-container").css("padding-top"), 10);
-Clima.mainContainerPaddingBottom = parseInt($("#main-container").css("padding-bottom"), 10);
-
-Clima.footerHeight = $(".footer").outerHeight(true);
-Clima.documentHeight = $(document).outerHeight(true);
-
-if(Clima.mainContainerHeight < Clima.documentHeight - Clima.footerHeight){
-    $("#main-container").height((Clima.documentHeight - Clima.footerHeight - Clima.mainContainerPaddingTop - Clima.mainContainerPaddingBottom ) + "px");
-}
-
-{% endif %}
-
-
+Clima.urlParam1 = "{{ ctx.urlParam1 | default('ERROR - urlParam1 is missing') }}";
 </script>
+<script src="/static/_js/main.js"></script>
+
