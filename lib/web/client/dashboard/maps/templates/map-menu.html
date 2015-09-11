@@ -1,11 +1,35 @@
 
-<div class="row" style="margin-top: 40px;">
-    <div class="col-sm-6 col-sm-offset-3">
+<div class="row" style="margin-top: 20px;">
+    <div class="col-sm-8 col-sm-offset-2 " style="">
+	
+		Mode:
 
-        <ul class="list-group map-groups" id="main">
+		<div class="radio">
+		    <label>
+		        <input type="radio" name="menu-order-mode" value="maps"> 
+		        Order maps (move a map to a new position)
+		    </label>
+		</div>
+
+		<div class="radio">
+		    <label>
+		        <input type="radio" name="menu-order-mode" value="groups"> 
+				Order groups of maps (move a whole group of maps, maintaining the order within the group)
+		    </label>
+		</div>
+
+
+
+    </div>
+</div>
+<div class="row" style="margin-top: 0px;">
+    <div class="col-sm-8 col-sm-offset-2 " style="">
+
+
 
 
 {#
+        <ul class="list-group map-groups" id="main">
 			{% for obj in items %}
             <li class="list-group-item xmap-group" data-id="x" style="margin-top: 15px;">
 
@@ -20,33 +44,64 @@
 
             </li>
 			{% endfor %}
+        </ul>
 #}
 
 
-				            <li class="list-group-item map-elems-group" style="margin-bottom: 15px;">
-				                <b>Published maps</b>
-				                <i class="fa fa-arrows"></i>
-				                
-				                <ul class="list-group xmap-elems" style="margin-bottom: 15px;">
-				                    <li class="list-group-item">a</li>
-				                    <li class="list-group-item">b</li>
-				                    <li class="list-group-item">c</li>
-				                </ul>
-				                {##}
-				            </li>
-				            <li class="list-group-item map-elems-group" style="margin-bottom: 15px;">
-				                <b>Unpublished maps</b>
-				                <i class="fa fa-arrows"></i>
-				                
-				                <ul class="list-group xmap-elems" id="y-list">
-				                    <li class="list-group-item">d</li>
-				                    <li class="list-group-item">e</li>
-				                </ul>
-				                {##}
-				            </li>
+{#
+
+the data-items-type attribute should be present in all <ul>'s and defines the nature of the direct <li>'s
+(that is, it defines what the <li> representing); it can be of 2 kinds:
+
+a) the <li> represents a group of maps (value must be "map-group"); this means the <li> has a nested <ul> as a children
+b) the <li> reprensets a map (value must be a "map-item")
+
+NOTE: list-group and list-group-item are bootstrap classes
+#}
+		<ul class="list-group" data-items-type="map-group">
+            <li class="list-group-item map-menu-group" data-id="published">
+                <i class="fa fa-arrows" style="margin-right: 10px; display: none;" data-items-type="map-group"></i>
+                <b>Published maps</b>
+                <ul class="list-group" style="margin-bottom: 15px;" data-items-type="map-item">
+                    <li class="list-group-item" data-map-id="a" data-name="a-name">
+                    	<i class="fa fa-arrows" style="margin-right: 10px; display: none;" data-items-type="map-item"></i>
+                    	a
+                    </li>
+                    <li class="list-group-item" data-map-id="b" data-name="b-name">
+                    	<i class="fa fa-arrows" style="margin-right: 10px; display: none;" data-items-type="map-item"></i>
+                    	b
+                    </li>
+                    <li class="list-group-item" data-map-id="c" data-name="c-name">
+                    	<i class="fa fa-arrows" style="margin-right: 10px; display: none;" data-items-type="map-item"></i>
+                    	c
+                    </li>
+                </ul>
+
+            </li>
+
+            <li class="list-group-item map-menu-group" data-id="unpublished">
+                <b>Unpublished maps</b>
+                                
+                <ul class="list-group" style="margin-bottom: 15px;" data-items-type="map-item">
+                    <li class="list-group-item" data-id="d" data-name="d-name">d</li>
+                    <li class="list-group-item" data-id="e" data-name="e-name">e</li>
+                </ul>
+
+            </li>
+
+            <li class="list-group-item map-menu-group" data-id="3rd group">
+                <b>3rd group</b>
+                                
+                <ul class="list-group" style="margin-bottom: 15px;" data-items-type="map-item">
+                    <li class="list-group-item" data-id="f" data-name="f-name">f</li>
+                    <li class="list-group-item" data-id="g" data-name="g-name">g</li>
+                </ul>
+
+            </li>
 
 
-        </ul>
+
+		</ul>
 
     </div>
 </div>

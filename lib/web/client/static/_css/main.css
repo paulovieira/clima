@@ -114,6 +114,11 @@ body {
 }
 
 
+/* map menu ordering */
+.map-menu-group {
+  margin: 15px;
+}
+
 /* sticky footer - taken from http://getbootstrap.com/examples/sticky-footer/*/
 
 .footer {
