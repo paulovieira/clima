@@ -1,7 +1,6 @@
 var Q = require("q");
 var Fs = require("fs");
 var Path = require('path');
-var stripJsonComments = require("strip-json-comments");
 var jsonFormat = require('json-format');
 var Bcrypt = require("bcrypt");
 var _ = require("underscore");

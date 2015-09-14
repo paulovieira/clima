@@ -1,5 +1,17 @@
 var Path = require("path");
+var Fs = require("fs");
 var Nunjucks = require('hapi-nunjucks');
+
+if(process.env.NODE_ENV!=="production" &&
+    process.env.NODE_ENV!=="dev" &&
+    process.env.NODE_ENV!=="dev-no-auth"){
+
+    throw new Error("The environment variable NODE_ENV must be set ('dev', 'dev-no-auth' or 'production')");
+}
+
+if(!process.env.TILEMILL_FILES_DIR){
+    throw new Error("The environment variable TILEMILL_FILES_DIR must be set.");
+}
 
 var internals = {
 
@@ -7,16 +19,18 @@ var internals = {
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
-    tilemillFilesDir:  process.env.TILEMILL_FILES_PATH,
+    tilemillFilesDir:  process.env.TILEMILL_FILES_DIR,
 
     // relative paths
     uploadsRelativeDir: "/data/uploads/public/",
-    uploadsWebPath:     "/uploads/public/"
+    uploadsWebPath:     "/uploads/public/",
+
+    env:process.env.NODE_ENV 
 };
 
-if(!internals.tilemillFilesDir){
-    throw new Error("TILEMILL_FILES_PATH is not defined")
-}
+internals.bundles = JSON.parse(Fs.readFileSync(Path.join(internals.rootDir, "bundles.json"), "utf8"));
+
+
 
 Nunjucks.configure(internals.viewsDir, {
     watch: false
@@ -24,6 +38,8 @@ Nunjucks.configure(internals.viewsDir, {
 });
 
 Nunjucks.addGlobal("lang", "pt");
+Nunjucks.addGlobal("NODE_ENV", internals.env);
+Nunjucks.addGlobal("bundles", internals.bundles);
 
 Nunjucks.addFilter('stringify', function(str) {
     return JSON.stringify(str);
@@ -78,6 +94,7 @@ module.exports = {
     },
     tilemillFilesDir: internals.tilemillFilesDir,
     
+    bundles: internals.bundles,
 
     hapi: {
 

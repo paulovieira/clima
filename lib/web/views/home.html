@@ -151,11 +151,20 @@ set energiaBoxData = {
 %}
 
 {% 
-set agriculturaFlorestasBoxData = {
-    title: 505,
+set agriculturaBoxData = {
+    title: 49,
     sectorDesc: 51,
     sectorImg: 61,
-    sectorPath: "sectores/agricultura-florestas"
+    sectorPath: "sectores/agricultura"
+}
+%}
+
+{% 
+set florestasBoxData = {
+    title: 50,
+    sectorDesc: 51,
+    sectorImg: 61,
+    sectorPath: "sectores/florestas"
 }
 %}
 
@@ -201,12 +210,19 @@ set adaptacaoBoxData = {
                         </div> 
 
                         <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-                            {{ sectorBox(ctx, energiaBoxData) }} 
+                            {{ sectorBox(ctx, biodiversidadeBoxData) }} 
                         </div>
 
                         <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-                            {{ sectorBox(ctx, saudeBoxData) }} 
+                            {{ sectorBox(ctx, riscosHidrogeomorfologicosBoxData) }} 
                         </div>
+
+                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                            {{ sectorBox(ctx, adaptacaoBoxData) }} 
+                        </div> 
+
+
+
 
 
     				</div>
@@ -222,16 +238,18 @@ set adaptacaoBoxData = {
 
 
 						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, agriculturaFlorestasBoxData) }} 
+		    				{{ sectorBox(ctx, agriculturaBoxData) }} 
     					</div>
 
                         <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-                            {{ sectorBox(ctx, recursosHidricos) }} 
-                        </div> 
+                            {{ sectorBox(ctx, energiaBoxData) }} 
+                        </div>
 
                         <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-                            {{ sectorBox(ctx, turismoBoxData) }} 
+                            {{ sectorBox(ctx, saudeBoxData) }} 
                         </div>
+
+
 
     				</div>
     				
@@ -242,18 +260,18 @@ set adaptacaoBoxData = {
 
 					<div class="row" style="">
 
+                    <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                        {{ sectorBox(ctx, florestasBoxData) }} 
+                    </div>
 
-                        <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-                            {{ sectorBox(ctx, biodiversidadeBoxData) }} 
-                        </div>
+                    <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                        {{ sectorBox(ctx, recursosHidricos) }} 
+                    </div> 
 
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, riscosHidrogeomorfologicosBoxData) }} 
-    					</div>
+                    <div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
+                        {{ sectorBox(ctx, turismoBoxData) }} 
+                    </div>
 
-						<div class="col-sm-12" style="xborder: 1px solid red; xpadding: 0px 200px 0px 200px; margin-bottom: 50px;">
-		    				{{ sectorBox(ctx, adaptacaoBoxData) }} 
-    					</div> 
 
     				</div>
 

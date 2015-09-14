@@ -428,12 +428,21 @@
         "id": 49,
         "tags": [],
         "contents": {
-            "pt": "Agricultura e Florestas",
-            "en": "Agriculture and Forestry"
+            "pt": "Agricultura",
+            "en": "Agriculture"
         },
         "author_email": "paulovieira@gmail.com"
     },
 
+    {
+        "id": 50,
+        "tags": [],
+        "contents": {
+            "pt": "Florestas",
+            "en": "Florestas"
+        },
+        "author_email": "paulovieira@gmail.com"
+    },
 
     {
         "id": 51,

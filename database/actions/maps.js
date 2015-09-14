@@ -72,19 +72,19 @@ internals.transformMap = {
 
 internals.updateMenu = function(mapMenu, allMaps){
 
-    if(!_.findWhere(mapMenu, {groupName: "published"})){
-        mapMenu.push({groupName: "published", order: 0, mapElements: []});
-    }
+    // if(!_.findWhere(mapMenu, {groupName: "published"})){
+    //     mapMenu.push({groupName: "published", order: 0, maps: []});
+    // }
 
     if(!_.findWhere(mapMenu, {groupName: "not published"})){
-        mapMenu.push({groupName: "not published", order: -1, mapElements: []});
+        mapMenu.push({groupName: "not published", maps: []});
     }
 
-    var published = _.findWhere(mapMenu, {groupName: "published"})
+    //var published = _.findWhere(mapMenu, {groupName: "published"})
     var notPublished = _.findWhere(mapMenu, {groupName: "not published"})
 
-    console.log("currently published maps: ", _.pluck(published.mapElements, "id"));
-    console.log("currently unpublished maps: ", _.pluck(notPublished.mapElements, "id"));
+    //console.log("currently published maps: ", _.pluck(published.maps, "id"));
+    //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
 
 
     // 1) get the ids all currently available maps
@@ -94,40 +94,44 @@ internals.updateMenu = function(mapMenu, allMaps){
     // 2) get all the ids of all maps in the menu (taking into account all groups)
     var mapMenuIds = [];
     mapMenu.forEach(function(groupObj){
-        mapMenuIds = _.union(mapMenuIds, _.pluck(groupObj.mapElements, "id"));
+        mapMenuIds = _.union(mapMenuIds, _.pluck(groupObj.maps, "mapId"));
     });
     //console.log("mapMenuIds: ", mapMenuIds);
 
-    // 3) verify if there are maps in the menu that are not in allMaps (in principle there should none)
+    // 3) verify if there are maps in mapMenuIds that are not in allMaps (in principle there should be none)
     var difference = _.difference(mapMenuIds, allMapsIds);
     if(difference.length > 0){
 
         // remove from the menu 
         difference.forEach(function(id){
+
             console.log("will remove map from the menu: ", id);
             mapMenu.forEach(function(groupObj){
-                groupObj.mapElements = _.filter(groupObj.mapElements, function(obj){ 
-                    return !_.contains(difference, obj.id)
+            
+                groupObj.maps = _.filter(groupObj.maps, function(obj){ 
+                    return !_.contains(difference, obj.mapId);
                 });
             });
 
         });
     }
 
-    // 4) now verify if there are maps in allMaps that are not in the menu (should will happen for sure for new maps)
-    var difference = _.difference(allMapsIds, mapMenuIds);
+    // 4) now verify if there are maps in allMaps that are not in the menu (should 
+    // happen for new maps)
+    difference = _.difference(allMapsIds, mapMenuIds);
     if(difference.length > 0){
         difference.forEach(function(id){
+
             var mapObj = _.findWhere(allMaps, {id: id});
 
-            // add to the menu (not published group)
+            // add to the menu (in the "not published" group)
             if(mapObj){
-                console.log("will add a new map to the menu: ", id);
-                notPublished.mapElements.push({id: id, name: mapObj.name});
+                console.log("will add a new map to the menu (unpublished maps): ", id);
+                notPublished.maps.push({mapId: id});
             }
         });
     }
-}
+};
 
 
 // adds the missing TileJSON keys (not present in project.mml); only in read (not in readAll)
@@ -625,62 +629,78 @@ internals.mapsUpdateMenu = function(args, done){
 // done(null, args.payload);
 
     var dbData = {};
-    Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
-        .then(function(data) {
+    var allMaps = [];
+
+
+    var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
+    var options = {
+        json: true,
+        headers: {}
+    }
+    if(args.headers.cookie){
+        options.headers.cookie = args.headers.cookie;
+    }
+
+    var deferred = Q.defer();
+    Wreck.get(uri, options, function(err, response, payload){
+
+            if(err){
+                return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
+            }
+
+            if(response.statusCode !== 200){
+                return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + err.message));
+            }
+
+            // TODO: closure hack! we should be using Q.all or something similar
+            allMaps = payload;
+           
+            return deferred.resolve();
+    });
+
+    deferred.promise
+        .then(function(){
+
+
+            internals.updateMenu(args.payload, allMaps);
+
+
+
+    // Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
+    //     .then(function(data) {
 
 
 /*
-            var dummyPayload = [
-                {
-                    "groupName": "published", 
-                    "mapElements": [
-                        {
-                            "id": "geography-class", 
-                            "name": "Geography Class"
-                        }
-                    ], 
-                    "order": 0
-                }, 
-                {
-                    "groupName": "not published", 
-                    "mapElements": [
-                        {
-                            "id": "control-room", 
-                            "name": "Control Room"
-                        }, 
 
-                        {
-                            "id": "new-map-100", 
-                            "name": "new-map-100"
-                        }, 
-                        {
-                            "id": "new-map-12", 
-                            "name": "new-map-12"
-                        }, 
-                        {
-                            "id": "new-map-20", 
-                            "name": "new-map-20"
-                        }, 
-                        {
-                            "id": "new-mapa-1-owe-gw", 
-                            "name": "new mapa 1 owe gw"
-                        }, 
-                        {
-                            "id": "open-streets-dc", 
-                            "name": "Open Streets, DC"
-                        }, 
-                        {
-                            "id": "road-trip", 
-                            "name": "Road Trip"
-                        }
-                    ], 
-                    "order": -1
-                }
-            ];
+[
+    {
+        "groupName": "published", 
+        "maps": [
+            {
+                "mapId": "geography-class", 
+            }
+        ], 
+    }, 
+    {
+        "groupName": "not published", 
+        "maps": [
+            {
+                "mapId": "new-mapa-1-owe-gw", 
+            }, 
+            {
+                "mapId": "open-streets-dc", 
+            }, 
+            {
+                "mapId": "road-trip", 
+            }
+        ], 
+    }
+]
+
 
 */
             return Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
-            done(null, dbData);
+            //done(null, dbData);
 
         })
         .then(function(data) {

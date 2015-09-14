@@ -32,8 +32,8 @@ sudo npm install
 
 Then launch TileStream:
 ```sh
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
-./index.js start --tilePort=8001  --tiles=$TILEMILL_FILES_PATH/export 
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
+./index.js start --tilePort=8001  --tiles=$TILEMILL_FILES_DIR/export 
 ```
 
 Note: the default port for this service is 8001
@@ -58,9 +58,9 @@ Then launch TileMill:
 
 ```sh
 export TILEMILL_HOSTNAME=clima.dev (or clima.fc.ul.pt)
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
 
-node index.js --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
+node index.js --server=true --files=$TILEMILL_FILES_DIR --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
 Note: the default ports for this service are 20008 and 20009.
@@ -111,7 +111,7 @@ node database/populate-initial-data/
 
 ```sh
 cd ~/clima-app/clima
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
 export NODE_ENV=dev (or dev-no-auth, or production)
 node index.js
 ```
@@ -128,9 +128,9 @@ sudo npm install pm2 -g
 
 ```sh
 cd ~/clima-app/tilestream-clima
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
 
-pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_PATH/export --tilePort=8001
+pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_DIR/export --tilePort=8001
 ```
 
 2) Start TileMill:
@@ -138,16 +138,16 @@ pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_PATH/exp
 ```sh
 cd ~/clima-app/tilemill-clima
 export TILEMILL_HOSTNAME=clima.fc.ul.pt (or clima.dev)
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
 
-pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_PATH --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
+pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_DIR --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
 ```
 
 3) Start the main app:
 
 ```sh
 cd ~/clima-app/clima
-export TILEMILL_FILES_PATH=$HOME/tilemill-files
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
 export NODE_ENV=dev (or production)
 
 pm2 start index.js --name "clima"
@@ -174,7 +174,7 @@ git fetch
 git merge origin/master
 
 export NODE_ENV=...
-export TILEMILL_FILES_PATH=~/tilemill-files/
+export TILEMILL_FILES_DIR=~/tilemill-files/
 (./database/initialize_db.sh db_name)
 (node ./database/populate-initial-data/)
 

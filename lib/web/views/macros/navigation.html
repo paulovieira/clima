@@ -35,10 +35,13 @@
 	                        	<a href="/{{ lang }}/sectores/clima">{{ ctx.texts[526][lang] }}</a>
 	                        </li>
 
-	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='agricultura-florestas' %}active{% endif %}">
-	                        	<a href="/{{ lang }}/sectores/agricultura-florestas">{{ ctx.texts[505][lang] }}</a>
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='agricultura' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/agricultura">{{ ctx.texts[49][lang] }}</a>
 	                        </li>
 
+	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='florestas' %}active{% endif %}">
+	                        	<a href="/{{ lang }}/sectores/florestas">{{ ctx.texts[50][lang] }}</a>
+	                        </li>
 
 	                        <li class="{% if ctx.urlParam1=='sectores' and ctx.urlParam2=='biodiversidade' %}active{% endif %}">
 	                        	<a href="/{{ lang }}/sectores/biodiversidade">{{ ctx.texts[508][lang] }}</a>

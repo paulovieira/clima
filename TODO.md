@@ -1,3 +1,13 @@
+todo 150913
+  -in nginx, add directory for static assets
+  -in nginx, add configuraitoni for clima-madeira.pt (copypaste)
+  -scp cnfig/production.js
+  -change the environment
+
+
+
+
+
 #### whenever we are reading stuff in the middle of a promise chain, verify if we can move that into a pre-requisite method (if the reading fails, it will be more easy to catch)
 
 #### after an update, migrate data from old database to a new one
