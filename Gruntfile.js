@@ -107,6 +107,7 @@ module.exports = function(grunt) {
     // cartografia target (libs)
     internals.statics.cartografiaLibs = {};
     internals.statics.cartografiaLibs.input = [
+        "lib/web/client/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js",
         "lib/web/client/static/underscore/underscore-1.6.0.js",
         "lib/web/client/static/underscore/underscore.string-3.0.3.js",
         "lib/web/client/static/q/q-1.1.2.js",
@@ -160,9 +161,8 @@ module.exports = function(grunt) {
         "dashboard-templates-" +  internals.timestamp + ".js"
     );
 
-console.log("internals.templates.dashboard.input: ", internals.templates.dashboard.input)
 
-    internals.templates = {};
+
 
     // templates target - cartografia
     internals.templates.cartografia = {};
@@ -278,6 +278,10 @@ console.log("internals.templates.dashboard.input: ", internals.templates.dashboa
 
         "dashboard-templates": {
             src: Path.join(internals.staticsDir, "_js", "dashboard-templates-*.js")
+        },
+
+        "cartografia-libs": {
+            src: Path.join(internals.staticsDir, "_js", "cartografia-libs-*.js")
         },
 
         "cartografia-app": {
