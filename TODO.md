@@ -1,7 +1,5 @@
 todo 150913
   -in nginx, add directory for static assets
-  -in nginx, add configuraitoni for clima-madeira.pt (copypaste)
-  -scp cnfig/production.js
   -change the environment
 
 
