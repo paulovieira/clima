@@ -3,7 +3,7 @@
 # NOTE 3: some tables have column names with broken characteres; those columns are changed manually at the buttom (after the tables have been loaded)
 
 
-#export clima_host=clima.fc.ul.pt
+#export clima_host=clima-madeira.pt
 export clima_host=clima.dev
 export base_dir="/home/pvieira/clima-madeira/Mapas 150630"
 export dbname="150608"

@@ -57,7 +57,7 @@ emacs clima-settings.json
 Then launch TileMill:
 
 ```sh
-export TILEMILL_HOSTNAME=clima.dev (or clima.fc.ul.pt)
+export TILEMILL_HOSTNAME=clima.dev (or clima-madeira.pt)
 export TILEMILL_FILES_DIR=$HOME/tilemill-files
 
 node index.js --server=true --files=$TILEMILL_FILES_DIR --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
@@ -137,7 +137,7 @@ pm2 start index.js --name "tilestream-clima" -- --tiles=$TILEMILL_FILES_DIR/expo
 
 ```sh
 cd ~/clima-app/tilemill-clima
-export TILEMILL_HOSTNAME=clima.fc.ul.pt (or clima.dev)
+export TILEMILL_HOSTNAME=clima-madeira.pt (or clima.dev)
 export TILEMILL_FILES_DIR=$HOME/tilemill-files
 
 pm2 start index.js --name "tilemill-clima" -- --server=true --files=$TILEMILL_FILES_DIR --coreUrl=$TILEMILL_HOSTNAME --tileUrl=$TILEMILL_HOSTNAME
@@ -188,7 +188,7 @@ The client apps use [nunjucks](https://mozilla.github.io/nunjucks/) as the templ
 #### Other configurations
 
 Nginx client_max_body_size
-in the sites-available nginx configuration for clima.fc.ul.pt, make sure the "server" block has:
+in the sites-available nginx configuration for clima-madeira.pt, make sure the "server" block has:
 
 client_max_body_size 0;
 

@@ -1,78 +1,75 @@
-{% extends "layouts/cartografia_base.html"          %}
 {% from "macros/navigation.html" import navigation %}
+<!DOCTYPE html>
+<html lang='en'>
 
-{% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[103][lang] }}{% endblock %} 
-
-{% block css %}
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{ ctx.texts[15][lang] }}
+    </title>
+    {# common css (included in all pages) #} 
+    {% include "common/common_stylesheets.html" %}
 {#
-    <link href="/common/css/bootstrap-modal-2.2.5.css" rel="stylesheet" />
-    <link href="/common/css/bootstrap-fileinput-4.2.0.css" rel="stylesheet" />
-    <link href="/common/css/leaflet-0.7.3.css" rel="stylesheet" /> 
-<link href="/cirac/lib/css/styledLayerControl.css" rel="stylesheet" />
-<link href="/cirac/lib/css/leaflet-geocoder-1.1.0.css" rel="stylesheet" />
-<link href="/cirac/lib/css/leaflet.contextmenu-8eddc.css" rel="stylesheet" />
+    <link href="/static/bootstrap/bootstrap-modal-2.2.5.css" rel="stylesheet" />
 #}
+    <link href="/static/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="/cartografia/_css/cartografia.css" rel="stylesheet" />
+</head>
 
-    <link href="/static/leaflet/leaflet-geocoder-1.1.0/leaflet-geocoder-1.1.0.css" rel="stylesheet" />
-    <link href="/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.css" rel="stylesheet" />
-    <link href="/visualizador/_css/visualizador.css" rel="stylesheet" />
-{% endblock %}
-
-{% block navigation %}
-    {{ navigation(ctx) }}
-{% endblock %}
-
-{% block content %}
-
-    <div class="row" style="height: 100%; margin: 0; padding: 0;">
-        <div id="main-region" class="col-sm-12" style="height: 100%; margin: 0; padding: 0; border-right: 2px black solid;">
+<body>
+    <div id="main-container">
+        <div id="navbar-container">
+            {{ navigation(ctx) }}
+        </div>
+        <div id="map-container">
+            <div class="row" style="height: 100%; margin: 0; padding: 0;">
+                <div id="map" class="col-sm-12" style="height: 100%; margin: 0; padding: 0;" tabindex="0">
+                </div>
+                <div id="map2" class="col-sm-0" style="display:none; height: 100%; margin: 0; padding: 0;">
+                </div>
+            </div>
         </div>
     </div>
-{% endblock %}
 
 
-{% block scripts %}
+    {# common javascript (included in all pages) #} 
+    {% include "common/common_scripts.html" %}
 
-    <script src="/static/jquery/jquery.mousewheel-3.1.12.js"></script>
-    <script src="/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js"></script>
-    <script src="/static/leaflet/leaflet-providers-1.0.29.js"></script> 
-    <script src="/static/leaflet/leaflet-geocoder-1.1.0/leaflet-geocoder-1.1.0.js"></script> 
-{#
-    <script src="/ferramenta/js/leaflet-easy-button.js"></script> 
-    <script src="/ferramenta/js/leaflet-sidebar.js"></script> 
-    <script src="/ferramenta/js/leaflet-providers_1.0.13.js"></script> 
-    <script src="/ferramenta/js/leaflet.contextmenu-src.js"></script> 
+    <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
 
-    <script src="/ferramenta/js/turf.min.js"></script> 
-    <script src="/ferramenta/js/chroma.min.js"></script> 
-#}
+    {% if NODE_ENV == "production" %}
 
+    <script src="/static/_js/{{ bundles['cartografia-libs'] }}"></script>
+    <script src="/static/_js/{{ bundles['cartografia-app'] }}"></script>
+
+    {% else %}
+
+    {# cartografia libs #}
+    {# NOTE: if we add new files here, we must add in the gruntfile as well #}
+    <script src="/static/underscore/underscore-1.6.0.js"></script>
+    <script src="/static/underscore/underscore.string-3.0.3.js"></script>
     <script src="/static/q/q-1.1.2.js"></script>
+    <script src="/static/bootstrap/bootstrap-notify-51a18c.js"></script>
+    <script src="/static/bootstrap/bootstrap-modal-2.2.5.js"></script>    
+    <script src="/static/fecha/fecha-1.0.0.js"></script>
     <script src="/static/nunjucks/nunjucks-slim-1.3.3.js"></script>
-
-  <script src="/static/underscore/underscore-1.6.0.js"></script>
-  <script src="/static/backbone/json2.js"></script>
-  <script src="/static/backbone/backbone-1.1.2.js"></script>
-  <script src="/static/backbone/backbone.radio-1.0.1.js"></script>
-  <script src="/static/backbone/backbone.marionette-2.4.1.js"></script>
-{#  <script src="/static/backbone/backbone.stickit.js"></script> #}
-  <script src="/static/backbone/backbone.syphon-0.6.2.js"></script>
-  <script src="/static/backbone/backbone_override.js"></script>
-  <script src="/static/backbone/renderer-nunjucks.js"></script>
+    <script src="/static/backbone/json2.js"></script>
+    <script src="/static/backbone/backbone-1.1.2.js"></script>
+    <script src="/static/backbone/backbone.radio-1.0.1.js"></script>
+    <script src="/static/backbone/backbone.attributes-5b0f73.js"></script>
+    <script src="/static/backbone/backbone.marionette-2.4.1.js"></script>
+    <script src="/static/backbone/renderer-nunjucks.js"></script>
 
 
+    {# cartografia app #}
+    {# NOTE: if we add new files here, we must add in the gruntfile as well #}
+    <script src="/cartografia/entities.js"></script>
+    <script src="/cartografia/behaviors.js"></script>
+    <script src="/cartografia/index.js"></script>
 
+    {% endif %}
 
-  <script src="/visualizador/templates.js"></script> 
+</body>
 
-  <script src="/visualizador/templates.js"></script> 
-  <script src="/visualizador/map/view-control.js"></script>
-  <script src="/visualizador/map/map.js"></script>
-  {##}
-  <script src="/visualizador/index.js"></script>
-{#
-  <script src="/visualizador/sidebar/sidebar.js"></script>
-  <script src="/visualizador/period-control/period-control.js"></script>
-#}
-
-{% endblock %}
+</html>

@@ -5,7 +5,7 @@
   ],
   "env": {
     "NODE_ENV": "production",
-    "TILEMILL_FILES_PATH": "/home/pvieira/tilemill-files"
+    "TILEMILL_FILES_DIR": "/home/pvieira/tilemill-files"
   },
   "max_memory_restart" : "300M",
   "treekill": true

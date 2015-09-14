@@ -14,11 +14,12 @@ module.exports = function(grunt) {
     internals.timestamp = grunt.template.today('yymmdd-HHMMss');
     internals.staticsDir = Path.join("lib", "web", "client", "static");
     internals.dashboardDir = Path.join("lib", "web", "client", "dashboard");
+    internals.cartografiaDir = Path.join("lib", "web", "client", "cartografia");
 
     internals.statics = {};
 
 
-    // base target: this is only jquery and bootstrap
+    // base target: this is only jquery and bootstrap and is included in every page
     internals.statics.base = {};
     internals.statics.base.input = [
         'lib/web/client/static/jquery/jquery-1.11.2.js', 
@@ -103,6 +104,49 @@ module.exports = function(grunt) {
     );
 
 
+    // cartografia target (libs)
+    internals.statics.cartografiaLibs = {};
+    internals.statics.cartografiaLibs.input = [
+        "lib/web/client/static/underscore/underscore-1.6.0.js",
+        "lib/web/client/static/underscore/underscore.string-3.0.3.js",
+        "lib/web/client/static/q/q-1.1.2.js",
+        "lib/web/client/static/bootstrap/bootstrap-notify-51a18c.js",
+        "lib/web/client/static/bootstrap/bootstrap-modal-2.2.5.js",
+        "lib/web/client/static/jquery/jquery-sortable-0.9.13.js",
+        "lib/web/client/static/fecha/fecha-1.0.0.js",
+        "lib/web/client/static/nunjucks/nunjucks-slim-1.3.3.js",
+        "lib/web/client/static/backbone/json2.js",
+        "lib/web/client/static/backbone/backbone-1.1.2.js",
+        "lib/web/client/static/backbone/backbone.radio-1.0.1.js",
+        "lib/web/client/static/backbone/backbone.attributes-5b0f73.js",
+        "lib/web/client/static/backbone/backbone.marionette-2.4.1.js",
+        "lib/web/client/static/backbone/renderer-nunjucks.js",
+    ];
+
+    internals.statics.cartografiaLibs.output = Path.join(
+        internals.staticsDir, 
+        "_js",
+        "cartografia-libs-" + internals.timestamp + ".js"
+    );
+
+
+    // cartografia target (app)
+    internals.statics.cartografiaApp = {};
+    internals.statics.cartografiaApp.input = [
+
+        "lib/web/client/cartografia/entities.js",
+        "lib/web/client/cartografia/behaviors.js",
+        "lib/web/client/cartografia/index.js"
+    ];
+
+    internals.statics.cartografiaApp.output = Path.join(
+        internals.staticsDir, 
+        "_js",
+        "cartografia-app-" + internals.timestamp + ".js"
+    );
+
+
+
     internals.templates = {};
 
     // templates target - dashboard
@@ -116,8 +160,20 @@ module.exports = function(grunt) {
         "dashboard-templates-" +  internals.timestamp + ".js"
     );
 
+console.log("internals.templates.dashboard.input: ", internals.templates.dashboard.input)
 
+    internals.templates = {};
 
+    // templates target - cartografia
+    internals.templates.cartografia = {};
+    internals.templates.cartografia.input = [
+        internals.cartografiaDir + '/**/*.html'
+    ];
+    internals.templates.cartografia.output = Path.join(
+        internals.staticsDir, 
+        "_js",
+        "cartografia-templates-" +  internals.timestamp + ".js"
+    );
 
 
     // the tasks configuration starts here
@@ -153,7 +209,18 @@ module.exports = function(grunt) {
             dest: internals.statics.dashboardApp.output,
             nonull: true,
         },
-        
+
+        "cartografia-libs": {
+            src: internals.statics.cartografiaLibs.input,
+            dest: internals.statics.cartografiaLibs.output,
+            nonull: true,
+        },
+
+        "cartografia-app": {
+            src: internals.statics.cartografiaApp.input,
+            dest: internals.statics.cartografiaApp.output,
+            nonull: true,
+        },
     };
 
     grunt.config("concat", concatConfig);
@@ -167,6 +234,15 @@ module.exports = function(grunt) {
             baseDir: internals.dashboardDir,
             src: internals.templates.dashboard.input,
             dest: internals.templates.dashboard.output,
+            options: {
+                autoescape: true
+            }
+        },
+
+        "cartografia-templates": {
+            baseDir: internals.cartografiaDir,
+            src: internals.templates.cartografia.input,
+            dest: internals.templates.cartografia.output,
             options: {
                 autoescape: true
             }
@@ -202,7 +278,15 @@ module.exports = function(grunt) {
 
         "dashboard-templates": {
             src: Path.join(internals.staticsDir, "_js", "dashboard-templates-*.js")
-        }
+        },
+
+        "cartografia-app": {
+            src: Path.join(internals.staticsDir, "_js", "cartografia-app-*.js")
+        },
+
+        "cartografia-templates": {
+            src: Path.join(internals.staticsDir, "_js", "cartografia-templates-*.js")
+        }        
 
     };
 
@@ -261,6 +345,33 @@ module.exports = function(grunt) {
             ]
         },
 
+
+        "cartografia-libs": {
+            files: internals.statics.cartografiaLibs.input,
+            tasks: [
+                "clean:cartografia-libs", 
+                "concat:cartografia-libs",
+                "update-bundles-info"
+            ]
+        },
+
+        "cartografia-app": {
+            files: internals.statics.cartografiaApp.input,
+            tasks: [
+                "clean:cartografia-app",
+                "concat:cartografia-app",
+                "update-bundles-info"
+            ]
+        },
+
+        "cartografia-templates": {
+            files: internals.templates.cartografia.input,
+            tasks: [
+                "clean:cartografia-templates",
+                "nunjucks:cartografia-templates",
+                "update-bundles-info"
+            ]
+        },
     };
 
 
@@ -296,6 +407,19 @@ module.exports = function(grunt) {
         paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-templates*.js"));
         obj["dashboard-templates"] = Path.basename(paths[0]);
 
+
+        // bundles - cartografia libs
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-libs*.js"));
+        obj["cartografia-libs"] = Path.basename(paths[0]);
+
+        // bundles - cartografia app
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-app*.js"));
+        obj["cartografia-app"] = Path.basename(paths[0]);
+
+        // bundles - cartografia templates
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-templates*.js"));
+        obj["cartografia-templates"] = Path.basename(paths[0]);
+
         grunt.file.write(filename, JSON.stringify(obj, null, 4));
     });
 
@@ -318,6 +442,16 @@ module.exports = function(grunt) {
         
         "clean:dashboard-templates",
         "nunjucks:dashboard-templates",
+
+        "clean:cartografia-libs", 
+        "concat:cartografia-libs",
+
+        "clean:cartografia-app",
+        "concat:cartografia-app",
+        
+        "clean:cartografia-templates",
+        "nunjucks:cartografia-templates",
+
 
         "update-bundles-info"
     ]);

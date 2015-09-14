@@ -10,7 +10,9 @@
 
         <b>{{ obj['groupName'] }}</b>
 
+        {% if obj['groupName'] != 'not published' %}
         <i class="fa fa-trash" style="cursor: pointer; float: right; margin-right: 6px; color: #990000;" ></i>
+        {% endif %}
 
         <ul class="list-group" style="margin-bottom: 15px;" data-items-type="map-item">
 
