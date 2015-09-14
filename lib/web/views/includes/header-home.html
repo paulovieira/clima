@@ -36,7 +36,7 @@
 
 			</div>
 
-			<div class="col-xs-offset-8 col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-3 col-lg-offset-3 col-lg-2" style="xborder: 1px solid red;">
+			<div class="col-xs-offset-8 col-xs-4 col-sm-offset-2 col-sm-3 col-md-offset-3 col-md-3 col-lg-offset-2 col-lg-3" style="xborder: 1px solid red;">
 
 
 				<div class="row">
@@ -86,10 +86,45 @@
 				<div class="row" style="margin-top: 8px;">
 					<div class="col-xs-12" style="xborder: 1px solid yellow; padding-left: 0px;">
 
-						<div class="input-group">
-							<input type="text" class="form-control" placeholder="{{ ctx.texts[5][lang] }}">
-							<span class="input-group-addon search-box"><span class="glyphicon glyphicon-search"></span></span>
+						<div style="height: 0px;">
+
+						<script>
+						  (function() {
+						    var cx = '012380573021076100075:actszpe-tdc';
+						    var gcse = document.createElement('script');
+						    gcse.type = 'text/javascript';
+						    gcse.async = true;
+						    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+						        '//cse.google.com/cse.js?cx=' + cx;
+						    var s = document.getElementsByTagName('script')[0];
+						    s.parentNode.insertBefore(gcse, s);
+						  })();
+						</script>
+						<gcse:search></gcse:search>
+
 						</div>
+						
+						{#
+						<script>
+						  (function() {
+						    var cx = '012380573021076100075:actszpe-tdc';
+						    var gcse = document.createElement('script');
+						    gcse.type = 'text/javascript';
+						    gcse.async = true;
+						    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+						        '//cse.google.com/cse.js?cx=' + cx;
+						    var s = document.getElementsByTagName('script')[0];
+						    s.parentNode.insertBefore(gcse, s);
+						  })();
+						</script>
+						<gcse:search></gcse:search>
+
+							<input type="text" class="form-control" placeholder="{{ ctx.texts[5][lang] }}">
+							<span class="input-group-addon search-box">
+								<span class="glyphicon glyphicon-search"></span>
+							</span>
+#}
+
 					</div>
 
 				</div>

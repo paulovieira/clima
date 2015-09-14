@@ -235,6 +235,24 @@ img.grayscale:hover {
   z-index: 2040;
 }
 
+
+/*AM22 - To make google search box appear correct - START*/
+input.gsc-input, .gsc-input-box, .gsc-input-box-hover, .gsc-input-box-focus, .gsc-search-button 
+{
+  box-sizing: content-box;
+  line-height: normal;
+}
+
+input.gsc-search-button, 
+.gsc-search-button-v2 {
+  color: #fff;
+  background-color: #31b0d5;
+  border: 1px solid transparent;/**/
+
+}
+/*AM22 - To make google search box appear correct - END*/
+
+
 /* override bootstrap */
 /*
 .nav-pills > li {
