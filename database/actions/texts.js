@@ -9,6 +9,7 @@ var Config = require("config");
 var Cheerio = require("cheerio");
 var Ent = require("ent");
 var ChangeCase = require("change-case-keys");
+var _ = require("underscore");
 var _s = require("underscore.string");
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
@@ -234,6 +235,12 @@ internals.textsUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
     debugger;
+
+    // TODO: this next snippet is done in the validation; we are temporarily removing
+    // the validation for PUT /api/texts because there is some strange error with joi
+    if (_.isObject(args.query) && !_.isArray(args.query)) {
+        args.query = [args.query];
+    }
 
     ChangeCase(args.query, "underscored");
 
