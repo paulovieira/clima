@@ -10,6 +10,10 @@
 
 <link href="/static/font-awesome/4.4.0/css/font-awesome.css" rel="stylesheet">
 <link href="/static/flag-icon/css/flag-icon-pt-gb.css" rel="stylesheet" /> 
+
+{# avoid the messy details in main.css #}
+{% if ctx.urlParam1 != "cartografia" %}
 <link href="/static/_css/main.css" rel="stylesheet" /> 
+{% endif %}
 
 {% include "includes/ga.js" %}  

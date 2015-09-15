@@ -54,5 +54,29 @@
 		"lastName": "teste",
 		"email": "teste@teste.com",
 		"pwHash": "clima83645#"
+	},
+	{
+		"id":9,
+		"firstName": "Carina",
+		"lastName": "Freitas",
+		"email": "carinafreitas.sra@gov-madeira.pt",
+		"pwHash": "clima83645#"
+	},
+	{
+		"id":10,
+		"firstName": "Henrique",
+		"lastName": "Rodrigues",
+		"email": "henriquerodrigues.sra@gov-madeira.pt",
+		"pwHash": "clima59638#"
+	},
+	{
+		"id":11,
+		"firstName": "DROTA",
+		"lastName": "DROTA",
+		"email": "drota.sra@gov-madeira.pt",
+		"pwHash": "clima29836#"
 	}
+
+
+
 ]

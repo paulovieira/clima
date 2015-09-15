@@ -44,12 +44,12 @@ body {
 
 }
 
-#menu-header-2 {
+#menu-icon {
     font-size: 175%;
     transition: all .20s ease;
 }
 
-#menu-header-2:hover {
+#menu-icon:hover {
     
     transform: scale(1.10, 1.10);
     /**/

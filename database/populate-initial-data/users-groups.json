@@ -69,5 +69,23 @@
 		"id": 14,
 		"email": "anaferradagomes@gmail.com",
 		"groupCode": 98
-	}
+	},
+
+	{
+		"id": 15,
+		"email": "carinafreitas.sra@gov-madeira.pt",
+		"groupCode": 99
+	},
+
+	{
+		"id": 16,
+		"email": "henriquerodrigues.sra@gov-madeira.pt",
+		"groupCode": 99
+	},
+
+	{
+		"id": 17,
+		"email": "drota.sra@gov-madeira.pt",
+		"groupCode": 99
+	},
 ]

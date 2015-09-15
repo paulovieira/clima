@@ -1,10 +1,10 @@
 {
     "summernote": "summernote-150915-130403.js",
     "dashboard-libs": "dashboard-libs-150915-130403.js",
-    "dashboard-app": "dashboard-app-150915-130403.js",
+    "dashboard-app": "dashboard-app-150915-152714.js",
     "dashboard-templates": "dashboard-templates-150915-130403.js",
     "base": "base-150915-130403.js",
     "cartografia-libs": "cartografia-libs-150915-130403.js",
-    "cartografia-app": "cartografia-app-150915-130403.js",
-    "cartografia-templates": "cartografia-templates-150915-130403.js"
+    "cartografia-app": "cartografia-app-150915-193508.js",
+    "cartografia-templates": "cartografia-templates-150915-193052.js"
 }

@@ -10,6 +10,7 @@
     </title>
     {# common css (included in all pages) #} 
     {% include "common/common_stylesheets.html" %}
+    
 {#
     <link href="/static/bootstrap/bootstrap-modal-2.2.5.css" rel="stylesheet" />
 #}
@@ -20,20 +21,24 @@
 </head>
 
 <body>
+
     <div id="main-container">
         <div id="navbar-container">
             {{ navigation(ctx) }}
         </div>
-        <div id="map-container">
-            <div class="row" style="height: 100%; margin: 0; padding: 0;">
-                <div id="map" class="col-sm-12" style="height: 100%; margin: 0; padding: 0;" tabindex="0">
+
+        <div id="map-container" xstyle="border: solid 1px;">
+
+            <div class="row" style="height: 100%; margin: 0;">
+                <div id="mn-r-map-1" class="col-sm-12" style="height: 100%; padding: 0;">
                 </div>
-                <div id="map2" class="col-sm-0" style="display:none; height: 100%; margin: 0; padding: 0;">
+                <div id="mn-r-map-2" class="col-sm-0" style="display: none; height: 100%; padding: 0;">
                 </div>
             </div>
-        </div>
-    </div>
 
+        </div>
+
+    </div>
 
     {# common javascript (included in all pages) #} 
     {% include "common/common_scripts.html" %}
