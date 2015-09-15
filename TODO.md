@@ -1,8 +1,32 @@
+-email de manha
+  -o endereço a partir de agora é: clima-madeira.pt (o outro já nao funciona)
+
+ 
+  -fotos na homepage: alguem esta a tratar disso?
+
+  -nas paginas dos sectores, coloquei os icons ao lado da titulo (apenas no sector x e y): que acham
+
+  -actualizei pagina com as fotos: falta destas pessoas
+    - Alexandre Vaz Correia 
+    - Roberto Jardim (temos link para foto)
+    - Carlos Magro
+    - Joana André Reis
+    - Vítor Barreto
+    - Rafaello Bergonse
+    - Paulo Filipe
+    - Eduardo Simões
+    - José Calheiros (temos link para foto)
+
+
+aniversario mae
+dinheiro nicole
+
+
 todo 150913
   -in nginx, add directory for static assets
   -change the environment
 
-
+  -add remote access to the database
 
 
 

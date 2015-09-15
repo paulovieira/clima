@@ -12,28 +12,37 @@
         </div>
 
         <div class="form-group">
-            <label for="js-edit-name">Name</label>
-            <input type="text" class="form-control" value="{{ name }}" disabled>
+            <label for="js-edit-name">URL (internal)</label>
+            <input style="cursor: auto;" type="text" class="form-control" value="{{ webPath }}{{ name }}" disabled>
         </div>
 
         <div class="form-group">
-            <label>Path</label>
-            <input type="text" class="form-control" value="{{ webPath }}" disabled>
-        </div>
-        <div class="form-group">
-            <label>id</label>
-            <input type="text" class="form-control" value="{{ id }}" disabled>
+            <label for="js-edit-name">URL (external)</label>
+            <input style="cursor: auto;" type="text" class="form-control" value="{{ publicUri }}{{ webPath }}{{ name }}" disabled>
         </div>
 
-        <div class="form-group">
-            <label>Uploaded at</label>
-            <input type="text" class="form-control" value="{{ uploadedAt }}" disabled>
+        <div class="row">
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label>Owner</label>
+                    <input type="text" class="form-control" value="{{ ownerData.firstName }} {{ ownerData.lastName }}" disabled>
+                </div>  
+                
+            </div>
+            <div class="col-sm-6">
+
+                <div class="form-group">
+                    <label>Uploaded at</label>
+                    <input type="text" class="form-control" value="{{ uploadedAt }}" disabled>
+                </div>
+              
+
+            </div>
         </div>
 
-        <div class="form-group">
-            <label>Owner</label>
-            <input type="text" class="form-control" value="{{ ownerData.firstName }} {{ ownerData.lastName }}" disabled>
-        </div>
+
+
     </form>
 </div>
 

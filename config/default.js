@@ -2,17 +2,8 @@ var Path = require("path");
 var Fs = require("fs");
 var Nunjucks = require('hapi-nunjucks');
 
-if(process.env.NODE_ENV!=="production" &&
-    process.env.NODE_ENV!=="dev" &&
-    process.env.NODE_ENV!=="dev-no-auth"){
-
-    throw new Error("The environment variable NODE_ENV must be set ('dev', 'dev-no-auth' or 'production')");
-}
-
-if(!process.env.TILEMILL_FILES_DIR){
-    throw new Error("The environment variable TILEMILL_FILES_DIR must be set.");
-}
-
+// note: when this file is first read, the end variables TILEMILL_FILES_DIR and NODE_ENV
+// are defined for sure (see the main index.js)
 var internals = {
 
     // absolute paths
@@ -32,43 +23,6 @@ internals.bundles = JSON.parse(Fs.readFileSync(Path.join(internals.rootDir, "bun
 
 
 
-Nunjucks.configure(internals.viewsDir, {
-    watch: false
-    //    autoescape: true 
-});
-
-Nunjucks.addGlobal("lang", "pt");
-Nunjucks.addGlobal("NODE_ENV", internals.env);
-Nunjucks.addGlobal("bundles", internals.bundles);
-
-Nunjucks.addFilter('stringify', function(str) {
-    return JSON.stringify(str);
-});
-
-Nunjucks.addFilter('lorem', function(str, size) {
-
-    var lorem = "";
-    if(!str){
-        size = size || "small";
-
-        if(size==="small"){
-            lorem = "Lorem ipsum dolor sit amet, mnesarchum reprehendunt ut usu. ";
-        }
-        else if(size==="medium"){
-            lorem = "Velit veniam munere his an, pri cu fuisset ponderum, nominavi appellantur ne mea. Vim eu malorum accumsan dissentiet. ";
-        }
-        else if(size==="big"){
-            lorem = "Vim te altera facete conclusionemque, est stet evertitur ad. Possit periculis ocurreret sit te, pri iracundia deseruisse ad. Eum at graecis liberavisse, pro natum novum movet at. Cu mucius aliquip adversarium pro, vidisse fuisset ei mel. Causae meliore necessitatibus cu eos, doming verterem vulputate ut sed, libris commodo laoreet nam at.";
-        }
-        else {
-            lorem = size;
-        }
-        
-        return lorem;
-    }
-
-    return str;
-});
 
 
 module.exports = {
@@ -77,7 +31,7 @@ module.exports = {
     port: 3000,
     //debugEndpoint: "/debug/consol",  // endpoint to be used in the TV module
 
-    publicUri: "http://clima.dev",  // the domain name
+    publicUri: "localhost",  // host
     publicPort: 3000,  // probably 80
 
     // the default language is the first in the array below
@@ -125,9 +79,9 @@ module.exports = {
 
         // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
         joi: {
-            abortEarly: false,  // returns all the errors found (does not stop on the first error)
+            abortEarly: true,  // returns all the errors found (does not stop on the first error)
             allowUnknown: false, // allows object to contain unknown keys (they can be deleted or not - see the stripUnknown options)
-            stripUnknown: true,  // delete unknown keys
+            stripUnknown: true,  // delete unknown keys; this means that only the keys that are explicitely stated in the schema will be present in request.payload and request.query when the handler executes;
             convert: true
     /*
 
@@ -185,3 +139,4 @@ module.exports = {
 
 
 };
+

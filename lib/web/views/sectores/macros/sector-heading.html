@@ -65,8 +65,12 @@
     </div>
 
     <div class="col-sm-8">
-
-        <h1  style="margin-top: 0px;" class="is-editable" data-editable-id="sector-heading-editable-4">
+    {#
+        <div style="xpadding-bottom: 10px; display:inline-block; border: solid 1px; height: 40px; width: 40px; padding: 2px 1px 0px 1px;">
+            <img style="xmargin-bottom: 20px;" src="/static/_images/sectores/icons/Agricultura_.png" xsheight="35px" class="img-responsive" alt="">
+        </div>
+#}
+        <h1  style="display:inline; xmargin-top: 0px;" class="is-editable" data-editable-id="sector-heading-editable-4">
             {{ ctx.editableTexts['sector-heading-editable-4'][lang] | lorem(ctx.texts[data.title][lang]) }}
             
         </h1>
