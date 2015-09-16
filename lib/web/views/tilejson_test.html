@@ -38,6 +38,7 @@
     L.mapbox.config.HTTP_URL = "http://clima.dev/api/v1/maps";
     L.mapbox.accessToken = 'dummyAccessToken';
 
+    // make sure we aren't using retina tiles (this option is detected in chrome sometimes, on a regular laptop)
     L.Browser.retina = false;
     var map = L.mapbox.map('map', null, {
         zoom: 8,
@@ -57,22 +58,52 @@
 
 
     
-    
-    var tileLayer3 = L.mapbox.tileLayer('advanced-techniques-3-patterns-in-polygons');
-    tileLayer3.on("ready", function(){
-        console.log(this.getTileJSON());
-        map.addLayer(tileLayer3);
-        map.legendControl.addLegend(this.getTileJSON().legend);
-    });
-    tileLayer3.on("error", function(err){
-        console.log("err message: ", err.error.responseText);
-    });
-    
-    var gridLayer3 = L.mapbox.gridLayer('advanced-techniques-3-patterns-in-polygons');
-    map.addLayer(gridLayer3);
+    var layerCache = {};
+//    var mapId = "q10";
+//    var mapId = "q111";
 
-    var gridControl3 = L.mapbox.gridControl(gridLayer3);
-    map.addControl(gridControl3);
+    var loadMap = function(mapId){
+
+        // if the cache already has the layer, use it from the cache
+        // if the map already has the layer, do nothing (this shouldn't happen)
+        // add the layer to the map
+
+
+        layerCache[mapId] = layerCache[mapId] || {};
+
+        layerCache[mapId].tiles = L.mapbox.tileLayer(mapId);
+        layerCache[mapId].tiles.on("ready", function(){
+
+            //console.log(this.getTileJSON());
+
+            map.addLayer(layerCache[mapId].tiles);
+            map.legendControl.addLegend(this.getTileJSON().legend);
+
+        });
+        layerCache[mapId].tiles.on("error", function(err){
+
+            console.log("err message: ", err.error.responseText);
+        });
+
+        layerCache[mapId].grids = L.mapbox.gridLayer(mapId);
+        layerCache[mapId].grids.on("ready", function(){
+
+            map.addLayer(layerCache[mapId].grids);
+
+            layerCache[mapId].gridControl = L.mapbox.gridControl(layerCache[mapId].grids);
+            map.addControl(layerCache[mapId].gridControl);
+        });
+        layerCache[mapId].grids.on("error", function(err){
+
+            console.log("err message: ", err.error.responseText);
+        });
+
+    };
+
+
+
+
+
     /*
 */
 /*
