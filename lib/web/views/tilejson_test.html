@@ -25,17 +25,26 @@
     <script src='http://clima.dev/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js'></script>
     <script>
 
-    var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {});
-    
+    // 1. basic example (no mapbox.js)
+    // var map = L.map('map', {
+    //     zoom: 6,
+    //     center: [38.75, -9.15],
+    // });
+    // var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png')
+    // map.addLayer(osmLayer);    
+
+
+
     L.mapbox.config.HTTP_URL = "http://clima.dev/api/v1/maps";
     L.mapbox.accessToken = 'dummyAccessToken';
 
-
-    //var map = L.mapbox.map('map').setView([38.7, -9.1], 8);
+    L.Browser.retina = false;
     var map = L.mapbox.map('map', null, {
-        zoom: 6,
-        center: [38.75, -9.15],
+        zoom: 8,
+        center: [32.7203,-16.8393],
     });
+
+
 
     // var Clima = {};
     // Clima.tilesBaseUrl = "/api/v1/tiles/";
@@ -44,11 +53,12 @@
     // layer.addTo(map);
 
     //var map = L.mapbox.map("map", "new-map-3");
-    //var osmLayer = L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(map);
+    //var map2 = L.map("map");
 
-    /**/
-    /**/
-    var tileLayer3 = L.mapbox.tileLayer('new-map-3');
+
+    
+    
+    var tileLayer3 = L.mapbox.tileLayer('advanced-techniques-3-patterns-in-polygons');
     tileLayer3.on("ready", function(){
         console.log(this.getTileJSON());
         map.addLayer(tileLayer3);
@@ -58,13 +68,14 @@
         console.log("err message: ", err.error.responseText);
     });
     
-    var gridLayer3 = L.mapbox.gridLayer('new-map-3');
+    var gridLayer3 = L.mapbox.gridLayer('advanced-techniques-3-patterns-in-polygons');
     map.addLayer(gridLayer3);
 
     var gridControl3 = L.mapbox.gridControl(gridLayer3);
     map.addControl(gridControl3);
-
-
+    /*
+*/
+/*
 
     var tileLayer4 = L.mapbox.tileLayer('new-map-4');
     tileLayer4.on("ready", function(){
@@ -81,6 +92,7 @@
 
     var gridControl4 = L.mapbox.gridControl(gridLayer4);
     map.addControl(gridControl4);
+*/
 /*
 */
 
@@ -108,7 +120,7 @@
     var myGridLayer = L.mapbox.gridLayer('examples.map-8ced9urs').addTo(map);
     var myGridControl = L.mapbox.gridControl(myGridLayer).addTo(map);
 */
-    //map.addLayer(osmLayer);
+//    map.addLayer(osmLayer);
 
     </script>
 </body>
