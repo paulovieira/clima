@@ -40,7 +40,7 @@ module.exports = function(grunt) {
         "lib/web/client/static/bootstrap/bootstrap-notify-51a18c.js",
         "lib/web/client/static/jquery/jquery-livequery-70a306.js",
         "lib/web/client/static/summernote/0.6.16/summernote.js",
-        "lib/web/client/page-editor/summernote-save.js"
+        "lib/web/client/summernote-app/summernote-save.js"
     ];
 
     internals.statics.summernote.output = Path.join(
@@ -107,9 +107,12 @@ module.exports = function(grunt) {
     // cartografia target (libs)
     internals.statics.cartografiaLibs = {};
     internals.statics.cartografiaLibs.input = [
+        "lib/web/client/static/jquery/jquery.mousewheel-3.1.12.js",
         "lib/web/client/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js",
+        "lib/web/client/static/leaflet/leaflet-providers-1.0.29.js",
+        "lib/web/client/static/leaflet/leaflet-minimap/Control.MiniMap-447530.js",
         "lib/web/client/static/underscore/underscore-1.6.0.js",
-        "lib/web/client/static/underscore/underscore.string-3.0.3.js",
+        //"lib/web/client/static/underscore/underscore.string-3.0.3.js",
         "lib/web/client/static/q/q-1.1.2.js",
         "lib/web/client/static/bootstrap/bootstrap-notify-51a18c.js",
         "lib/web/client/static/bootstrap/bootstrap-modal-2.2.5.js",

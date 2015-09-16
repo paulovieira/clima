@@ -1,26 +1,28 @@
--email de manha
-  -o endereço a partir de agora é: clima-madeira.pt (o outro já nao funciona)
 
- 
-  -fotos na homepage: alguem esta a tratar disso?
-
-  -nas paginas dos sectores, coloquei os icons ao lado da titulo (apenas no sector x e y): que acham
-
-  -actualizei pagina com as fotos: falta destas pessoas
-    - Alexandre Vaz Correia 
-    - Roberto Jardim (temos link para foto)
-    - Carlos Magro
-    - Joana André Reis
-    - Vítor Barreto
-    - Rafaello Bergonse
-    - Paulo Filipe
-    - Eduardo Simões
-    - José Calheiros (temos link para foto)
+ate amanha:
+  -indicadores
+  
+  
+QUARTA - reuniao coordenacao
+  
+  -bug resolvido: activar botao de abrir link numa nova pagina
+  -pedir feedback sobre os indicadores (levar tablet)
 
 
-aniversario mae
-dinheiro nicole
+  -melhorar a parte das informacoes dos utilizadores
 
+
+QUINTA - skype
+  -enviar os users + password
+  -mostrar que há uma versao em ingles pronta a ser usada, caso eles queiram usar (se nao desactivamos a versao em ingles)
+  -mostrar que eles ficam uma plataforma que code ser adaptada (textos, novos mapas, etc)
+
+SEXTA
+  -ir buscar insulina
+  -imprimir fotografia para levar sabado
+
+
+  
 
 todo 150913
   -in nginx, add directory for static assets

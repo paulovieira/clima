@@ -173,11 +173,12 @@ cd ~/clima-app/backups && pg_dump --format=c --file=backup_YYMMDD.sqlc db_name
 git fetch
 git merge origin/master
 
-export NODE_ENV=...
-export TILEMILL_FILES_DIR=~/tilemill-files/
+(export NODE_ENV=production)
+(export TILEMILL_FILES_DIR=~/tilemill-files/)
 (./database/initialize_db.sh db_name)
 (node ./database/populate-initial-data/)
 
+sudo service nginx restart (to make sure the served static files are the updated version - is it really necessary?)
 pm2 start pm2-clima-XXX.json
 ```
 
