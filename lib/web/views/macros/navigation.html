@@ -83,12 +83,16 @@
 	                <li class="nav-border-left {{ 'active' if ctx.urlParam1=='estrategia-adaptacao' }}">
 	                	<a href="/{{ lang }}/estrategia-adaptacao">{{ ctx.texts[20][lang] }}</a>
 	                </li>
- 
+
+	                <li class="nav-border-left {{ 'active' if ctx.urlParam1=='indicadores' }}">
+	                	<a href="/{{ lang }}/indicadores">{{ ctx.texts[530][lang] }}</a>
+	                </li>
+
 	                <li class="nav-border-left nav-border-right {{ 'active' if ctx.urlParam1=='equipa' }}">
 	                	<a href="/{{ lang }}/equipa">{{ ctx.texts[21][lang] }}</a>
 	                </li>
 
-
+{# todo add indicadores #}
 	            </ul>
 
 {#
@@ -184,6 +188,11 @@
 						        </li>
 						    </ul>
 						</div>
+
+		            	<button id="js-contact-nav" style="margin-left: 5px; padding-left: 18px; padding-right: 18px;" type="button" class="btn btn-default navbar-btn" data-toggle="tooltip" data-placement="bottom" title="Contacto (clique para enviar um email para drota.sra@gov-madeira.pt)">
+		            		<i class="fa fa-at" style="font-size: 120%;"></i>
+		            	</button>
+
 
 
 		            </li>

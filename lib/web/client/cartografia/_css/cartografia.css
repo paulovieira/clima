@@ -44,12 +44,12 @@ body {
 
 }
 
-#menu-icon {
-    font-size: 175%;
+.menu-icon {
+    font-size: 150%;
     transition: all .20s ease;
 }
 
-#menu-icon:hover {
+.menu-icon:hover {
     
     transform: scale(1.10, 1.10);
     /**/
