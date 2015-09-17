@@ -87,12 +87,12 @@ module.exports = function(grunt) {
     // dashboard target (app)
     internals.statics.dashboardApp = {};
     internals.statics.dashboardApp.input = [
-
         "lib/web/client/dashboard/entities.js",
         "lib/web/client/dashboard/behaviors.js",
         "lib/web/client/dashboard/profile/profile.js",
         "lib/web/client/dashboard/texts/texts.js",
         "lib/web/client/dashboard/users/users.js",
+        "lib/web/client/dashboard/indicators/indicators.js",
         "lib/web/client/dashboard/files/files.js",
         "lib/web/client/dashboard/maps/maps.js",
         "lib/web/client/dashboard/color-brew.js",
