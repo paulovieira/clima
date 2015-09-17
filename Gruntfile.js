@@ -5,8 +5,11 @@ module.exports = function(grunt) {
 
     grunt.loadNpmTasks('grunt-nunjucks');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-compress');
     grunt.loadNpmTasks('grunt-contrib-clean');
     grunt.loadNpmTasks('grunt-contrib-watch');
+
 
     // configuration data for all the tasks
     var internals = {};
@@ -29,8 +32,9 @@ module.exports = function(grunt) {
     internals.statics.base.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "base-" + internals.timestamp + ".js"
+        "base-" + internals.timestamp
     );
+
 
     // summernote target (we need q and underscore here)
     internals.statics.summernote = {};
@@ -46,7 +50,7 @@ module.exports = function(grunt) {
     internals.statics.summernote.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "summernote-" + internals.timestamp + ".js"
+        "summernote-" + internals.timestamp
     );
 
     // dashboard target (libs)
@@ -76,7 +80,7 @@ module.exports = function(grunt) {
     internals.statics.dashboardLibs.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "dashboard-libs-" + internals.timestamp + ".js"
+        "dashboard-libs-" + internals.timestamp
     );
 
 
@@ -100,7 +104,7 @@ module.exports = function(grunt) {
     internals.statics.dashboardApp.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "dashboard-app-" + internals.timestamp + ".js"
+        "dashboard-app-" + internals.timestamp
     );
 
 
@@ -130,7 +134,7 @@ module.exports = function(grunt) {
     internals.statics.cartografiaLibs.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "cartografia-libs-" + internals.timestamp + ".js"
+        "cartografia-libs-" + internals.timestamp
     );
 
 
@@ -146,7 +150,7 @@ module.exports = function(grunt) {
     internals.statics.cartografiaApp.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "cartografia-app-" + internals.timestamp + ".js"
+        "cartografia-app-" + internals.timestamp
     );
 
 
@@ -161,7 +165,7 @@ module.exports = function(grunt) {
     internals.templates.dashboard.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "dashboard-templates-" +  internals.timestamp + ".js"
+        "dashboard-templates-" +  internals.timestamp
     );
 
 
@@ -175,7 +179,7 @@ module.exports = function(grunt) {
     internals.templates.cartografia.output = Path.join(
         internals.staticsDir, 
         "_js",
-        "cartografia-templates-" +  internals.timestamp + ".js"
+        "cartografia-templates-" +  internals.timestamp
     );
 
 
@@ -191,37 +195,37 @@ module.exports = function(grunt) {
         
         base: {
             src: internals.statics.base.input,
-            dest: internals.statics.base.output,
+            dest: internals.statics.base.output + ".js",
             nonull: true,
         },
 
         summernote: {
             src: internals.statics.summernote.input,
-            dest: internals.statics.summernote.output,
+            dest: internals.statics.summernote.output + ".js",
             nonull: true,
         },
 
         "dashboard-libs": {
             src: internals.statics.dashboardLibs.input,
-            dest: internals.statics.dashboardLibs.output,
+            dest: internals.statics.dashboardLibs.output + ".js",
             nonull: true,
         },
 
         "dashboard-app": {
             src: internals.statics.dashboardApp.input,
-            dest: internals.statics.dashboardApp.output,
+            dest: internals.statics.dashboardApp.output + ".js",
             nonull: true,
         },
 
         "cartografia-libs": {
             src: internals.statics.cartografiaLibs.input,
-            dest: internals.statics.cartografiaLibs.output,
+            dest: internals.statics.cartografiaLibs.output + ".js",
             nonull: true,
         },
 
         "cartografia-app": {
             src: internals.statics.cartografiaApp.input,
-            dest: internals.statics.cartografiaApp.output,
+            dest: internals.statics.cartografiaApp.output + ".js",
             nonull: true,
         },
     };
@@ -236,7 +240,7 @@ module.exports = function(grunt) {
         "dashboard-templates": {
             baseDir: internals.dashboardDir,
             src: internals.templates.dashboard.input,
-            dest: internals.templates.dashboard.output,
+            dest: internals.templates.dashboard.output + ".js",
             options: {
                 autoescape: true
             }
@@ -245,7 +249,7 @@ module.exports = function(grunt) {
         "cartografia-templates": {
             baseDir: internals.cartografiaDir,
             src: internals.templates.cartografia.input,
-            dest: internals.templates.cartografia.output,
+            dest: internals.templates.cartografia.output + ".js",
             options: {
                 autoescape: true
             }
@@ -254,6 +258,112 @@ module.exports = function(grunt) {
 
     grunt.config("nunjucks", nunjucksConfig);
 
+
+    // TASK: uglify (to be run after concat and nunjucks)
+
+    var uglifyConfig = {
+
+        // if there is any problem with the minified code, try mangle: false
+        options: {
+            mangle: false
+        },
+
+        base: {
+            src: internals.statics.base.output + ".js",
+            dest: internals.statics.base.output + ".min.js"
+        },
+
+        summernote: {
+            src: internals.statics.summernote.output + ".js",
+            dest: internals.statics.summernote.output + ".min.js"
+        },
+
+        "dashboard-libs": {
+            src: internals.statics.dashboardLibs.output + ".js",
+            dest: internals.statics.dashboardLibs.output + ".min.js"
+        },
+
+        "dashboard-app": {
+            src: internals.statics.dashboardApp.output + ".js",
+            dest: internals.statics.dashboardApp.output + ".min.js"
+        },
+
+        "dashboard-templates": {
+            src: internals.templates.dashboard.output + ".js",
+            dest: internals.templates.dashboard.output + ".min.js"
+        },
+
+        "cartografia-libs": {
+            src: internals.statics.cartografiaLibs.output + ".js",
+            dest: internals.statics.cartografiaLibs.output + ".min.js"
+        },
+
+        "cartografia-app": {
+            src: internals.statics.cartografiaApp.output + ".js",
+            dest: internals.statics.cartografiaApp.output + ".min.js"
+        },
+
+        "cartografia-templates": {
+            src: internals.templates.cartografia.output + ".js",
+            dest: internals.templates.cartografia.output + ".min.js"
+        },
+    };
+
+    grunt.config("uglify", uglifyConfig);
+
+
+    // TASK: create a gzipped version of the concatenated files (this task should be run
+    // right after the uglify; nginx will use these files if they are present;)
+
+    var compressConfig = {
+
+        options: {
+            mode: 'gzip',
+            pretty: true
+        },
+
+        base: {
+            src: internals.statics.base.output + ".min.js",
+            dest: internals.statics.base.output + ".min.js.gz"
+        },
+
+        summernote: {
+            src: internals.statics.summernote.output + ".min.js",
+            dest: internals.statics.summernote.output + ".min.js.gz"
+        },
+
+        "dashboard-libs": {
+            src: internals.statics.dashboardLibs.output + ".min.js",
+            dest: internals.statics.dashboardLibs.output + ".min.js.gz"
+        },
+
+        "dashboard-app": {
+            src: internals.statics.dashboardApp.output + ".min.js",
+            dest: internals.statics.dashboardApp.output + ".min.js.gz"
+        },
+
+        "dashboard-templates": {
+            src: internals.templates.dashboard.output + ".min.js",
+            dest: internals.templates.dashboard.output + ".min.js.gz"
+        },
+
+        "cartografia-libs": {
+            src: internals.statics.cartografiaLibs.output + ".min.js",
+            dest: internals.statics.cartografiaLibs.output + ".min.js.gz"
+        },
+
+        "cartografia-app": {
+            src: internals.statics.cartografiaApp.output + ".min.js",
+            dest: internals.statics.cartografiaApp.output + ".min.js.gz"
+        },
+
+        "cartografia-templates": {
+            src: internals.templates.cartografia.output + ".min.js",
+            dest: internals.templates.cartografia.output + ".min.js.gz"
+        },
+    };
+
+    grunt.config("compress", compressConfig);
 
     // TASK: clean old files 
 
@@ -264,36 +374,68 @@ module.exports = function(grunt) {
         },
 
         "base": {
-            src: Path.join(internals.staticsDir, "_js", "base*.js")
+            src: Path.join(internals.staticsDir, "_js", "base*")
+        },
+
+        "base-uncompressed": {
+            src: internals.statics.base.output + ".js"
         },
 
         "summernote": {
-            src: Path.join(internals.staticsDir, "_js", "summernote*.js")
+            src: Path.join(internals.staticsDir, "_js", "summernote*")
+        },
+
+        "summernote-uncompressed": {
+            src: internals.statics.summernote.output + ".js"
         },
 
         "dashboard-libs": {
-            src: Path.join(internals.staticsDir, "_js", "dashboard-libs-*.js")
+            src: Path.join(internals.staticsDir, "_js", "dashboard-libs-*")
         },
 
+        "dashboard-libs-uncompressed": {
+            src: internals.statics.dashboardLibs.output + ".js"
+        },        
+
         "dashboard-app": {
-            src: Path.join(internals.staticsDir, "_js", "dashboard-app-*.js")
+            src: Path.join(internals.staticsDir, "_js", "dashboard-app-*")
+        },
+
+        "dashboard-app-uncompressed": {
+            src: internals.statics.dashboardApp.output + ".js"
         },
 
         "dashboard-templates": {
-            src: Path.join(internals.staticsDir, "_js", "dashboard-templates-*.js")
+            src: Path.join(internals.staticsDir, "_js", "dashboard-templates-*")
+        },
+
+        "dashboard-templates-uncompressed": {
+            src: internals.templates.dashboard.output + ".js"
         },
 
         "cartografia-libs": {
-            src: Path.join(internals.staticsDir, "_js", "cartografia-libs-*.js")
+            src: Path.join(internals.staticsDir, "_js", "cartografia-libs-*")
+        },
+
+        "cartografia-libs-uncompressed": {
+            src: internals.statics.cartografiaLibs.output + ".js"
         },
 
         "cartografia-app": {
-            src: Path.join(internals.staticsDir, "_js", "cartografia-app-*.js")
+            src: Path.join(internals.staticsDir, "_js", "cartografia-app-*")
+        },
+
+        "cartografia-app-uncompressed": {
+            src: internals.statics.cartografiaApp.output + ".js"
         },
 
         "cartografia-templates": {
-            src: Path.join(internals.staticsDir, "_js", "cartografia-templates-*.js")
-        }        
+            src: Path.join(internals.staticsDir, "_js", "cartografia-templates-*")
+        },
+
+        "cartografia-templates-uncompressed": {
+            src: internals.templates.cartografia.output + ".js"
+        }
 
     };
 
@@ -311,6 +453,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:base", 
                 "concat:base",
+                "uglify:base",
+                "clean:base-uncompressed",
+                "compress:base",
                 "update-bundles-info"   
             ]
         },
@@ -320,6 +465,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:summernote",
                 "concat:summernote",
+                "uglify:summernote",
+                "clean:summernote-uncompressed", 
+                "compress:summernote",
                 "update-bundles-info"
             ]
         },
@@ -330,6 +478,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:dashboard-libs", 
                 "concat:dashboard-libs",
+                "uglify:dashboard-libs",
+                "clean:dashboard-libs-uncompressed", 
+                "compress:dashboard-libs",
                 "update-bundles-info"
             ]
         },
@@ -339,6 +490,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:dashboard-app",
                 "concat:dashboard-app",
+                "uglify:dashboard-app",
+                "clean:dashboard-app-uncompressed", 
+                "compress:dashboard-app",
                 "update-bundles-info"
             ]
         },
@@ -348,6 +502,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:dashboard-templates",
                 "nunjucks:dashboard-templates",
+                "uglify:dashboard-templates",
+                "clean:dashboard-templates-uncompressed", 
+                "compress:dashboard-templates",
                 "update-bundles-info"
             ]
         },
@@ -358,6 +515,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:cartografia-libs", 
                 "concat:cartografia-libs",
+                "uglify:cartografia-libs",
+                "clean:cartografia-libs-uncompressed", 
+                "compress:cartografia-libs",
                 "update-bundles-info"
             ]
         },
@@ -367,6 +527,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:cartografia-app",
                 "concat:cartografia-app",
+                "uglify:cartografia-app",
+                "clean:cartografia-app-uncompressed", 
+                "compress:cartografia-app",
                 "update-bundles-info"
             ]
         },
@@ -376,6 +539,9 @@ module.exports = function(grunt) {
             tasks: [
                 "clean:cartografia-templates",
                 "nunjucks:cartografia-templates",
+                "uglify:cartografia-templates",
+                "clean:cartografia-templates-uncompressed", 
+                "compress:cartografia-templates",
                 "update-bundles-info"
             ]
         },
@@ -395,36 +561,36 @@ module.exports = function(grunt) {
         var paths;
 
         // bundles - base (jquery + bootstrap)
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "base*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "base*.min.js"));
         obj["base"] = Path.basename(paths[0]);
 
         // bundles - summernote
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "summernote*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "summernote*.min.js"));
         obj["summernote"] = Path.basename(paths[0]);
 
         // bundles - dashboard libs
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-libs*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-libs*.min.js"));
         obj["dashboard-libs"] = Path.basename(paths[0]);
 
         // bundles - dashboard app
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-app*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-app*.min.js"));
         obj["dashboard-app"] = Path.basename(paths[0]);
 
         // bundles - dashboard templates
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-templates*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "dashboard-templates*.min.js"));
         obj["dashboard-templates"] = Path.basename(paths[0]);
 
 
         // bundles - cartografia libs
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-libs*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-libs*.min.js"));
         obj["cartografia-libs"] = Path.basename(paths[0]);
 
         // bundles - cartografia app
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-app*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-app*.min.js"));
         obj["cartografia-app"] = Path.basename(paths[0]);
 
         // bundles - cartografia templates
-        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-templates*.js"));
+        paths = grunt.file.expand(Path.join(internals.staticsDir, "_js", "cartografia-templates*.min.js"));
         obj["cartografia-templates"] = Path.basename(paths[0]);
 
         grunt.file.write(filename, JSON.stringify(obj, null, 4));
@@ -435,32 +601,56 @@ module.exports = function(grunt) {
     grunt.registerTask('default', ['watch']);
 
     grunt.registerTask('build', [
-        "clean:base", 
+        "clean:base",
         "concat:base",
+        "uglify:base",
+        "compress:base",
+        "clean:base-uncompressed",
 
         "clean:summernote",
         "concat:summernote",
+        "uglify:summernote",
+        "compress:summernote",
+        "clean:summernote-uncompressed",
 
-        "clean:dashboard-libs", 
+        "clean:dashboard-libs",
         "concat:dashboard-libs",
+        "uglify:dashboard-libs",
+        "compress:dashboard-libs",
+        "clean:dashboard-libs-uncompressed",
 
         "clean:dashboard-app",
         "concat:dashboard-app",
+        "uglify:dashboard-app",
+        "compress:dashboard-app",
+        "clean:dashboard-app-uncompressed",
         
         "clean:dashboard-templates",
         "nunjucks:dashboard-templates",
+        "uglify:dashboard-templates",
+        "compress:dashboard-templates",
+        "clean:dashboard-templates-uncompressed",
 
-        "clean:cartografia-libs", 
+        "clean:cartografia-libs",
         "concat:cartografia-libs",
+        "uglify:cartografia-libs",
+        "compress:cartografia-libs",
+        "clean:cartografia-libs-uncompressed",
 
         "clean:cartografia-app",
         "concat:cartografia-app",
+        "uglify:cartografia-app",
+        "compress:cartografia-app",
+        "clean:cartografia-app-uncompressed",
         
         "clean:cartografia-templates",
         "nunjucks:cartografia-templates",
-
+        "uglify:cartografia-templates",
+        "compress:cartografia-templates",
+        "clean:cartografia-templates-uncompressed",
 
         "update-bundles-info"
     ]);
 
 };
+

@@ -1,5 +1,6 @@
 {
 	"ext": "js,html",
+    "delay": 1000,
 	"ignore": [
         "data/*", 
         "database/sql/*", 
