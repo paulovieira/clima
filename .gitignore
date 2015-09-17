@@ -13,10 +13,15 @@ results.xml
 */*/._*
 coverage.*
 
+
+
 # configuration files (contain sensitive data - passwords, api keys, etc)
+
 config/dev.js
 config/dev-no-auth.js
 config/production.js
 lib/web/client/static/_js/*min.js*
 .tern-port
 bundles.json
+
+

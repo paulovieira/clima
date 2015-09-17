@@ -555,9 +555,7 @@ module.exports = function(grunt) {
 
     grunt.registerTask("update-bundles-info", function(){
 
-        var filename = "./bundles.json";
-        var obj = grunt.file.readJSON(filename);
-
+        var obj = {}, filename = "./bundles.json";
         var paths;
 
         // bundles - base (jquery + bootstrap)

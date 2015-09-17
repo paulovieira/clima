@@ -1,4 +1,4 @@
-module.exports = require("./lib");
+ module.exports = require("./lib");
 
 // TODO: reinstall Hoek as soon once it is greater than 2.14.0, and remove this
 var Hoek = require("hoek");
