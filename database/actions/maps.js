@@ -69,6 +69,79 @@ internals.transformMap = {
 
 };
 
+// new version
+internals.updateMenu2 = function(mapMenu, allMaps){
+
+    // if(!_.findWhere(mapMenu, {groupName: "published"})){
+    //     mapMenu.push({groupName: "published", order: 0, maps: []});
+    // }
+
+    if(!_.findWhere(mapMenu, {groupName: "not published"})){
+        mapMenu.push({groupName: "not published", maps: []});
+    }
+
+    //var published = _.findWhere(mapMenu, {groupName: "published"})
+    var notPublished = _.findWhere(mapMenu, {groupName: "not published"})
+
+    //console.log("currently published maps: ", _.pluck(published.maps, "id"));
+    //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
+
+
+    // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available)
+    allMaps = allMaps
+                .filter(function(obj){
+                    //return true;
+                    return !!obj.tiles;
+                });
+                // .map(function(obj){
+                //     return obj.id;
+                // });
+
+    var allMapsIds = _.pluck(allMaps, "id");
+    //console.log("allMapsIds", allMapsIds);
+
+    // 2) get all the ids of all maps in the menu (taking into account all groups)
+    var mapMenuIds = [];
+    mapMenu.forEach(function(groupObj){
+        mapMenuIds = _.union(mapMenuIds, _.pluck(groupObj.maps, "mapId"));
+    });
+    //console.log("mapMenuIds: ", mapMenuIds);
+
+    // 3) verify if there are maps in mapMenuIds that are not in allMaps (this happens if a map present in the menu
+    // has been deleted meanwhile)
+    var difference = _.difference(mapMenuIds, allMapsIds);
+    if(difference.length > 0){
+
+        // remove from the menu 
+        difference.forEach(function(id){
+
+            console.log("will remove map from the menu: ", id);
+            mapMenu.forEach(function(groupObj){
+            
+                groupObj.maps = _.filter(groupObj.maps, function(obj){ 
+                    return !_.contains(difference, obj.mapId);
+                });
+            });
+
+        });
+    }
+
+    // 4) now verify if there are maps in allMaps that are not in the menu (should 
+    // happen for new maps)
+    difference = _.difference(allMapsIds, mapMenuIds);
+    if(difference.length > 0){
+        difference.forEach(function(id){
+
+            var mapObj = _.findWhere(allMaps, {id: id});
+
+            // add to the menu (in the "not published" group)
+            if(mapObj){
+                console.log("will add a new map to the menu (unpublished maps): ", id);
+                notPublished.maps.push({mapId: id});
+            }
+        });
+    }
+};
 
 internals.updateMenu = function(mapMenu, allMaps){
 
@@ -87,7 +160,11 @@ internals.updateMenu = function(mapMenu, allMaps){
     //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
 
 
-    // 1) get the ids all currently available maps
+    // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available)
+    allMaps = allMaps.filter(function(obj){
+        return !!obj.tiles;
+    });
+
     var allMapsIds = _.pluck(allMaps, "id");
     //console.log("allMapsIds", allMapsIds);
 
@@ -138,15 +215,21 @@ internals.updateMenu = function(mapMenu, allMaps){
 internals.addMissingKeys = function(tilemillDir, obj){
 
     // get an array of all the mbtiles exports relative to this map,
-    // and order them by data (the last one will be the most recent one)
+    // and order them by date (the last one will be the most recent one)
 
     // TODO: cache the stat information
     var mbtiles = Glob.sync(tilemillDir + "/export/" + obj.id + "*.mbtiles")
                     .sort(function(a, b){
                         return Fs.statSync(a).mtime.getTime() - Fs.statSync(b).mtime.getTime();
-                    });
+                    })
+                    .pop();
 
-    var tilesBaseAddress = "/api/v1/tiles/" + Path.basename(mbtiles.pop(), ".mbtiles");
+    // if there is no mbtiles for the given map, there's nothing left to do
+    if(!mbtiles){
+        return;
+    }
+
+    var tilesBaseAddress = "/api/v1/tiles/" + Path.basename(mbtiles, ".mbtiles");
 
     obj.tilejson = "2.0.0";
     obj.attribution = "";
@@ -206,14 +289,16 @@ internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
 
                     // add the properties in the auxiliary info file
                     project.createdAt = info.createdAt || 0;
-                    project._updated = info.createdAt || 0;
+                    project._updated  = info.createdAt || 0;
                     project.owner     = info.owner || "unknown";
 
                     // TODO: when reading all maps should we also add missing keys?
                     //if(method==="read"){
                         internals.addMissingKeys(tilemillDir, project);
                     //}
-                    output.push(project);
+
+                    output.push(project);    
+                   
                 }
                 catch(e){
 
@@ -442,10 +527,10 @@ console.log("payload: ", payload);
 
             return Fs.writeJsonAsync(newProjectInfo, obj);
         })
-
+/*  - update the menu - TO BE DELETED
         .then(function(){
 
-            var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
+            var allMapsUri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
             var options = {
                 json: true,
                 headers: {}
@@ -455,7 +540,7 @@ console.log("payload: ", payload);
             }
 
             var deferred = Q.defer();
-            Wreck.get(uri, options, function(err, response, payload){
+            Wreck.get(allMapsUri, options, function(err, response, payload){
 
                     if(err){
                         return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
@@ -494,7 +579,7 @@ console.log("payload: ", payload);
             return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
 
         })
-
+*/
         .then(function(){
 
             return done(null, {id: mapId, name: mapName, description: mapDescription});
@@ -540,6 +625,9 @@ internals.mapsDelete = function(args, done){
         })
 
         // step 3: make an http get request (internal) to obtain the list of all maps (doesn't include the map that was deleted in step 1)
+
+// update the menu - to be deleted
+/*
         .then(function(){
 
             var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
@@ -589,7 +677,7 @@ internals.mapsDelete = function(args, done){
             return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
 
         })
-
+*/
         .then(function(){
 
             return done(null, {deletedId: mapId});
@@ -606,11 +694,13 @@ internals.mapsDelete = function(args, done){
 internals.mapsReadMenu = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
-  
     Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
-        .then(function(data) {
+        .then(function(configRow) {
+            
+            var mapMenu = configRow[0]["value"];
+            internals.updateMenu2(mapMenu, args.pre.maps)
 
-            return done(null, data[0]["value"]);
+            return done(null, mapMenu);
         })
         .catch(function(err) {
 
@@ -627,7 +717,7 @@ internals.mapsUpdateMenu = function(args, done){
 
 // console.log(args.payload);
 // done(null, args.payload);
-
+/*
     var dbData = {};
     var allMaps = [];
 
@@ -670,48 +760,51 @@ internals.mapsUpdateMenu = function(args, done){
     //     .then(function(data) {
 
 
-/*
-
-[
-    {
-        "groupName": "published", 
-        "maps": [
-            {
-                "mapId": "geography-class", 
-            }
-        ], 
-    }, 
-    {
-        "groupName": "not published", 
-        "maps": [
-            {
-                "mapId": "new-mapa-1-owe-gw", 
-            }, 
-            {
-                "mapId": "open-streets-dc", 
-            }, 
-            {
-                "mapId": "road-trip", 
-            }
-        ], 
-    }
-]
 
 
-*/
+// [
+//     {
+//         "groupName": "published", 
+//         "maps": [
+//             {
+//                 "mapId": "geography-class", 
+//             }
+//         ], 
+//     }, 
+//     {
+//         "groupName": "not published", 
+//         "maps": [
+//             {
+//                 "mapId": "new-mapa-1-owe-gw", 
+//             }, 
+//             {
+//                 "mapId": "open-streets-dc", 
+//             }, 
+//             {
+//                 "mapId": "road-trip", 
+//             }
+//         ], 
+//     }
+// ]
+
+
+
             return Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
             //done(null, dbData);
 
         })
-        .then(function(data) {
+*/
 
-            return done(null, dbData);
-        })
-        .catch(function(err) {
+        Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
+            .then(function(data) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-            return done(err);
-        });
+                return done(null, dbData);
+            })
+            .catch(function(err) {
+
+                err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+                return done(err);
+            });
 
 
 
