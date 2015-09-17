@@ -19,3 +19,4 @@ config/dev-no-auth.js
 config/production.js
 lib/web/client/static/_js/*min.js*
 .tern-port
+bundles.json
