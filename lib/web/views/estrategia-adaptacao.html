@@ -2,9 +2,6 @@
 
 {% block title %}{{ ctx.texts[15][lang] }} - {{ ctx.texts[20][lang] }}{% endblock %} 
 
-
-
-
 {% block mainColumnContent %}
 
 <div class="row">
@@ -12,7 +9,7 @@
         <ol class="breadcrumb">
             <li><a href="/{{ lang}}">Home</a>
             </li>
-            <li class="active">{{ ctx.editableTexts['editable-1'][lang] }}</li>
+            <li class="active">{{ ctx.texts[20][lang] }}</li>
         </ol>
     </div>
 </div>
