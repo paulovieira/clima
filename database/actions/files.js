@@ -120,7 +120,7 @@ internals.filesCreate = function(args, done){
     var rootDir      = Config.get("rootDir");
 
     // check if we already have a file with this name
-    if(_.findWhere(args.pre.files, {name: filename})){
+    if(_.findWhere(args.files, {name: filename})){
         filename = basename + "_" + Utils.getRandomString() + extname;
     }
 

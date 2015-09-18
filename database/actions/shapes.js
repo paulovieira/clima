@@ -169,7 +169,7 @@ internals.shapesCreate = function(args, done){
     console.log("args.payload[0]: ", args.payload[0])
 
 
-    var zipFile = _.findWhere(args.pre.files, {id: zipId});
+    var zipFile = _.findWhere(args.files, {id: zipId});
 
     if(!zipFile){
         return done(Boom.badRequest("The zip file with the shapes does not exist in the system (wrong id?)"));
@@ -260,8 +260,8 @@ internals.shapesCreate = function(args, done){
             tableName = _s(shpBasename).slugify().replaceAll("-", "_").value();
 
             if(
-                _.findWhere(args.pre.shapes, {table_name: tableName}) || 
-                _.findWhere(args.pre.geoTables, {table_name: tableName})
+                _.findWhere(args.shapes, {table_name: tableName}) || 
+                _.findWhere(args.geoTables, {table_name: tableName})
             ){
                 tableName = tableName + "_" + Utils.getRandomString();
             }
@@ -497,7 +497,7 @@ internals.shapesDelete = function(args, done){
         // delete the zip file associated with this shape
         .then(function(data){
 
-            var deletedShape = _.findWhere(args.pre.shapes, {id: data[0].deleted_id});
+            var deletedShape = _.findWhere(args.shapes, {id: data[0].deleted_id});
             if(deletedShape.length == 0){
                 return deletedShape;
             }

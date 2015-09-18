@@ -47,6 +47,14 @@
 
     <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
 
+    {# add some specific js for cartografia #} 
+    <script>
+
+        Clima.maps = {{ ctx.maps | stringify }};
+        Clima.mapsMenu = {{ ctx.mapsMenu | stringify }};
+
+    </script>
+
     {% if NODE_ENV == "production" %}
 
     <script src="/static/_js/{{ bundles['cartografia-libs'] }}"></script>

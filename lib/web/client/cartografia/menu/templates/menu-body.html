@@ -1,1 +1,34 @@
-<br>   
+<br> 
+{% for groupObj in items %}
+<p>
+    <b>name: {{ groupObj.groupName }}</b> {% for map in groupObj.maps %}
+    <br> mapId: {{ map.mapId }} {% endfor %}
+</p>
+{% endfor %}
+<ul id="tree-menu">
+    {% for groupObj in mapsMenu %}
+
+    <li>
+        <a href="#" style="font-size: 120%;" class="js-map-group" data-group-name={{ groupObj.groupName }}>{{ groupObj.groupName }}</a>
+        <ul>
+            {% for map in groupObj.maps %}
+            <li>
+                <div style="xborder: solid; max-width: 400px; padding-right: 10px; margin-top: 0px; border-top: solid 1px #ededed; {{ 'border-bottom: solid 1px #ededed;' if loop.last }}">
+                    <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 90%; display: inline-block;">
+                        <label>
+                            <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} >
+                        	{{ map.mapId }}
+                        </label>
+                    </div>
+                    <div style="float: right; display: inline-block; padding-top: 0px;">
+	    				<a class="btn btn-primary btn-xs "  href="#" role="button" data-map-id={{ map.mapId }}>
+	    					<i class="fa fa-cog" style="color: white;"></i>
+	    				</a>
+                    </div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </li>
+    {% endfor %}
+</ul>

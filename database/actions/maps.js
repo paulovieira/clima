@@ -447,8 +447,8 @@ internals.mapsCreate = function(args, done){
     Utils.logCallsite(Hoek.callStack()[0]);
 
     var payload = _.isArray(args.payload) ? args.payload[0] : args.payload;
-console.log("args.payload: ", args.payload);
-console.log("payload: ", payload);
+// console.log("args.payload: ", args.payload);
+// console.log("payload: ", payload);
 
     var mapName        = payload.name;
     var mapDescription = payload.description;
@@ -457,7 +457,7 @@ console.log("payload: ", payload);
     var mapId = _s.slugify(mapName);
 
 
-    if(_.findWhere(args.pre.maps, {id: mapId})){
+    if(_.findWhere(args.maps, {id: mapId})){
         mapId = mapId + "-" + Utils.getRandomString();
     }
 
@@ -596,7 +596,7 @@ internals.mapsDelete = function(args, done){
 
     // note: args.ids is an array of objects [{id: 'map1'}, {id: 'map2'}]
     var mapId = args.ids[0]["id"];
-    if(!_.findWhere(args.pre.maps, {id: mapId})){
+    if(!_.findWhere(args.maps, {id: mapId})){
         return done(Boom.notFound("The resource does not exist."));
     }
 
@@ -692,7 +692,7 @@ internals.mapsReadMenu = function(args, done){
         .then(function(configRow) {
             
             var mapMenu = configRow[0]["value"];
-            internals.updateMenu2(mapMenu, args.pre.maps)
+            internals.updateMenu2(mapMenu, args.maps)
 
             return done(null, mapMenu);
         })
