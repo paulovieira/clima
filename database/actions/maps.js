@@ -76,6 +76,7 @@ internals.updateMenu2 = function(mapMenu, allMaps){
     //     mapMenu.push({groupName: "published", order: 0, maps: []});
     // }
 
+    // we always have a group with the name "not published"
     if(!_.findWhere(mapMenu, {groupName: "not published"})){
         mapMenu.push({groupName: "not published", maps: []});
     }
@@ -90,12 +91,9 @@ internals.updateMenu2 = function(mapMenu, allMaps){
     // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available)
     allMaps = allMaps
                 .filter(function(obj){
-                    //return true;
+
                     return !!obj.tiles;
                 });
-                // .map(function(obj){
-                //     return obj.id;
-                // });
 
     var allMapsIds = _.pluck(allMaps, "id");
     //console.log("allMapsIds", allMapsIds);
@@ -107,19 +105,19 @@ internals.updateMenu2 = function(mapMenu, allMaps){
     });
     //console.log("mapMenuIds: ", mapMenuIds);
 
-    // 3) verify if there are maps in mapMenuIds that are not in allMaps (this happens if a map present in the menu
-    // has been deleted meanwhile)
+    // 3) verify if there are maps in mapMenuIds that are not in allMaps (this happens if 
+    // a map present in the menu has been deleted meanwhile)
     var difference = _.difference(mapMenuIds, allMapsIds);
     if(difference.length > 0){
 
         // remove from the menu 
         difference.forEach(function(id){
 
-            console.log("will remove map from the menu: ", id);
+            console.log("map " + id + " doesn't exist - will remove from the menu");
             mapMenu.forEach(function(groupObj){
             
-                groupObj.maps = _.filter(groupObj.maps, function(obj){ 
-                    return !_.contains(difference, obj.mapId);
+                groupObj.maps = _.filter(groupObj.maps, function(mapObj){ 
+                    return !_.contains(difference, mapObj.mapId);
                 });
             });
 
@@ -127,22 +125,18 @@ internals.updateMenu2 = function(mapMenu, allMaps){
     }
 
     // 4) now verify if there are maps in allMaps that are not in the menu (should 
-    // happen for new maps)
+    // happen for new maps); those maps will be placed in the "not published" group
     difference = _.difference(allMapsIds, mapMenuIds);
     if(difference.length > 0){
         difference.forEach(function(id){
 
-            var mapObj = _.findWhere(allMaps, {id: id});
-
-            // add to the menu (in the "not published" group)
-            if(mapObj){
-                console.log("will add a new map to the menu (unpublished maps): ", id);
-                notPublished.maps.push({mapId: id});
-            }
+            console.log("will add a new map to the menu (unpublished maps): ", id);
+            notPublished.maps.push({mapId: id});
         });
     }
 };
 
+/*
 internals.updateMenu = function(mapMenu, allMaps){
 
     // if(!_.findWhere(mapMenu, {groupName: "published"})){
@@ -209,7 +203,7 @@ internals.updateMenu = function(mapMenu, allMaps){
         });
     }
 };
-
+*/
 
 // adds the missing TileJSON keys (not present in project.mml); only in read (not in readAll)
 internals.addMissingKeys = function(tilemillDir, obj){
@@ -798,7 +792,7 @@ internals.mapsUpdateMenu = function(args, done){
         Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
             .then(function(data) {
 
-                return done(null, dbData);
+                return done(null, data);
             })
             .catch(function(err) {
 
