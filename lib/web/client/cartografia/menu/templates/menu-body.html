@@ -1,4 +1,18 @@
 
+
+<p>width sizes (to be removed!)</p>
+<br>document: {{ width.document }}
+<br>window: {{ width.window }}
+<br>body: {{ width.body }}
+<br>mapContainer: {{ width.mapContainer }}
+</p>
+<br>document: {{ width2.document }}
+<br>window: {{ width2.window }}
+<br>visualViewport: {{ width2.visualViewport }}
+<br>layoutViewport: {{ width2.layoutViewport }}
+<br>pinchZoomFactor: {{ width2.pinchZoomFactor }}
+<br>scrollbarWidth: {{ width2.scrollbarWidth }}
+
 <br> 
 {% for groupObj in items %}
 <p>
@@ -23,9 +37,11 @@
                     </div>
                     <div style="float: right; display: inline-block; padding-top: 0px;">
 
+                        {% if map.hasInfo %}
                         <a class="btn btn-primary btn-xs js-map-more-info"  href="#" role="button" data-map-id={{ map.mapId }}>
                             <i class="fa fa-info-circle" style="color: white;"></i>
                         </a>
+                        {% endif %}
 
 	    				<a class="btn btn-primary btn-xs js-map-options"  href="#" role="button" data-map-id={{ map.mapId }}>
 	    					<i class="fa fa-cog" style="color: white;"></i>
