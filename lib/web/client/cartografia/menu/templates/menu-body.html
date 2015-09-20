@@ -1,18 +1,4 @@
 
-
-<p>width sizes (to be removed!)</p>
-<br>document: {{ width.document }}
-<br>window: {{ width.window }}
-<br>body: {{ width.body }}
-<br>mapContainer: {{ width.mapContainer }}
-</p>
-<br>document: {{ width2.document }}
-<br>window: {{ width2.window }}
-<br>visualViewport: {{ width2.visualViewport }}
-<br>layoutViewport: {{ width2.layoutViewport }}
-<br>pinchZoomFactor: {{ width2.pinchZoomFactor }}
-<br>scrollbarWidth: {{ width2.scrollbarWidth }}
-
 <br> 
 {% for groupObj in items %}
 <p>
@@ -24,27 +10,27 @@
     {% for groupObj in mapsMenu %}
 
     <li>
-        <a href="#" style="font-size: 120%;" class="js-map-group" data-group-name={{ groupObj.groupName }}>{{ groupObj.groupName }}</a>
+        <a href="#" style="font-size: 120%;" class="js-map-group" data-group-name={{ groupObj.groupName }} title="clique para ver/esconder os mapas deste grupo">{{ groupObj.groupName }}</a>
         <ul>
             {% for map in groupObj.maps %}
             <li>
                 <div style="xborder: solid; max-width: 400px; padding-right: 6px; margin-top: 0px; border-top: solid 1px #ededed; {{ 'border-bottom: solid 1px #ededed;' if loop.last }}">
                     <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 80%; display: inline-block;">
                         <label>
-                            <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} >
+                            <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} title="clique para ver este mapa">
                         	{{ map.name }}
                         </label>
                     </div>
                     <div style="float: right; display: inline-block; padding-top: 0px;">
 
                         {% if map.hasInfo %}
-                        <a class="btn btn-primary btn-xs js-map-more-info"  href="#" role="button" data-map-id={{ map.mapId }}>
+                        <a class="btn btn-primary btn-xs js-map-more-info"  href="#" role="button" data-map-id={{ map.mapId }} title="Mais informações">
                             <i class="fa fa-info-circle" style="color: white;"></i>
                         </a>
                         {% endif %}
 
-	    				<a class="btn btn-primary btn-xs js-map-options"  href="#" role="button" data-map-id={{ map.mapId }}>
-	    					<i class="fa fa-cog" style="color: white;"></i>
+	    				<a class="btn btn-primary btn-xs js-map-options"  href="#" role="button" data-map-id={{ map.mapId }} title="Opções do mapa">
+	    					<i class="fa fa-cog" style="color: white;" ></i>
 	    				</a>
                     </div>
                 </div>
@@ -56,16 +42,18 @@
     {% endfor %}
 </ul>
 
-
 <p>width sizes (to be removed!)</p>
-<br>document: {{ width.document }}
-<br>window: {{ width.window }}
-<br>body: {{ width.body }}
-<br>mapContainer: {{ width.mapContainer }}
-</p>
-<br>document: {{ width2.document }}
-<br>window: {{ width2.window }}
-<br>visualViewport: {{ width2.visualViewport }}
-<br>layoutViewport: {{ width2.layoutViewport }}
-<br>pinchZoomFactor: {{ width2.pinchZoomFactor }}
-<br>scrollbarWidth: {{ width2.scrollbarWidth }}
+<ul>
+    <li>document: {{ width.document }}</li>
+    <li>window: {{ width.window }}</li>
+    <li>body: {{ width.body }}</li>
+    <li>mapContainer: {{ width.mapContainer }}</li>
+    <li>---</li>
+    <li>document: {{ width2.document }}</li>
+    <li>window: {{ width2.window }}</li>
+    <li>visualViewport: {{ width2.visualViewport }}</li>
+    <li>layoutViewport: {{ width2.layoutViewport }}</li>
+    <li>pinchZoomFactor: {{ width2.pinchZoomFactor }}</li>
+    <li>scrollbarWidth: {{ width2.scrollbarWidth }}    </li>
+</ul>
+
