@@ -1,3 +1,4 @@
+
 <br> 
 {% for groupObj in items %}
 <p>
@@ -5,7 +6,7 @@
     <br> mapId: {{ map.mapId }} {% endfor %}
 </p>
 {% endfor %}
-<ul id="tree-menu">
+<ul id="tree-menu" data-map-index={{ x }}>
     {% for groupObj in mapsMenu %}
 
     <li>
@@ -13,22 +14,42 @@
         <ul>
             {% for map in groupObj.maps %}
             <li>
-                <div style="xborder: solid; max-width: 400px; padding-right: 10px; margin-top: 0px; border-top: solid 1px #ededed; {{ 'border-bottom: solid 1px #ededed;' if loop.last }}">
-                    <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 90%; display: inline-block;">
+                <div style="xborder: solid; max-width: 400px; padding-right: 6px; margin-top: 0px; border-top: solid 1px #ededed; {{ 'border-bottom: solid 1px #ededed;' if loop.last }}">
+                    <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 80%; display: inline-block;">
                         <label>
                             <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} >
                         	{{ map.mapId }}
                         </label>
                     </div>
                     <div style="float: right; display: inline-block; padding-top: 0px;">
-	    				<a class="btn btn-primary btn-xs "  href="#" role="button" data-map-id={{ map.mapId }}>
+
+                        <a class="btn btn-primary btn-xs js-map-more-info"  href="#" role="button" data-map-id={{ map.mapId }}>
+                            <i class="fa fa-info-circle" style="color: white;"></i>
+                        </a>
+
+	    				<a class="btn btn-primary btn-xs js-map-options"  href="#" role="button" data-map-id={{ map.mapId }}>
 	    					<i class="fa fa-cog" style="color: white;"></i>
 	    				</a>
                     </div>
                 </div>
             </li>
+
             {% endfor %}
         </ul>
     </li>
     {% endfor %}
 </ul>
+
+
+<p>width sizes (to be removed!)</p>
+<br>document: {{ width.document }}
+<br>window: {{ width.window }}
+<br>body: {{ width.body }}
+<br>mapContainer: {{ width.mapContainer }}
+</p>
+<br>document: {{ width2.document }}
+<br>window: {{ width2.window }}
+<br>visualViewport: {{ width2.visualViewport }}
+<br>layoutViewport: {{ width2.layoutViewport }}
+<br>pinchZoomFactor: {{ width2.pinchZoomFactor }}
+<br>scrollbarWidth: {{ width2.scrollbarWidth }}

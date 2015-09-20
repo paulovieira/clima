@@ -18,17 +18,17 @@ QUINTA - skype
   -mostrar que eles ficam uma plataforma que code ser adaptada (textos, novos mapas, etc)
 
 SEXTA
-  -ir buscar insulina
   -imprimir fotografia para levar sabado
 
 
   
 
 todo 150913
-  -in nginx, add directory for static assets
-  -change the environment
+  -DONE in nginx, add directory for static assets
+  -DONE change the environment
 
-  -add remote access to the database
+
+-apresentacao reuniao setembro
 
 
 
