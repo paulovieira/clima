@@ -56,8 +56,8 @@ body {
 }
 
 .map-menu-open {
-    width: 500px;
-    overflow-y: scroll;
+    min-width: 500px;
+    height: 100%;
  }
 
 

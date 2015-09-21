@@ -1,0 +1,1 @@
+The __icons and __textures directories contain resources for tilemill maps. These directories should be copied to TILEMILL_FILES_DIR/project

@@ -179,6 +179,14 @@ grunt build
 (./database/initialize_db.sh db_name)
 (node ./database/populate-initial-data/)
 
+# regular files in the static folder should have only read permissions...
+(find lib/web/client/static -type f -exec chmod 744 {} \;)
+
+# ...but directories need read+execute (so that nginx can access them)
+(find lib/web/client/static -type d -exec chmod 755 {} \;)
+
+
+
 sudo service nginx restart (to make sure the served static files are the updated version - is it really necessary?)
 
 
