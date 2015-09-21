@@ -22,16 +22,6 @@
 
 <body>
 
-    {# container for modal #}
-    <div class="modal x-fade" id="modal-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div id="mn-r-modal-contents-1" class="modal-content" >
-
-
-        </div>
-      </div>
-    </div>
-
    
     <div id="main-container">
         <div id="navbar-container">
@@ -39,6 +29,16 @@
         </div>
 
         <div id="map-container" xstyle="border: solid 1px;">
+
+            {# container for modal #}
+            <div class="modal x-fade" id="modal-1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div id="mn-r-modal-contents-1" class="modal-content" >
+
+
+                </div>
+              </div>
+            </div>
 
             <div class="row" style="height: 100%; margin: 0;">
                 <div id="mn-r-map-1" class="col-sm-12" style="height: 100%; padding: 0;">
@@ -49,51 +49,17 @@
 
         </div>
 
-
-
-
-
-
-
     </div>
 
-
-{#
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">
-      Launch demo modal
-    </button>
-
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="myModalLabel">Modal title</h4>
-          </div>
-          <div class="modal-body">
-            ...
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary">Save changes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-#}
     {# common javascript (included in all pages) #} 
     {% include "common/common_scripts.html" %}
 
     <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
-
     {# add some specific js for cartografia #} 
-    <script>
 
+    <script>
         Clima.maps = {{ ctx.maps | stringify }};
         Clima.mapsMenu = {{ ctx.mapsMenu | stringify }};
-
     </script>
 
     {% if NODE_ENV == "production" %}
@@ -107,6 +73,7 @@
     {# NOTE: if we add new files here, we must add in the gruntfile as well #}
     <script src="/static/jquery/jquery.documentsize-1.2.1.js"></script>
     <script src="/static/jquery/jquery.mousewheel-3.1.12.js"></script>
+    <script src="/static/jquery/jquery.fullscreen-0.5.1.js"></script>
     <script src="/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js"></script>
     <script src="/static/leaflet/leaflet-providers-1.0.29.js"></script>
     {# <script src="/static/leaflet/leaflet-minimap/Control.MiniMap-447530.js"></script> #}
