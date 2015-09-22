@@ -1,9 +1,9 @@
-{##}
+{#
 supportsFullscreen: {{ supportsFullscreen }}
 <a class="btn btn-default js-full-screen" href="#" role="button"  {{ "disabled" if supportsFullscreen == "false" }}>
     <i class="fa fa-arrows-alt"></i>
 </a>
-
+#}
 
 <br> 
 {% for groupObj in items %}
@@ -21,12 +21,22 @@ supportsFullscreen: {{ supportsFullscreen }}
             {% for map in groupObj.maps %}
             <li>
                 <div style="xborder: solid; max-width: 400px; padding-right: 6px; margin-top: 0px; border-top: solid 1px #ededed; {{ 'border-bottom: solid 1px #ededed;' if loop.last }}">
-                    <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 80%; display: inline-block;">
+
+                    {% if map.radio %}
+                    <div class="radio"  style="margin-bottom: 1px; margin-top: 1px; width: 80%; display: inline-block;">
                         <label>
-                            <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} title="clique para ver este mapa">
+                            <input type="radio" name="base-layers" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} title="clique para ver este mapa">
                         	{{ map.name }}
                         </label>
                     </div>
+                    {% else %}
+                    <div class="checkbox" style="margin-bottom: 1px; margin-top: 1px; width: 80%; display: inline-block;">
+                        <label>
+                            <input type="checkbox" style="" data-map-id={{ map.mapId }} {{ "checked" if map.active }} title="clique para ver este mapa">
+                            {{ map.name }}
+                        </label>
+                    </div>
+                    {% endif %}
                     <div style="float: right; display: inline-block; padding-top: 0px;">
 
                         {% if map.hasInfo %}
@@ -47,7 +57,7 @@ supportsFullscreen: {{ supportsFullscreen }}
     </li>
     {% endfor %}
 </ul>
-
+{#
 <p>width sizes (to be removed!)</p>
 <ul>
     <li>document: {{ width.document }}</li>
@@ -62,4 +72,5 @@ supportsFullscreen: {{ supportsFullscreen }}
     <li>pinchZoomFactor: {{ width2.pinchZoomFactor }}</li>
     <li>scrollbarWidth: {{ width2.scrollbarWidth }}    </li>
 </ul>
+#}
 
