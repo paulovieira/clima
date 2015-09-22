@@ -4,8 +4,10 @@ html {
 }
 
 body {
-/*	padding-top: 0px; */
+/*	padding-top: 0px; 
 	margin-bottom: 110px;
+  */
+
 }
 
 #map {
@@ -87,6 +89,7 @@ body {
 
 #main-container {
   background-color: white;
+  /*min-height: 400px;*/
 }
 
 
