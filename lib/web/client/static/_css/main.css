@@ -29,11 +29,32 @@ body {
 }
 
 .header-bg {
-/*	background-image: url('/static/_images/clouds_texture2877.jpg');*/
+/*	background-image: url('/static/_images/clouds_texture2877.jpg');
 	background-image: url('/uploads/public/images/header_madeira3.jpg');
+  */
+
+  background-image: url('/static/_images/header_madeira5.jpg');
 	background-size: 100%;
+  background-repeat: no-repeat;
 	z-index: -1;
 	display: block;
+}
+
+
+@media (min-width: 1101px) {
+  .margin-header {
+    margin: 210px 0px 20px 0px;
+  }  
+}
+@media (min-width: 992px) and (max-width: 1199px) {
+  .margin-header {
+    margin: 110px 0px 20px 0px;
+  }
+}
+@media (max-width: 991px) {
+  .margin-header {
+    margin: 20px 0px 20px 0px;
+  }
 }
 /*
 .side-column {
@@ -206,14 +227,30 @@ img.grayscale:hover {
 	margin-top: 0.6rem;
 	
 */	
-	padding: 30px 20px 20px 20px;
+	padding: 30px 20px 15px 20px;
 	border-radius: 4px;
-	border: none;
+  border: none;
+/*
+	border-style: solid;
+  border-width: 1px;
+  border-color: gray;
+  */
 	background: #256c93;
 	background: white;
 	box-shadow: 0px 0px 4px #033b40 inset;
+
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  -ms-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
 }
 
+.sector-box:hover {
+  background-color: #ededed;
+  /*border: solid 1px gray;*/
+  
+}
 .sector-main-title {
 	text-shadow: 2px 1px 0px #d8e0ea;
 }
@@ -567,11 +604,19 @@ th {
  /* background-color: #dde5ec !important;*/
   text-shadow: 1px 0px 0px white;
   border-radius: 0;
-  border: 1px solid #333;
+  border: 1px solid #333 !important; 
+
+  -webkit-transition: background-color 100ms linear;
+  -moz-transition: background-color 100ms linear;
+  -o-transition: background-color 100ms linear;
+  -ms-transition: background-color 100ms linear;
+  transition: background-color 100ms linear;
 }
 
-.btn-home-menu {
- border: 1px solid #333 !important; 
+
+.btn-home-menu:hover {
+ background-color: #e6e6e6;
+ border-color: #adadad;
 }
 
 .container-home-menu {

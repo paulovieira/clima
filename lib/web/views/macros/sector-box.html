@@ -3,26 +3,25 @@
 {# {% macro sectorBox(ctx, title, sectorDesc, sectorPath, sectorImg) %} #}
 {% macro sectorBox(ctx, data) %}
 
-<div class="sector-box">
-	<h4 class="text-center sector-title" >
-		<span> {{ ctx.texts[data.title][lang] | upper }}</span>
-	</h4>
-	
+<a href="/{{ lang }}/{{ data.sectorPath }}" style="text-decoration: none;">
+	<div class="sector-box">
+		<h4 class="text-center sector-title" >
+			<span> {{ ctx.texts[data.title][lang] | upper }}</span>
+		</h4>
+		
 
-	<!-- <img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image"> -->
-	<span>
-		{# IMPORTANT: the img tag itself is part of the text (including all the required classes); this makes the html coupled with the databasem, but will allow the user to change the image using summernote#}
+		<!-- <img src="{{ ctx.files[sectorImg].fullPath }}" class="img-responsive img-thumbnail center-block" alt="Responsive image"> -->
 		{{ ctx.texts[data.sectorImg][lang] }}  
-	</span>
-	<span>
 		<p>{{ ctx.texts[data.sectorDesc][lang] }}</p>
-	</span>
 
-	<div class="text-center">
-		<a href="/{{ lang }}/{{ data.sectorPath }}" class="btn btn-info" style="padding: 4px 30px; letter-spacing: 1px; font-size: 0.9em;" role="button">
-			{{ ctx.texts[6][lang] | upper }}
-		</a>
+	{#
+		<div class="text-center">
+			<a href="/{{ lang }}/{{ data.sectorPath }}" class="btn btn-info" style="padding: 4px 30px; letter-spacing: 1px; font-size: 0.9em;" role="button">
+				{{ ctx.texts[6][lang] | upper }}
+			</a>
+		</div>
+	#}
 	</div>
-</div>
+</a>
 
 {% endmacro %}
