@@ -145,12 +145,13 @@ module.exports = function(grunt) {
     // cartografia target (app)
     internals.statics.cartografiaApp = {};
     internals.statics.cartografiaApp.input = [
+        "lib/web/client/cartografia/index.js",
         "lib/web/client/cartografia/leaflet-backbone-view.js",
+        "lib/web/client/cartografia/base-layers.js",
         "lib/web/client/cartografia/entities.js",
         "lib/web/client/cartografia/behaviors.js",
         "lib/web/client/cartografia/menu/menu.js",
         "lib/web/client/cartografia/map/map.js",
-        "lib/web/client/cartografia/index.js",
         "lib/web/client/cartografia/tile-providers.js",
         "lib/web/client/cartografia/init.js"
     ];
