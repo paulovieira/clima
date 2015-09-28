@@ -34,6 +34,11 @@ module.exports = function(options){
 
     seneca.add("role:maps, cmd:readMenu",   internals.mapsReadMenu);
     seneca.add("role:maps, cmd:updateMenu", internals.mapsUpdateMenu);
+
+    seneca.add("role:maps, cmd:readSequential",   internals.mapsReadSequential);
+    seneca.add("role:maps, cmd:createSequential", internals.mapsCreateSequential);    
+    seneca.add("role:maps, cmd:updateSequential", internals.mapsUpdateSequential);    
+    seneca.add("role:maps, cmd:deleteSequential", internals.mapsDeleteSequential);
 };
 
 internals.removeSensitiveData = function(data){
@@ -90,22 +95,16 @@ internals.transformMap = {
 
 };
 
-// new version
-internals.updateMenu2 = function(mapMenu, allMaps){
 
-    // if(!_.findWhere(mapMenu, {groupName: "published"})){
-    //     mapMenu.push({groupName: "published", order: 0, maps: []});
-    // }
+internals.prepareMenu = function(mapMenu, allMaps){
 
     // we always have a group with the name "not published"
     if(!_.findWhere(mapMenu, {groupName: "not published"})){
         mapMenu.push({groupName: "not published", maps: []});
     }
 
-    //var published = _.findWhere(mapMenu, {groupName: "published"})
     var notPublished = _.findWhere(mapMenu, {groupName: "not published"})
 
-    //console.log("currently published maps: ", _.pluck(published.maps, "id"));
     //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
 
 
@@ -502,7 +501,7 @@ internals.mapsReadMenu = function(args, done){
         .then(function(configRow) {
             
             var mapMenu = configRow[0]["value"];
-            internals.updateMenu2(mapMenu, args.maps)
+            internals.prepareMenu(mapMenu, args.maps)
 
             return done(null, mapMenu);
         })
@@ -519,59 +518,27 @@ internals.mapsUpdateMenu = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-// console.log(args.payload);
-// done(null, args.payload);
-/*
-    var dbData = {};
-    var allMaps = [];
+    Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
+        .then(function(data) {
 
+            return done(null, data);
+        })
+        .catch(function(err) {
 
-    var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
-    var options = {
-        json: true,
-        headers: {}
-    }
-    if(args.headers.cookie){
-        options.headers.cookie = args.headers.cookie;
-    }
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
 
-    var deferred = Q.defer();
-    Wreck.get(uri, options, function(err, response, payload){
-
-            if(err){
-                return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
-            }
-
-            if(response.statusCode !== 200){
-                return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + err.message));
-            }
-
-            // TODO: closure hack! we should be using Q.all or something similar
-            allMaps = payload;
-           
-            return deferred.resolve();
-    });
-
-    deferred.promise
-        .then(function(){
-
-
-            internals.updateMenu(args.payload, allMaps);
-
-
-
-    // Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
-    //     .then(function(data) {
-
-
-
-
+// example payload
 // [
 //     {
-//         "groupName": "published", 
+//         "groupName": "biodiversidade", 
 //         "maps": [
 //             {
 //                 "mapId": "geography-class", 
+//             },
+//             {
+//                 "mapId": "xyz", 
 //             }
 //         ], 
 //     }, 
@@ -591,28 +558,6 @@ internals.mapsUpdateMenu = function(args, done){
 //     }
 // ]
 
-
-
-            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
-            //done(null, dbData);
-
-        })
-*/
-
-        Db.func("config_update", JSON.stringify({key: "mapMenu", value: args.payload}))
-            .then(function(data) {
-
-                return done(null, data);
-            })
-            .catch(function(err) {
-
-                err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-                return done(err);
-            });
-
-
-
-    
 };
 
 
@@ -621,3 +566,121 @@ internals.mapsUpdateMenu = function(args, done){
 //     "key": "...", 
 //     "value": {"publicUrl": "http://yyy.com"}
 // }');
+
+
+
+internals.mapsReadSequential = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+    Db.func("config_read", JSON.stringify({ key: "sequentialMaps" }))
+        .then(function(configRow) {
+            
+            var sequentialMaps = configRow[0]["value"];
+            //internals.prepareMenu(mapMenu, args.maps)
+
+            return done(null, sequentialMaps);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+
+};
+
+
+// NOTE: for the sequential maps there is yet no validation when creating, updating or deleting
+internals.mapsCreateSequential = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+
+    var payload = args.payload || {};
+    var seqMaps = args.pre.seqMaps || [];
+
+    if(_.findWhere(seqMaps, {id: payload.id})){
+        return done(Boom.conflict("There is already a sequential map with the given id. Try another one"));
+    }
+
+    seqMaps.push(payload);
+
+    Db.func("config_update", JSON.stringify({key: "sequentialMaps", value: seqMaps}))
+        .then(function(data) {
+
+            return done(null,  _.findWhere(data[0].value, {id: payload.id}));
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+
+};
+
+
+internals.mapsUpdateSequential = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+
+    var payload = args.payload || {};
+    var params = args.params || {};
+    var seqMaps = args.pre.seqMaps || [];
+
+    if(payload.id !== params.id){
+        return done(Boom.conflict("The ids given in the payload and in the URI must match (including the order)."));
+    }
+
+    // extract the object from the array
+    var seqMap = _.findWhere(seqMaps, {id: params.id});
+    if(!seqMap){
+        return done(Boom.notFound("There is no sequential map with the given id"));   
+    }
+
+    // update the extracted object with the given payload
+    _.extend(seqMap, payload)
+
+    Db.func("config_update", JSON.stringify({key: "sequentialMaps", value: seqMaps}))
+        .then(function(data) {
+
+            return done(null, _.findWhere(data[0].value, {id: params.id}));
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+
+};
+
+internals.mapsDeleteSequential = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+
+    var params = args.params || {};
+    var seqMaps = args.pre.seqMaps || [];
+
+    // extract the object from the array
+    var seqMap = _.findWhere(seqMaps, {id: params.id});
+    if(!seqMap){
+        return done(Boom.notFound("There is no sequential map with the given id"));   
+    }
+
+    // find the index
+    var index = _.findIndex(seqMaps, {id: params.id});
+    console.log("index: ", index);
+
+    // remove the object from the array
+    seqMaps.splice(index, 1);
+
+    Db.func("config_update", JSON.stringify({key: "sequentialMaps", value: seqMaps}))
+        .then(function(data) {
+
+            return done(null, {deletedId: params.id});
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+
+
+};
