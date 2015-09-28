@@ -36,6 +36,27 @@ module.exports = function(options){
     seneca.add("role:maps, cmd:updateMenu", internals.mapsUpdateMenu);
 };
 
+internals.removeSensitiveData = function(data){
+
+    data.forEach(function(mapObj){
+
+        if(mapObj.Layer){
+            mapObj.Layer.forEach(function(layerObj){
+
+                if(layerObj.Datasource){
+                    delete layerObj.Datasource.host;
+                    delete layerObj.Datasource.port;
+                    delete layerObj.Datasource.user;
+                    delete layerObj.Datasource.password;
+                    delete layerObj.Datasource.dbname;
+                }
+            });
+        }
+    });
+
+
+};
+
 internals.transformMap = {
 
     // a) properties to be maintained 
@@ -136,74 +157,7 @@ internals.updateMenu2 = function(mapMenu, allMaps){
     }
 };
 
-/*
-internals.updateMenu = function(mapMenu, allMaps){
 
-    // if(!_.findWhere(mapMenu, {groupName: "published"})){
-    //     mapMenu.push({groupName: "published", order: 0, maps: []});
-    // }
-
-    if(!_.findWhere(mapMenu, {groupName: "not published"})){
-        mapMenu.push({groupName: "not published", maps: []});
-    }
-
-    //var published = _.findWhere(mapMenu, {groupName: "published"})
-    var notPublished = _.findWhere(mapMenu, {groupName: "not published"})
-
-    //console.log("currently published maps: ", _.pluck(published.maps, "id"));
-    //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
-
-
-    // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available)
-    allMaps = allMaps.filter(function(obj){
-        return !!obj.tiles;
-    });
-
-    var allMapsIds = _.pluck(allMaps, "id");
-    //console.log("allMapsIds", allMapsIds);
-
-    // 2) get all the ids of all maps in the menu (taking into account all groups)
-    var mapMenuIds = [];
-    mapMenu.forEach(function(groupObj){
-        mapMenuIds = _.union(mapMenuIds, _.pluck(groupObj.maps, "mapId"));
-    });
-    //console.log("mapMenuIds: ", mapMenuIds);
-
-    // 3) verify if there are maps in mapMenuIds that are not in allMaps (in principle there should be none)
-    var difference = _.difference(mapMenuIds, allMapsIds);
-    if(difference.length > 0){
-
-        // remove from the menu 
-        difference.forEach(function(id){
-
-            console.log("will remove map from the menu: ", id);
-            mapMenu.forEach(function(groupObj){
-            
-                groupObj.maps = _.filter(groupObj.maps, function(obj){ 
-                    return !_.contains(difference, obj.mapId);
-                });
-            });
-
-        });
-    }
-
-    // 4) now verify if there are maps in allMaps that are not in the menu (should 
-    // happen for new maps)
-    difference = _.difference(allMapsIds, mapMenuIds);
-    if(difference.length > 0){
-        difference.forEach(function(id){
-
-            var mapObj = _.findWhere(allMaps, {id: id});
-
-            // add to the menu (in the "not published" group)
-            if(mapObj){
-                console.log("will add a new map to the menu (unpublished maps): ", id);
-                notPublished.maps.push({mapId: id});
-            }
-        });
-    }
-};
-*/
 
 // adds the missing TileJSON keys (not present in project.mml); only in read (not in readAll)
 internals.addMissingKeys = function(tilemillDir, obj){
@@ -253,7 +207,6 @@ internals.addMissingKeys = function(tilemillDir, obj){
 };
 
 
-///internals.readProjectsFiles = function(projectFiles, mapsIds, method, args, done){
 internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
 
     var projectsFiles = mapsIds.map(function(id){
@@ -309,51 +262,6 @@ internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
         });
 
 
-        /*
-    ReadFiles(allFiles, "utf8", function(err, contentsArray) {
-        if (err) {
-            return done(Boom.badImplementation(err.message + " (error in ReadFiles)", err));
-        }
-
-        // NOTE:  the order in the elements in contentsArray, projectsFiles and mapsIds match
-        var l = mapsIds.length;
-        for(var i=0; i<l; i++){
-            try {
-                var project = JSON.parse(contentsArray[i]);
-                var info    = JSON.parse(contentsArray[i+l]);
-
-                // the map id is the name of the directory
-                project.id = mapsIds[i];
-                project.createdAt = info.createdAt || 0;
-                project.owner     = info.owner || "unknown";
-
-                // TODO: when reading all maps should we also add missing keys?
-                if(method==="read"){
-                    internals.addMissingKeys(args, project);
-                }
-                output.push(project);
-            }
-            catch(err){
-                return done(Boom.badImplementation("Invalid json in some .mml file: " + err.message));
-            }
-        }
-
-
-        //output = args.raw === true ? output : Hoek.transform(output, internals.transformMap);
-        return args.raw === true ? output : Hoek.transform(output, internals.transformMap);
-
-        // if we are fetching only 1 map (which is the common case), we actually want
-        // a json object (that's what mapbox.js is expecting for tilejson)
-        if(method==="read"){
-            if(output.length === 0){
-                throw Boom.notFound("The resource does not exist.");
-            }
-            return done(null, output[0]);    
-        }
-
-        // return done(null, output);
-    });
-*/
 };
 
 
@@ -385,6 +293,11 @@ internals.mapsReadAll = function(args, done){
         .then(function(data){
 
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+
+            // remove sensitive data from the objects in the data.Layer array (this data
+            // comes from the tilemill project files)
+            internals.removeSensitiveData(data);
+
             return done(null, data);
         })
         .catch(function(err) {
@@ -429,6 +342,11 @@ internals.mapsRead = function(args, done){
             }
 
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+
+            // remove sensitive data from the objects in the data.Layer array (this data
+            // comes from the tilemill project files)
+            internals.removeSensitiveData(data);
+
             return done(null, data[0]);
         })
         .catch(function(err) {
@@ -521,59 +439,6 @@ internals.mapsCreate = function(args, done){
 
             return Fs.writeJsonAsync(newProjectInfo, obj);
         })
-/*  - update the menu - TO BE DELETED
-        .then(function(){
-
-            var allMapsUri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
-            var options = {
-                json: true,
-                headers: {}
-            }
-            if(args.headers.cookie){
-                options.headers.cookie = args.headers.cookie;
-            }
-
-            var deferred = Q.defer();
-            Wreck.get(allMapsUri, options, function(err, response, payload){
-
-                    if(err){
-                        return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
-                    }
-                    else if(response.statusCode === 401){
-                        return deferred.reject(Boom.unauthorized("API error in request to /api/maps: " + JSON.stringify(payload)));
-                    }
-                    else if(response.statusCode !== 200){
-                        return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + JSON.stringify(payload)));
-                    }
-
-                    // TODO: closure hack! we should be using Q.all or something similar
-                    allMaps = payload;
-                   
-                    return deferred.resolve();
-            });
-
-            return deferred.promise;
-        })
-
-        // read the map menu configuration
-        .then(function(){
-
-            return Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
-        })
-
-        // update the menu (add new map, remove deleted maps)
-        .then(function(configRow){
-
-            // mapMenu is the actual array with the menu configuration
-            var mapMenu = configRow[0]["value"];
-
-            // changes will happen in place
-            internals.updateMenu(mapMenu, allMaps);
-
-            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
-
-        })
-*/
         .then(function(){
 
             return done(null, {id: mapId, name: mapName, description: mapDescription});
@@ -617,61 +482,6 @@ internals.mapsDelete = function(args, done){
 
             return Fs.removeAsync(exportsFiles);
         })
-
-        // step 3: make an http get request (internal) to obtain the list of all maps (doesn't include the map that was deleted in step 1)
-
-// update the menu - to be deleted
-/*
-        .then(function(){
-
-            var uri = "http://localhost:" + Config.get("port") + "/api/v1/maps";
-            var options = {
-                json: true,
-                headers: {}
-            }
-            if(args.headers.cookie){
-                options.headers.cookie = args.headers.cookie;
-            }
-
-            var deferred = Q.defer();
-            Wreck.get(uri, options, function(err, response, payload){
-
-                    if(err){
-                        return deferred.reject(Boom.badImplementation("Wreck error in request to /api/maps: " + err.message));
-                    }
-
-                    if(response.statusCode !== 200){
-                        return deferred.reject(Boom.badImplementation("API error in request to /api/maps: " + err.message));
-                    }
-
-                    // TODO: closure hack! we should be using Q.all or something similar
-                    allMaps = payload;
-                   
-                    return deferred.resolve();
-            });
-
-            return deferred.promise;
-        })
-
-        // read the map menu configuration
-        .then(function(){
-
-            return Db.func("config_read", JSON.stringify({ key: "mapMenu" }))
-        })
-
-        // update the menu (add new map, remove deleted maps)
-        .then(function(configRow){
-
-            // get the actual array with the menu configuration 
-            var mapMenu = configRow[0]["value"];
-
-            // changes will happen in place
-            internals.updateMenu(mapMenu, allMaps);
-
-            return Db.func("config_update", JSON.stringify({key: "mapMenu", value: mapMenu}));
-
-        })
-*/
         .then(function(){
 
             return done(null, {deletedId: mapId});
