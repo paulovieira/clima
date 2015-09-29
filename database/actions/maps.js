@@ -79,6 +79,7 @@ internals.transformMap = {
     "createdAt": "createdAt",
     "_updated": "_updated",
     "owner": "owner",
+    "sequence": "sequence",
     
     // tileJson properties added in internals.addMissingKeys
     "tilejson": "tilejson",
@@ -96,6 +97,15 @@ internals.transformMap = {
 };
 
 
+internals.verifySequentialMap = function(seqMapObj, regularMaps){
+
+    var validIds = _.pluck(regularMaps, "id");
+
+    seqMapObj.sequence = _.filter(seqMapObj.sequence, function(obj){
+        return _.contains(validIds, obj.mapId);
+    });
+};
+
 internals.prepareMenu = function(mapMenu, allMaps){
 
     // we always have a group with the name "not published"
@@ -108,11 +118,12 @@ internals.prepareMenu = function(mapMenu, allMaps){
     //console.log("currently unpublished maps: ", _.pluck(notPublished.maps, "mapId"));
 
 
-    // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available)
+    // 1) get the ids all currently available maps (those that don't have an exported mbtiles are not considered available);
+    // we also include the sequential maps;
     allMaps = allMaps
                 .filter(function(obj){
 
-                    return !!obj.tiles;
+                    return !!obj.tiles || obj.sequence;
                 });
 
     var allMapsIds = _.pluck(allMaps, "id");
@@ -291,6 +302,21 @@ internals.mapsReadAll = function(args, done){
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
         .then(function(data){
 
+
+// console.log("args.pre: \n", args.pre);
+
+            args.pre.seqMaps.forEach(function(seqMapObj){
+
+                // make sure that the maps in the sequence are actually available
+                internals.verifySequentialMap(seqMapObj, data);
+                data.push(seqMapObj);
+            });
+
+            
+            return data;
+        })
+        .then(function(data){
+
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
 
             // remove sensitive data from the objects in the data.Layer array (this data
@@ -312,9 +338,9 @@ internals.mapsRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // the call might be done in forms: /api/maps/xyz or /api/maps/xyz.json
-    // (that's mapbox.js does it internally)
-    args.ids = args.ids.map(function(obj){
+    // the request to the API might be done in 2 forms: /api/maps/xyz or /api/maps/xyz.json
+    // (that's how mapbox.js does it internally)
+    var ids = args.params.ids.map(function(obj){
 
         var id = obj.id;
         if(id.slice(-5) === ".json"){
@@ -330,7 +356,7 @@ internals.mapsRead = function(args, done){
     var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
                                     infoFiles.map(internals.extractMapId))
                     .filter(function(mapId){
-                        return !!_.findWhere(args.ids, {id: mapId});
+                        return !!_.findWhere(ids, {id: mapId});
                     });
 
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "read" */)
@@ -458,8 +484,8 @@ internals.mapsDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    // note: args.ids is an array of objects [{id: 'map1'}, {id: 'map2'}]
-    var mapId = args.ids[0]["id"];
+    // note: args.params.ids is an array of objects [{id: 'map1'}, {id: 'map2'}]
+    var mapId = args.params.ids[0]["id"];
     if(!_.findWhere(args.maps, {id: mapId})){
         return done(Boom.notFound("The resource does not exist."));
     }
@@ -501,7 +527,7 @@ internals.mapsReadMenu = function(args, done){
         .then(function(configRow) {
             
             var mapMenu = configRow[0]["value"];
-            internals.prepareMenu(mapMenu, args.maps)
+            internals.prepareMenu(mapMenu, args.pre.maps);
 
             return done(null, mapMenu);
         })
@@ -566,6 +592,7 @@ internals.mapsUpdateMenu = function(args, done){
 //     "key": "...", 
 //     "value": {"publicUrl": "http://yyy.com"}
 // }');
+
 
 
 
