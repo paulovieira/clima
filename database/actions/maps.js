@@ -100,13 +100,53 @@ internals.transformMap = {
 };
 
 
-internals.verifySequentialMap = function(seqMapObj, regularMaps){
+// make sure the mapIds in the sequence is actually a regular map (it might have been deleted meanwhile)
+internals.verifySequences = function(allMaps){
 
-    var validIds = _.pluck(regularMaps, "id");
+    // var sequentialMapsIds = _.chain(allMaps)
+    //                         .filter(function(obj){
+    //                             return obj.sequence;
+    //                         })
+    //                         .pluck("id")
+    //                         .value();
 
-    seqMapObj.sequence = _.filter(seqMapObj.sequence, function(obj){
-        return _.contains(validIds, obj.mapId);
+    // var regularMapsIds = _.chain(allMaps)
+    //                     .pluck("id")
+    //                     .difference(sequentialMapsIds)
+    //                     .value();
+
+    var regularMapsIds = _.chain(allMaps)
+                            .filter(function(obj){
+                                return !obj.sequence;
+                            })
+                            .pluck("id")
+                            .value();
+
+    allMaps.forEach(function(obj){
+
+        if(obj.sequence && Array.isArray(obj.sequence)){
+
+            obj.sequence = obj.sequence.filter(function(obj2){
+                if(!_.contains(regularMapsIds, obj2.mapId)){
+                    console.log("!!!!!!!! ", obj2.mapId)
+                }
+                return _.contains(regularMapsIds, obj2.mapId);
+            });
+        }
     });
+
+
+    // console.log("sequentialMapsIds: ", sequentialMapsIds);
+    // console.log("regularMapsIds: ", regularMapsIds);
+    // console.log("regularMapsIds2: ", regularMapsIds2);
+    // var regularMaps = allMaps.filter(function(obj){
+    //     return !obj.sequence;
+    // });
+    // var validIds = _.pluck(regularMaps, "id");
+
+    // seqMapObj.sequence = _.filter(seqMapObj.sequence, function(obj){
+    //     return _.contains(validIds, obj.mapId);
+    // });
 };
 
 internals.prepareMenu = function(mapMenu, allMaps){
@@ -311,20 +351,9 @@ internals.mapsReadAll = function(args, done){
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
         .then(function(data){
 
-            /*
-// console.log("args.pre: \n", args.pre);
-
-            args.pre.seqMaps.forEach(function(seqMapObj){
-
-                // make sure that the maps in the sequence are actually available
-                internals.verifySequentialMap(seqMapObj, data);
-                data.push(seqMapObj);
-            });
-            */
-            
+            internals.verifySequences(data);
             return data;
         })
-
         .then(function(data){
 
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
@@ -353,10 +382,13 @@ internals.mapsRead = function(args, done){
     var ids = args.params.ids.map(function(obj){
 
         var id = obj.id;
+
         if(id.slice(-5) === ".json"){
-            return { id: id.substr(0, id.length-5)};
+            return id.substr(0, id.length-5);
         }
-        return obj;
+        else{
+            return id;
+        }
     });
 
     // prettu much a copy-paste from the above mapsReadAll
@@ -364,12 +396,20 @@ internals.mapsRead = function(args, done){
     var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
 
     var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
-                                    infoFiles.map(internals.extractMapId))
-                    .filter(function(mapId){
-                        return !!_.findWhere(ids, {id: mapId});
-                    });
+                                    infoFiles.map(internals.extractMapId));
 
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "read" */)
+        .then(function(data){
+
+            internals.verifySequences(data);
+
+            data = data.filter(function(mapObj){
+
+                return _.contains(ids, mapObj.id);
+            });
+
+            return data;
+        })
         .then(function(data){
 
             if(data.length === 0){
