@@ -80,11 +80,11 @@ module.exports = {
         // documentation: https://github.com/hapijs/joi#validatevalue-schema-options-callback
         joi: {
             abortEarly: true,  // returns all the errors found (does not stop on the first error)
-            allowUnknown: false, // allows object to contain unknown keys (they can be deleted or not - see the stripUnknown options)
             stripUnknown: true,  // delete unknown keys; this means that only the keys that are explicitely stated in the schema will be present in request.payload and request.query when the handler executes;
             convert: true
     /*
 
+            allowUnknown: false, // allows object to contain unknown keys; note that is stipUnknown option is used, this becomes obsolete (because all unknown keys will be removed before the check for unknown keys is done)
 
             convert: ...
             skipFunctions: ...

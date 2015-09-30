@@ -35,10 +35,10 @@ module.exports = function(options){
     seneca.add("role:maps, cmd:readMenu",   internals.mapsReadMenu);
     seneca.add("role:maps, cmd:updateMenu", internals.mapsUpdateMenu);
 
-    seneca.add("role:maps, cmd:readSequential",   internals.mapsReadSequential);
-    seneca.add("role:maps, cmd:createSequential", internals.mapsCreateSequential);    
-    seneca.add("role:maps, cmd:updateSequential", internals.mapsUpdateSequential);    
-    seneca.add("role:maps, cmd:deleteSequential", internals.mapsDeleteSequential);
+    // seneca.add("role:maps, cmd:readSequential",   internals.mapsReadSequential);
+    // seneca.add("role:maps, cmd:createSequential", internals.mapsCreateSequential);    
+    // seneca.add("role:maps, cmd:updateSequential", internals.mapsUpdateSequential);    
+    // seneca.add("role:maps, cmd:deleteSequential", internals.mapsDeleteSequential);
 };
 
 internals.removeSensitiveData = function(data){
@@ -79,7 +79,10 @@ internals.transformMap = {
     "createdAt": "createdAt",
     "_updated": "_updated",
     "owner": "owner",
+
     "sequence": "sequence",
+    "hasPlayButton": "hasPlayButton",
+    "autoPlay": "autoPlay",
     
     // tileJson properties added in internals.addMissingKeys
     "tilejson": "tilejson",
@@ -247,7 +250,13 @@ internals.readProjectsFiles = function(tilemillDir, mapsIds, method){
                     // add the properties in the auxiliary info file
                     project.createdAt = info.createdAt || 0;
                     project._updated  = info.createdAt || 0;
-                    project.owner     = info.owner || "unknown";
+                    project.ownerName = info.ownerName || "unknown";
+
+                    if(info.sequence){
+                        project.sequence = info.sequence || [];
+                        project.hasPlayButton = info.hasPlayButton || false;
+                        project.autoPlay = info.autoPlay || false;
+                    }
 
                     // TODO: when reading all maps should we also add missing keys?
                     //if(method==="read"){
@@ -302,7 +311,7 @@ internals.mapsReadAll = function(args, done){
     internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
         .then(function(data){
 
-
+            /*
 // console.log("args.pre: \n", args.pre);
 
             args.pre.seqMaps.forEach(function(seqMapObj){
@@ -311,10 +320,11 @@ internals.mapsReadAll = function(args, done){
                 internals.verifySequentialMap(seqMapObj, data);
                 data.push(seqMapObj);
             });
-
+            */
             
             return data;
         })
+
         .then(function(data){
 
             data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
@@ -390,8 +400,8 @@ internals.mapsCreate = function(args, done){
     Utils.logCallsite(Hoek.callStack()[0]);
 
     var payload = _.isArray(args.payload) ? args.payload[0] : args.payload;
-// console.log("args.payload: ", args.payload);
-// console.log("payload: ", payload);
+ // console.log("args.payload: ", args.payload);
+ // console.log("payload: ", payload);
 
     var mapName        = payload.name;
     var mapDescription = payload.description;
@@ -432,8 +442,8 @@ internals.mapsCreate = function(args, done){
             if(mapCenter==="madeira"){
                 obj["bounds"] = [-17.5479, 32.3683, -16.0016, 33.2364];
                 obj["center"] = [-16.8393, 32.7203, 9];
-                obj["minzoom"] = 8;
-                obj["maxzoom"] = 12;
+                obj["minzoom"] = 7;
+                obj["maxzoom"] = 13;
             }
             else if(mapCenter === "azores"){
                 obj["bounds"] = [-32.0279, 36.6563, -23.5904, 40.1673];
@@ -445,7 +455,7 @@ internals.mapsCreate = function(args, done){
                 obj["bounds"] = [-9.5691, 36.8928, -6.1194, 42.2244];
                 obj["center"] = [-9.1338, 38.7546, 6];
                 obj["minzoom"] = 5;
-                obj["maxzoom"] = 16;
+                obj["maxzoom"] = 14;
             }
 
             return Fs.writeJsonAsync(newProjectOptions, obj);
@@ -457,16 +467,29 @@ internals.mapsCreate = function(args, done){
             var obj = {
                 createdAt: Date.now()
             };
+
             if(args.credentials){
                 obj["ownerId"] = args.credentials.id;
                 obj["ownerName"] = args.credentials.firstName + " " + args.credentials.lastName;
+            }
+
+            if(payload.sequence){
+                obj["sequence"] = payload.sequence;
+                obj["hasPlayButton"] = payload.hasPlayButton || false;
+                obj["autoPlay"] = payload.autoPlay || false;
             }
 
             return Fs.writeJsonAsync(newProjectInfo, obj);
         })
         .then(function(){
 
-            return done(null, {id: mapId, name: mapName, description: mapDescription});
+            var response = {
+                id: mapId, 
+                name: mapName, 
+                description: mapDescription
+            };
+
+            return done(null, response);
         })
         .catch(SyntaxError, function(err){
 
@@ -596,24 +619,24 @@ internals.mapsUpdateMenu = function(args, done){
 
 
 
-internals.mapsReadSequential = function(args, done){
+// internals.mapsReadSequential = function(args, done){
 
-    Utils.logCallsite(Hoek.callStack()[0]);
-    Db.func("config_read", JSON.stringify({ key: "sequentialMaps" }))
-        .then(function(configRow) {
+//     Utils.logCallsite(Hoek.callStack()[0]);
+//     Db.func("config_read", JSON.stringify({ key: "sequentialMaps" }))
+//         .then(function(configRow) {
             
-            var sequentialMaps = configRow[0]["value"];
-            //internals.prepareMenu(mapMenu, args.maps)
+//             var sequentialMaps = configRow[0]["value"];
+//             //internals.prepareMenu(mapMenu, args.maps)
 
-            return done(null, sequentialMaps);
-        })
-        .catch(function(err) {
+//             return done(null, sequentialMaps);
+//         })
+//         .catch(function(err) {
 
-            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
-            return done(err);
-        });
+//             err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+//             return done(err);
+//         });
 
-};
+// };
 
 
 // NOTE: for the sequential maps there is yet no validation when creating, updating or deleting
