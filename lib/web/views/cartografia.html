@@ -12,7 +12,6 @@
     {% include "common/common_stylesheets.html" %}
     
     {# <link href="/static/bootstrap/bootstrap-modal-2.2.5.css" rel="stylesheet" /> #}
-    <link href="/static/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" />
     <link href="/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.css" rel="stylesheet" />
     {# <link href="/static/leaflet/leaflet-minimap/Control.MiniMap-447530.css" rel="stylesheet" /> #}
     <link href="/static/bootstrap/bootstrap-treeview.css" rel="stylesheet" />
@@ -54,16 +53,15 @@
     {# common javascript (included in all pages) #} 
     {% include "common/common_scripts.html" %}
 
-    <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
+    
     {# add some specific js for cartografia #} 
-
     <script>
         Clima.maps = {{ ctx.maps | stringify }};
         Clima.mapsMenu = {{ ctx.mapsMenu | stringify }};
     </script>
 
     {% if NODE_ENV == "production" %}
-
+    <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
     <script src="/static/_js/{{ bundles['cartografia-libs'] }}"></script>
     <script src="/static/_js/{{ bundles['cartografia-app'] }}"></script>
 
@@ -71,6 +69,7 @@
 
     {# cartografia libs #}
     {# NOTE: if we add new files here, we must add in the gruntfile as well #}
+    <script src="/static/_js/{{ bundles['cartografia-templates'] }}"></script>
     <script src="/static/jquery/jquery.documentsize-1.2.1.js"></script>
     <script src="/static/jquery/jquery.mousewheel-3.1.12.js"></script>
     <script src="/static/jquery/jquery.fullscreen-0.5.1.js"></script>
