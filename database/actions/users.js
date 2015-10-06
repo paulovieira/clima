@@ -19,7 +19,7 @@ module.exports = function(options){
     seneca.add("role:users, cmd:readAll", internals.usersReadAll);
     seneca.add("role:users, cmd:read",    internals.usersRead);
     seneca.add("role:usersGroups, cmd:readAll", internals.usersGroupsReadAll);
-    //seneca.add("role:users, cmd:create",  internals.usersCreate);
+    seneca.add("role:users, cmd:create",  internals.usersCreate);
     seneca.add("role:users, cmd:update",  internals.usersUpdate);
     seneca.add("role:users, cmd:delete",  internals.usersDelete);
 };
@@ -148,6 +148,50 @@ internals.usersCreate = function(args, done){
         });
 };
 */
+
+
+internals.usersCreate = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+
+    ChangeCase(args.payload[0], "underscored");
+
+    args.payload[0]["pw_hash"] = Bcrypt.hashSync(args.payload[0]["password"], 10);
+    delete args.payload[0]["password"];
+
+    // 1) create the resources with the payload data
+    Db.func('users_create', JSON.stringify(args.payload[0]))
+
+        // 2) read the created resources (to obtain the joined data)
+        .then(function(createdData) {
+
+            if (createdData.length === 0) {
+                throw Boom.badRequest("The resource could not be created.");
+            }
+
+            var createdIds = createdData.map(function(obj){ 
+                return { id: obj.id }; 
+            });
+
+            return Db.func("users_read", JSON.stringify(createdIds));
+        })
+
+        // 3) apply the object transform and reply
+        .then(function(data){
+
+            if (data.length === 0) {
+                throw Boom.notFound("The resource does not exist.");
+            }
+
+            data = args.raw === true ? data : Hoek.transform(data, internals.transformMap);
+            return done(null, data);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+};
 
 internals.usersUpdate = function(args, done){
 
