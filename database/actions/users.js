@@ -5,6 +5,8 @@ var Hoek = require("hoek");
 var Boom = require("boom");
 var Bcrypt = require("bcrypt");
 var ChangeCase = require("change-case-keys");
+var _ = require("underscore");
+var _s = require("underscore.string");
 var Db = require("..");
 var Utils = require("../../lib/common/utils");
 
@@ -16,6 +18,7 @@ module.exports = function(options){
 
     seneca.add("role:users, cmd:readAll", internals.usersReadAll);
     seneca.add("role:users, cmd:read",    internals.usersRead);
+    seneca.add("role:usersGroups, cmd:readAll", internals.usersGroupsReadAll);
     //seneca.add("role:users, cmd:create",  internals.usersCreate);
     seneca.add("role:users, cmd:update",  internals.usersUpdate);
     seneca.add("role:users, cmd:delete",  internals.usersDelete);
@@ -55,11 +58,21 @@ internals.usersReadAll = function(args, done){
         });
 };
 
+
 internals.usersRead = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('users_read', JSON.stringify(args.query))
+    var emails = args.emails || [];
+    var ids = [];
+    if(args.params && args.params.ids){
+        ids = args.params.ids;
+    }
+
+
+
+    var queryArray = _.union(emails, ids);
+    Db.func('users_read', JSON.stringify(queryArray))
         .then(function(data) {
 
             if (data.length === 0) {
@@ -76,6 +89,23 @@ internals.usersRead = function(args, done){
         });
 };
 
+internals.usersGroupsReadAll = function(args, done){
+
+    Utils.logCallsite(Hoek.callStack()[0]);
+
+    Db.func('users_groups_read')
+        .then(function(data) {
+
+            // TODO: create a transform for this data (not needed so far)
+            //data = args.raw === true ? data : data;
+            return done(null, data);
+        })
+        .catch(function(err) {
+
+            err = err.isBoom ? err : Boom.badImplementation(err.msg, err);
+            return done(err);
+        });
+};
 
 
 /*
@@ -123,63 +153,124 @@ internals.usersUpdate = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    ChangeCase(args.query, "underscored");
-    var ids = args.query.map(function(obj){ 
+    ChangeCase(args.payload, "underscored");
+    var ids = args.payload.map(function(obj){ 
         return { id: obj.id };
     });
+
+    args.payload.forEach(function(obj){
+        if(_s.trim(obj["new_pw"])===""){
+            delete obj["new_pw"];
+        }
+    });
+
+
+    //console.log("args.payload[0].showEnglish\n", args.payload[0].showEnglish)
+
+//console.log(args.pre.usersGroups);
+
+    // TODO: currently we are updating only the 1st user given in the 
+    // payload (which can be an array of objects)   
+    var user = _.findWhere(args.pre.users, ids[0]);
+    if (!user) {
+        throw Boom.notFound("The resource does not exist.");
+    }    
+
+    // if we are updating the password we must verify that the submitted current pw matches 
+    // with the one in the database
+    var currentPwSubmitted = _s.trim(args.payload[0]["current_pw"]),
+        newPw              = _s.trim(args.payload[0]["new_pw"]);
     
-    // 1) read the resources to be updated (to verify that they exist)
-    Db.func('users_read', JSON.stringify(ids))
+    if(newPw){
+        if(!currentPwSubmitted){
+            throw Boom.forbidden("To change the password you must submit the current one.");
+        }
 
-        // 2) update the resources with the payload data
-        .then(function(data) {
+        var pwMatch = Bcrypt.compareSync(currentPwSubmitted, user["pw_hash"]);
+        if(!pwMatch){
+            throw Boom.forbidden("The submitted current password is wrong.");
+        }
 
-            if (data.length === 0) {
-                throw Boom.notFound("The resource does not exist.");
-            }
+        if(newPw.length<3){
+            throw Boom.forbidden("The new password must have at least 3 characters.");   
+        }
 
-            // TODO: verify that data.length === args.query.length
+        // if the pw matches, hash the new password (blowfish) to be stored in the db
+        args.payload[0]["pw_hash"] = Bcrypt.hashSync(newPw, 10);
+    }
+
+    // TODO: what is all permissions are disabled
+    console.log("args.payload[0]\n", args.payload[0]);
+    var usersGroupsData = [];
+    var user_id = args.payload[0].id;
+
+    if(args.payload[0]["is_admin"]){
+        usersGroupsData.push({group_code: 99, user_id: user_id});
+    }
+    if(args.payload[0]["can_edit_texts"]){
+        usersGroupsData.push({group_code: 100, user_id: user_id});
+    }
+    if(args.payload[0]["can_delete_texts"]){
+        usersGroupsData.push({group_code: 101, user_id: user_id});
+    }
+    if(args.payload[0]["can_edit_maps"]){
+        usersGroupsData.push({group_code: 102, user_id: user_id});
+    }
+    if(args.payload[0]["can_delete_maps"]){
+        usersGroupsData.push({group_code: 103, user_id: user_id});
+    }
+    if(args.payload[0]["can_edit_files"]){
+        usersGroupsData.push({group_code: 104, user_id: user_id});
+    }
+    if(args.payload[0]["can_delete_files"]){
+        usersGroupsData.push({group_code: 105, user_id: user_id});
+    }
+
+    console.log("usersGroupsData\n", usersGroupsData);
 
 
-            // if we are updating the password we must verify that the submitted current pw matches 
-            // with the one in the database
-            var currentPwSubmitted = args.query[0]["current_pw"],
-                newPw              = args.query[0]["new_pw"];
-            
-            if(newPw){
-                if(!currentPwSubmitted){
-                    throw Boom.forbidden("To change the password you must submit the current one.");
-                }
+    // 1) update the resources with the payload data
+    Db.func("users_update", JSON.stringify(args.payload))
 
-                var currentPwHash = data[0]["pw_hash"];   // the pw hash in the database
-                var pwMatch = Bcrypt.compareSync(currentPwSubmitted, currentPwHash);
-
-                if(!pwMatch){
-                    throw Boom.forbidden("The submitted current password is wrong.");
-                }
-
-                // if the pw matches, hash the new password (blowfish) to be stored in the db
-                args.query[0]["pw_hash"] = Bcrypt.hashSync(newPw, 10);
-
-            }
-            return Db.func("users_update", JSON.stringify(args.query))
-        })
-
-        // 3) read again the updated resources (to obtain the joined data)
-        .then(function(updatedData) {
+        // update the groups/permissions - first delete all the permissions
+        // the current user
+        .then(function(updatedData){
 
             if (updatedData.length === 0) {
                 throw Boom.badRequest("The resource could not be updated.");
             }
 
-            var updatedIds = updatedData.map(function(obj){ 
-                return { id: obj.id }; 
-            });
+            if(!!args.payload[0]["update_profile"]===false){
+                console.log("user_id: ", user_id);
+                return Db.func("users_groups_delete", JSON.stringify({user_id: user_id}));
+            }
 
-            return Db.func("users_read", JSON.stringify(updatedIds));
         })
 
-        // 4) apply the object transform and reply
+        // then recreate the permissions
+        .then(function(){
+            if(!!args.payload[0]["update_profile"]===false){
+                return Db.func("users_groups_create", JSON.stringify(usersGroupsData));
+            }
+        })
+
+        // update the show english option inthe config table
+        .then(function(){
+            if(!!args.payload[0]["update_profile"]===true){
+                return Db.func("config_update", JSON.stringify({key:"showEnglish", value: args.payload[0]["show_english"]}));
+            }
+
+        })
+
+        // 2) read again the updated resources (to obtain the joined data)
+        .then(function() {
+
+
+            return Db.func("users_read", JSON.stringify({id: args.payload[0].id}));
+        })
+
+
+        // 3) apply the object transform and reply
         .then(function(data){
 
             if (data.length === 0) {
@@ -201,7 +292,7 @@ internals.usersDelete = function(args, done){
 
     Utils.logCallsite(Hoek.callStack()[0]);
 
-    Db.func('users_delete', JSON.stringify(args.query))
+    Db.func('users_delete', JSON.stringify(args.params.ids))
         .then(function(deletedData) {
 
             if (deletedData.length === 0) {

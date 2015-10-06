@@ -88,4 +88,16 @@
 		"email": "drota.sra@gov-madeira.pt",
 		"groupCode": 99
 	},
+
+	{
+		"id": 18,
+		"email": "paulovieira@gmail.com",
+		"groupCode": 100
+	},
+
+	{
+		"id": 19,
+		"email": "user_energia@gmail.com",
+		"groupCode": 100
+	},
 ]

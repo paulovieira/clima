@@ -53,5 +53,41 @@
 		"id": 8,
 		"code": 99,
 		"name": "admin"
+	},
+
+	{
+		"id": 9,
+		"code": 100,
+		"name": "canEditTexts"
+	},
+
+	{
+		"id": 10,
+		"code": 101,
+		"name": "canDeleteTexts"
+	},
+
+	{
+		"id": 11,
+		"code": 102,
+		"name": "canEditMaps"
+	},
+
+	{
+		"id": 12,
+		"code": 103,
+		"name": "canDeleteMaps"
+	},
+	{
+		"id": 13,
+		"code": 104,
+		"name": "canEditFiles"
+	},
+
+	{
+		"id": 14,
+		"code": 105,
+		"name": "canDeleteFiles"
 	}
+
 ]

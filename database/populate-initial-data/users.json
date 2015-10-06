@@ -55,6 +55,7 @@
 		"email": "teste@teste.com",
 		"pwHash": "clima83645#"
 	},
+	/*
 	{
 		"id":9,
 		"firstName": "Carina",
@@ -69,6 +70,7 @@
 		"email": "henriquerodrigues.sra@gov-madeira.pt",
 		"pwHash": "clima59638#"
 	},
+*/
 	{
 		"id":11,
 		"firstName": "DROTA",

@@ -112,6 +112,8 @@ DECLARE
 	input_row users_groups%ROWTYPE;
 	current_row users_groups%ROWTYPE;
 	new_id INT;
+	new_group_code INT;
+	new_user_id INT;
 BEGIN
 
 
@@ -124,8 +126,11 @@ END IF;
 FOR input_row IN (select * from json_populate_recordset(null::users_groups, input_data)) LOOP
 
 	SELECT input_row.id INTO new_id;
+	SELECT input_row.group_code INTO new_group_code;
+	SELECT input_row.user_id INTO new_user_id;
 	
-	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM users_groups WHERE id = new_id) THEN
+	--IF new_id IS NULL OR NOT EXISTS (SELECT * FROM users_groups WHERE id = new_id) THEN
+	IF new_id IS NULL OR NOT EXISTS (SELECT * FROM users_groups WHERE group_code = new_group_code AND user_id = new_user_id) THEN
 
 		INSERT INTO users_groups(
 			id,
@@ -272,6 +277,7 @@ DECLARE
 
 	-- fields to be used in WHERE clause
 	id_to_delete INT;
+	user_id_to_delete INT;
 BEGIN
 
 -- convert the json argument from object to array of (one) objects
@@ -284,6 +290,7 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 
 	-- extract values to be (optionally) used in the WHERE clause
 	SELECT json_extract_path_text(options_row, 'id') INTO id_to_delete;
+	SELECT json_extract_path_text(options_row, 'user_id') INTO user_id_to_delete;
 	
 	IF id_to_delete IS NOT NULL THEN
 		DELETE FROM users_groups
@@ -296,6 +303,18 @@ FOR options_row IN ( select json_array_elements(options) ) LOOP
 		IF deleted_id IS NOT NULL THEN
 			RETURN NEXT;
 		END IF;
+	ELSEIF user_id_to_delete IS NOT NULL THEN
+		DELETE FROM users_groups
+		WHERE user_id = user_id_to_delete;
+		-- RETURNING *
+		-- INTO deleted_row;
+
+		-- deleted_id   := deleted_row.id;
+
+		-- IF deleted_id IS NOT NULL THEN
+		-- 	RETURN NEXT;
+		-- END IF;
+		--RETURN NEXT;
 	END IF;
 		
 END LOOP;

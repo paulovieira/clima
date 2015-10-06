@@ -180,7 +180,8 @@
 
 
 {#  - removed the button to change languges; uncomment this part to activate it (must also be done in includes/header-home.html)
-
+#}
+						{% if ctx.showEnglish %}
 						<div class="btn-group">
 						    <button style="margin-left: 5px; " type="button" class="btn btn-default navbar-btn dropdown-toggle" data-toggle="dropdown">
 						        <span class="flag-icon {{ language_icon_class }}"></span>&nbsp;&nbsp;<span class="caret"></span>
@@ -194,7 +195,8 @@
 						        </li>
 						    </ul>
 						</div>
-#}
+						{% endif %}
+
 
 
 
