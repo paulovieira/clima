@@ -17,18 +17,28 @@
             <label for="js-edit-text-tags">Tags</label>
             <input type="text" id="js-edit-text-tags" class="form-control" name="edit-text-tags" value="{{ tags | join(', ') }}">
         </div>
-        <div class="form-group">
-            <label>id</label>
-            <input type="text" class="form-control" value="{{ id }}" disabled>
-        </div>
-        <div class="form-group">
-            <label>Last updated</label>
-            <input type="text" class="form-control" value="{{ lastUpdated }}" disabled>
-        </div>
+
         <div class="form-group">
             <label>Author (of the last update)</label>
             <input type="text" class="form-control" value="{{ authorData.firstName }} {{ authorData.lastName }}" disabled>
         </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>id</label>
+                    <input type="text" class="form-control" value="{{ id }}" disabled>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <label>Last updated</label>
+                    <input type="text" class="form-control" value="{{ lastUpdated }}" disabled>
+                </div>
+            </div>
+        </div>
+
+
+
     </form>
 </div>
 
