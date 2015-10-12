@@ -20,7 +20,27 @@ mkdir ~/tilemill-files
 ```
 
 
-#### TileStream (mbtiles server)
+#### clima-tilelive (mbtiles server)
+
+Clone and install dependencies:
+```sh
+cd ~/clima-app
+git clone https://github.com/paulovieira/clima-tilelive
+cd clima-tilelive
+sudo npm install
+```
+
+Then launch the server
+```sh
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
+node index.js -port=8001 --source=$TILEMILL_FILES_DIR/export 
+```
+
+Note: the default port for this service is 8001
+
+
+
+#### OUTDATED TileStream (mbtiles server)
 
 Clone and install dependencies:
 ```sh
@@ -124,7 +144,18 @@ pm2 list
 sudo npm install pm2 -g
 ```
 
-1) Start TileStream (note that we have to pass the arguments after "--"):
+
+1) Start clima-tilelive (note that we have to pass the arguments after "--"):
+
+```sh
+cd ~/clima-app/clima-tilelive
+export TILEMILL_FILES_DIR=$HOME/tilemill-files
+
+pm2 start index.js --name "clima-tilelive" -- --port=8001 --source=$TILEMILL_FILES_DIR/export
+```
+
+
+1) OUTDATED Start TileStream (note that we have to pass the arguments after "--"):
 
 ```sh
 cd ~/clima-app/tilestream-clima
