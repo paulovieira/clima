@@ -414,12 +414,13 @@ FOR input_row IN (select * from json_populate_recordset(null::shapes, input_data
 
 	-- get the geometry_type of the geom column (relative to the postgis table referenced by input_row.table_name)
 	SELECT 
-		lower(gc.type::TEXT)
+		--lower(gc.type::TEXT)
+		gc.type::TEXT
 	FROM 
 		geometry_columns gc
 	WHERE
 		gc.f_table_schema = format('%I', 'geo') 
-		AND gc.f_table_name = format('%I', input_row.table_name)
+		AND gc.f_table_name = format('%I', lower(input_row.table_name))
 		AND gc.f_geometry_column = 'geom'
 	LIMIT 1
 	INTO geometry_type;
