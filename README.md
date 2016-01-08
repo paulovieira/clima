@@ -255,3 +255,29 @@ client_max_body_size 0;
 ```
 
 
+
+
+
+todo:
+-update readme with options that the plugin should receive
+
+
+-install node 4 (first downgrade npm)
+-o mesmo no vps da fcul (nao é necessario fazer downgrade do npm)
+
+
+install the modules
+
+
+Then copy-paste and edit the custom clima-settings.json:
+
+cp node_modules/hapi-tilemill/clima-settings.json.template  node_modules/hapi-tilemill/clima-settings.json
+emacs node_modules/hapi-tilemill/clima-settings.json
+
+
+? create the tilemill_files folder?
+
+
+install the main repo
+(will install hapi-tilemill and hapi-tilelive)
+manually install clima-web-madeira in the node_modules (clone)

@@ -339,16 +339,16 @@ internals.mapsReadAll = function(args, done){
 
     // if some project directory is missing the "project.mml", Glob will not match; so 
     // that directory will not be read
-    var projectsFiles = Glob.sync(args.tilemillFilesDir + "/project/*/project.mml");
-    var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
+
+    var projectsFiles = Glob.sync(Path.join(Config.get("tilemill.files"), "project/*/project.mml"));
+    var infoFiles     = Glob.sync(Path.join(Config.get("tilemill.files"), "project/*/info.json"));
 
     // it is required that the directory has both the project.mml and info.json files (because we will have to read
     // those 2 files)
     var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
                                     infoFiles.map(internals.extractMapId));
 
-
-    internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "readAll" */)
+    internals.readProjectsFiles(Config.get("tilemill.files"), mapsIds /*, "readAll" */)
         .then(function(data){
 
             internals.verifySequences(data);
@@ -392,13 +392,13 @@ internals.mapsRead = function(args, done){
     });
 
     // prettu much a copy-paste from the above mapsReadAll
-    var projectsFiles = Glob.sync(args.tilemillFilesDir + "/project/*/project.mml");
-    var infoFiles     = Glob.sync(args.tilemillFilesDir + "/project/*/info.json");
+    var projectsFiles = Glob.sync(Path.join(Config.get("tilemill.files"), "project/*/project.mml"));
+    var infoFiles     = Glob.sync(Path.join(Config.get("tilemill.files"), "project/*/info.json"));
 
     var mapsIds = _.intersection(projectsFiles.map(internals.extractMapId), 
                                     infoFiles.map(internals.extractMapId));
 
-    internals.readProjectsFiles(args.tilemillFilesDir, mapsIds /*, "read" */)
+    internals.readProjectsFiles(Config.get("tilemill.files"), mapsIds /*, "read" */)
         .then(function(data){
 
             internals.verifySequences(data);
@@ -457,9 +457,9 @@ internals.mapsCreate = function(args, done){
     // copy the directory with the default project to the "projects" directory;
     // for TileMill this will efectively create a new project
     var defaultProjectDir = Path.join(Config.get("rootDir"), "data/tilemill-default-project");
-    var newProjectDir     = Path.join(args.tilemillFilesDir, "project", mapId);
-    var newProjectOptions = Path.join(args.tilemillFilesDir, "project", mapId, "project.mml");
-    var newProjectInfo    = Path.join(args.tilemillFilesDir, "project", mapId, "info.json");
+    var newProjectDir     = Path.join(Config.get("tilemill.files"), "project", mapId);
+    var newProjectOptions = Path.join(Config.get("tilemill.files"), "project", mapId, "project.mml");
+    var newProjectInfo    = Path.join(Config.get("tilemill.files"), "project", mapId, "info.json");
 
     var allMaps = [];
 
@@ -554,8 +554,9 @@ internals.mapsDelete = function(args, done){
     }
 
     // delete the directory and all related files in exports
-    var projectDir = Path.join(args.tilemillFilesDir, "project", mapId);
-    var exportsFiles = Path.join(args.tilemillFilesDir, "export", mapId) + "*";
+    var projectDir = Path.join(Config.get("tilemill.files"), "project", mapId);
+    //var exportsFiles = Path.join(Config.get("tilemill.files"), "export", mapId) + "*";
+    var exportsFiles = Path.join(Config.get("tilemill.files"), "export", mapId, "*");
 
     // console.log("projectDir: ", projectDir);
     // console.log("exportsFiles: ", exportsFiles);

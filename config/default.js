@@ -10,7 +10,7 @@ var internals = {
     rootDir:      Path.resolve(__dirname, ".."),
     viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
-    tilemillFilesDir:  process.env.TILEMILL_FILES_DIR,
+//    tilemillFilesDir:  process.env.TILEMILL_FILES_DIR,
 
     // relative paths
     uploadsRelativeDir: "/data/uploads/public/",
@@ -46,21 +46,22 @@ module.exports = {
         relative: internals.uploadsRelativeDir,
         webPath: internals.uploadsWebPath  // logical path (to be used in the urls)
     },
-    tilemillFilesDir: internals.tilemillFilesDir,
+//    tilemillFilesDir: internals.tilemillFilesDir,
     
     bundles: internals.bundles,
 
     hapi: {
 
         // options for the Hapi.Server object (to be used in the main index.js)
-        server: {
-            connections: {
-                router: {
-                    isCaseSensitive: false,
-                    stripTrailingSlash: true
-                }            
-            }
-        },
+
+        // server: {
+        //     connections: {
+        //         router: {
+        //             isCaseSensitive: false,
+        //             stripTrailingSlash: true
+        //         }            
+        //     }
+        // },
 
         // options for the views (to be used in the main index.js)
         views: {
@@ -122,6 +123,7 @@ module.exports = {
         // should be redefined in some other configuration file (that should be present in .gitignore)
         postgres: {
             host: "127.0.0.1",
+            port: 5432,
             database: "db_name",
             username: "db_username",
             password: "db_password",
@@ -134,9 +136,17 @@ module.exports = {
                         this.database;
             }
         },
+    },
+
+    tilemill: {
+        files: Path.join(process.env.HOME, "tilemill-files"),
+        port: 20009,
+        tilePort: 20008,
+        coreUrl: "localhost",
+        tileUrl: "localhost",
+        updates: 0,
+        delay: 2  // tilemill will start only after n seconds
     }
-
-
 
 };
 
