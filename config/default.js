@@ -1,14 +1,27 @@
-var Path = require("path");
-var Fs = require("fs");
-var Nunjucks = require('hapi-nunjucks');
-
 // note: when this file is first read, the end variables TILEMILL_FILES_DIR and NODE_ENV
 // are defined for sure (see the main index.js)
+
+var Path = require("path");
+var Fs = require("fs");
+
+var internals = {};
+
+// absolute paths
+internals.rootDir = Path.resolve(__dirname, "..");
+internals.dbActionsDir = Path.join(internals.rootDir, "database/actions");
+
+// relative paths
+internals.uploadsRelativeDir = "/data/uploads/public/";
+internals.uploadsWebPath = "/uploads/public/";
+
+internals.bundles = JSON.parse(Fs.readFileSync(Path.join(internals.rootDir, "bundles.json"), "utf8"));
+
+///
+/*
 var internals = {
 
     // absolute paths
     rootDir:      Path.resolve(__dirname, ".."),
-    viewsDir:     Path.resolve(__dirname, "..", "lib/web/views"),
     dbActionsDir: Path.resolve(__dirname, "..", "database/actions"),
 //    tilemillFilesDir:  process.env.TILEMILL_FILES_DIR,
 
@@ -18,14 +31,10 @@ var internals = {
 
     env:process.env.NODE_ENV 
 };
-
-internals.bundles = JSON.parse(Fs.readFileSync(Path.join(internals.rootDir, "bundles.json"), "utf8"));
-
+*/
 
 
-
-
-module.exports = {
+internals.defaultOptions = {
 
     host: "localhost",
     port: 3000,
@@ -38,7 +47,7 @@ module.exports = {
     allowedLanguages: ["pt", "en"],
 
     rootDir: internals.rootDir,
-    viewsDir: internals.viewsDir,
+    viewsDir: Path.join(internals.rootDir, "views"),
     actionsDir: {
         db: internals.dbActionsDir,
     },
@@ -63,14 +72,7 @@ module.exports = {
         //     }
         // },
 
-        // options for the views (to be used in the main index.js)
-        views: {
-            path: internals.viewsDir,
-            allowAbsolutePaths: true,
-            engines: {
-                "html": Nunjucks
-            },
-        },
+
 
         auth: {
             mode: "try"
@@ -150,3 +152,4 @@ module.exports = {
 
 };
 
+module.exports = internals.defaultOptions;

@@ -266,18 +266,55 @@ todo:
 -o mesmo no vps da fcul (nao é necessario fazer downgrade do npm)
 
 
-install the modules
 
+
+
+
+clone the main repo
+
+install the modules
+  npm install
+
+this will install hapi-tilelive (for serving the tiles) and hapi-tilemill (wrapper around mapbox's tilemill)
+
+## copy-paste the configuration files
+
+config/production.js
+config/dev.js
+config/dev-no-auth.js
+
+
+## tilemill configuration
 
 Then copy-paste and edit the custom clima-settings.json:
 
 cp node_modules/hapi-tilemill/clima-settings.json.template  node_modules/hapi-tilemill/clima-settings.json
-emacs node_modules/hapi-tilemill/clima-settings.json
 
+emacs node_modules/hapi-tilemill/clima-settings.json
 
 ? create the tilemill_files folder?
 
+configure also: hapi.tilemill (port, host, ...)
 
-install the main repo
-(will install hapi-tilemill and hapi-tilelive)
-manually install clima-web-madeira in the node_modules (clone)
+## views configuration
+
+manually clone the clima-madeira-views repo along side the clima-core; this repo will be a hapi plugin that is dinamically loaded (we must set in the configuration)
+
+cd ~/clima-app
+git clone https://github.com/paulovieira/clima-madeira-views.git
+
+Set the configuration with the correct views dir:
+config/production.js
+config/dev.js
+config/dev-no-auth.js
+
+```
+var internals = {
+    rootDir: Path.resolve(__dirname, "..")
+};
+
+hapi: {
+    viewsDir: Path.join(internals.rootDir, "..", "clima-madeira-views"),
+};
+```
+
