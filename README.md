@@ -94,7 +94,7 @@ Clone and install dependencies:
 cd ~/clima-app
 git clone https://github.com/paulovieira/clima
 cd clima
-sudo npm install
+npm install
 ```
 
 ### Configuration of the main application
@@ -294,7 +294,7 @@ emacs node_modules/hapi-tilemill/clima-settings.json
 
 ? create the tilemill_files folder?
 
-configure also: hapi.tilemill (port, host, ...)
+configure also: tilemill (port, host, ...)
 
 ## views configuration
 
