@@ -268,45 +268,36 @@ todo:
 
 
 
-## clone the main repo and install the modules
+## create directories for the new instance
 
 cd ~/clima-app
-mkdir acores && cd acores
-git clone https://github.com/paulovieira/clima && cd clima
-npm install
+mkdir clima-acores-config
+ 
+## copy-paste the configuration files and update them accordingly
 
-this will install hapi-tilelive (for serving the tiles) and hapi-tilemill (wrapper around mapbox's tilemill)
+cp clima-madeira-config/dev.js  clima-acores-config
+cp clima-madeira-config/production.js  clima-acores-config
+ln -s ~/clima-app/clima/config/default.js  clima-acores-config/default.js
 
-## copy-paste the configuration files
-
-cp ../../madeira/clima/config/dev.js config/dev.js
-cp ../../madeira/clima/config/production.js config/production.js
+create the database
+?create the tilemill_files folder?
 
 
-## tilemill configuration
-
-Then copy-paste and edit the custom clima-settings.json:
-
-cp node_modules/hapi-tilemill/clima-settings.json.template  node_modules/hapi-tilemill/clima-settings.json
-
-emacs node_modules/hapi-tilemill/clima-settings.json
-
-? create the tilemill_files folder?
-
-configure also the tilemill section in the configuration files (port, host, ...)
 
 ## views configuration
 
-this should a hapi plugin living along side the "clima" dir; it is dinamically loaded (should be set in the configuration)
+this is a hapi plugin living along side the directory of the core "clima" module; it is dinamically loaded (the directory of the plugin is set in the configuration)
 
-cd ~/clima-app/acores
-mkdir acores-views
+cd ~/clima-app
+mkdir clima-acores-views
+cp -r clima-madeira-views/* clima-acores-views
+git init
+
+(update the configuration)
 
 ## start the server
 
 export NODE_ENV=dev
-node index
-
-
-
+export NODE_CONFIG_DIR=~/clima-app/clima-acores-config
+node ~/clima-app/clima/index.js
 
