@@ -7,7 +7,7 @@ var Fs = require("fs");
 var internals = {};
 
 // absolute paths
-internals.rootDir = Path.resolve(__dirname, "..");
+internals.rootDir = Path.join(__dirname, "..");
 internals.dbActionsDir = Path.join(internals.rootDir, "database/actions");
 
 // relative paths

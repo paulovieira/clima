@@ -146,7 +146,7 @@ var populate = {
 
 			                // don't proceed if some email address is invalid
 			                if (!user) {
-		                    	throw new Error("there is no user with the given email address: " + JSON.stringify(text))
+		                    	throw new Error("there is no user with the given email address: " + JSON.stringify(userGroup.email))
 			                }
 
 			                userGroup.userId = user.id;

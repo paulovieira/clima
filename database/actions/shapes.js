@@ -179,7 +179,7 @@ internals.shapesCreate = function(args, done){
     var zipExtname  = Path.extname(zipName);
     var zipBasename = Path.basename(zipName, zipExtname);
     var zipPhysicalPath = zipFile.physical_path;
-    var rootDir = Config.get("rootDir");
+    var rootDir = Config.get("instanceRootDir");
 
     if(zipExtname !== ".zip"){
         return done(Boom.badRequest("The file must be a zip"));

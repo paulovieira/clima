@@ -116,19 +116,19 @@ internals.filesCreate = function(args, done){
 
     console.log("shapeData: ", shapeData);
 
-    var physicalPath = Config.get("uploadsDir.relative");
-    var rootDir      = Config.get("rootDir");
+    var relativePhysicalPath = Config.get("uploadsDir.relative");
+    var rootDir      = Config.get("instanceRootDir");
 
     // check if we already have a file with this name
     if(_.findWhere(args.files, {name: filename})){
         filename = basename + "_" + Utils.getRandomString() + extname;
     }
 
-    if(typeof physicalPath!=="string" || typeof filename!=="string"){
+    if(typeof relativePhysicalPath!=="string" || typeof filename!=="string"){
         return done(Boom.badRequest("filename and physical path must be strings"));
     }
 debugger;
-    var ws = Fs.createWriteStream(Path.join(rootDir, physicalPath, filename));
+    var ws = Fs.createWriteStream(Path.join(rootDir, relativePhysicalPath, filename));
     args.payload.new_file.pipe(ws);
 
     ws.on("finish", function(){
@@ -137,7 +137,7 @@ debugger;
         var dbData = {
             name: filename,
             webPath: Config.get("uploadsDir.webPath"),
-            physicalPath: physicalPath,
+            physicalPath: relativePhysicalPath,
             tags: args.payload.tags,
             ownerId: args.payload.ownerId
         };
@@ -332,11 +332,11 @@ internals.filesDelete = function(args, done){
             // TODO: currently only the first file will be deleted by rimraf; if we make a DELETE request such as
             //  /api/v1/files/3,5, only the file with id 3 will be deleted
             
-            var rootDir = Config.get("rootDir"), 
-                physicalPath = data[0]["physical_path"],
+            var rootDir = Config.get("instanceRootDir"), 
+                relativePhysicalPath = data[0]["physical_path"],
                 name = data[0]["name"];
 
-            var fileFullPath = Path.join(rootDir, physicalPath, name);
+            var fileFullPath = Path.join(rootDir, relativePhysicalPath, name);
             Utils.serverLog(["rimraf"], "rimraf will delete " + fileFullPath);
 
             var deferred = Q.defer();

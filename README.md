@@ -268,20 +268,39 @@ todo:
 
 
 
+
+
+
 ## create directories for the new instance
 
 cd ~/clima-app
-mkdir clima-acores-config
+mkdir clima-acores
+mkdir clima-acores/config
+mkdir clima-acores/data/uploads/public/images -p
+mkdir clima-acores/tilemill-files
+
+
  
 ## copy-paste the configuration files and update them accordingly
 
-cp clima-madeira-config/dev.js  clima-acores-config
-cp clima-madeira-config/production.js  clima-acores-config
-ln -s ~/clima-app/clima/config/default.js  clima-acores-config/default.js
+cp clima-madeira/config/dev.js         clima-acores/config
+cp clima-madeira/config/production.js  clima-acores/config
+ln -s ~/clima-app/clima/config/default.js  clima-acores/config/default.js
 
-create the database
-?create the tilemill_files folder?
+## create the database and update the configuration files
 
+createdb prac
+cd ~/clima-app/clima && ./database/initialize_db.sh prac
+
+cd ~/clima-app
+emacs clima-acores/config/dev.js
+emacs clima-acores/config/production.js
+
+# populate initial data in the database
+
+export NODE_ENV=dev
+export NODE_CONFIG_DIR=~/clima-app/clima-acores/config
+node ~/clima-app/clima/database/populate-initial-data/
 
 
 ## views configuration
@@ -293,11 +312,15 @@ mkdir clima-acores-views
 cp -r clima-madeira-views/* clima-acores-views
 git init
 
-(update the configuration)
 
 ## start the server
 
 export NODE_ENV=dev
-export NODE_CONFIG_DIR=~/clima-app/clima-acores-config
+export NODE_CONFIG_DIR=~/clima-app/clima-acores/config
 node ~/clima-app/clima/index.js
 
+VERIFIFY:
+  -ok upload file, make sure it is in the right directory
+  -ok download file
+  -ok upload shape, create map
+  -ok remove dev.js/prod.js from the core config

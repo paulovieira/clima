@@ -75,7 +75,7 @@ internals.decodeImg = function(contents){
                 var base = Path.basename(filename, ext).toLocaleLowerCase();
                 filename = base + "-" + Utils.getRandomString() + ext;
                 
-                var imgPathPhysical = Path.join(Config.get("rootDir"), "/data/uploads/public/images/", filename);
+                var imgPathPhysical = Path.join(Config.get("instanceRootDir"), "data/uploads/public/images/", filename);
                 var imgPathLogical = Path.join("/uploads/public/images/", filename);
 
                 try{
