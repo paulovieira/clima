@@ -498,6 +498,8 @@ internals.mapsCreate = function(args, done){
                 obj["maxzoom"] = 14;
             }
 
+            console.log("mapCenter: ", mapCenter);
+
             return Fs.writeJsonAsync(newProjectOptions, obj);
         })
 
