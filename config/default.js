@@ -42,6 +42,7 @@ internals.defaultOptions = {
 
     publicUri: "localhost",  // host
     publicPort: 3000,  // probably 80
+    emailContact: "email@domain.com",
 
     // the default language is the first in the array below
     allowedLanguages: ["pt", "en"],
@@ -148,8 +149,18 @@ internals.defaultOptions = {
         tileUrl: "localhost",
         updates: 0,
         delay: 2  // tilemill will start only after n seconds
-    }
+    },
 
+    // initial map state (center, zoom)
+    cartografia: {
+        center: { 
+            lat: 32.75, 
+            lng: -17.15 
+        },
+        zoom: 10,
+        maxZoom: 13,
+        minZoom: 7
+    }
 };
 
 module.exports = internals.defaultOptions;

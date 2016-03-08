@@ -483,13 +483,13 @@ internals.mapsCreate = function(args, done){
                 obj["bounds"] = [-17.5479, 32.3683, -16.0016, 33.2364];
                 obj["center"] = [-16.8393, 32.7203, 9];
                 obj["minzoom"] = 7;
-                obj["maxzoom"] = 13;
+                obj["maxzoom"] = 14;
             }
             else if(mapCenter === "azores"){
-                obj["bounds"] = [-32.0279, 36.6563, -23.5904, 40.1673];
-                obj["center"] = [-27.9355, 38.5019, 7];
+                obj["bounds"] = [-31.3358,36.8763,-24.9143,39.8307];
+                obj["center"] = [-28.1113, 38.5965, 7];
                 obj["minzoom"] = 5;
-                obj["maxzoom"] = 12;
+                obj["maxzoom"] = 14;
             }
             else if(mapCenter === "mainland"){
                 obj["bounds"] = [-9.5691, 36.8928, -6.1194, 42.2244];

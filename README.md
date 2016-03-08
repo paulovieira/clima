@@ -281,23 +281,28 @@ mkdir clima-acores/tilemill-files
 
 
  
-## copy-paste the configuration files and update them accordingly
+## copy-paste the configuration files from one of the available deplyments and update them accordingly
 
 cp clima-madeira/config/dev.js         clima-acores/config
 cp clima-madeira/config/production.js  clima-acores/config
 ln -s ~/clima-app/clima/config/default.js  clima-acores/config/default.js
 
-## create the database and update the configuration files
+cp clima-madeira/pm2-clima-madeira-dev.json   clima-acores/pm2-clima-acores-dev.json
+cp clima-madeira/pm2-clima-madeira-production.json   clima-acores/pm2-clima-acores-production.json
 
+## copy-paste the necessary initialization files:
+cp clima-madeira/data/README.md clima-acores/data
+cp -r clima-madeira/data/__icons clima-acores/data
+cp -r clima-madeira/data/__textures clima-acores/data
+cp -r clima-madeira/data/tilemill-default-project clima-acores/data
+
+
+
+## create the database and update the configuration files
 createdb prac
 cd ~/clima-app/clima && ./database/initialize_db.sh prac
 
-cd ~/clima-app
-emacs clima-acores/config/dev.js
-emacs clima-acores/config/production.js
-
-# populate initial data in the database
-
+# populate initial data in the database configured in the config files
 export NODE_ENV=dev
 export NODE_CONFIG_DIR=~/clima-app/clima-acores/config
 node ~/clima-app/clima/database/populate-initial-data/
@@ -310,14 +315,20 @@ this is a hapi plugin living along side the directory of the core "clima" module
 cd ~/clima-app
 mkdir clima-acores-views
 cp -r clima-madeira-views/* clima-acores-views
-git init
+cd clima-acores-views && git init
 
 
-## start the server
+## finally, start the server
 
 export NODE_ENV=dev
 export NODE_CONFIG_DIR=~/clima-app/clima-acores/config
 node ~/clima-app/clima/index.js
+
+If all is well, start in background mode with pm2
+
+pm2 start pm2-file.json
+pm2 save 
+
 
 VERIFIFY:
   -ok upload file, make sure it is in the right directory
