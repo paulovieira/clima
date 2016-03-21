@@ -114,7 +114,7 @@ module.exports = function(grunt) {
         "lib/web/client/static/jquery/jquery.documentsize-1.2.1.js",
         "lib/web/client/static/jquery/jquery.mousewheel-3.1.12.js",
         "lib/web/client/static/jquery/jquery.fullscreen-0.5.1.js",
-        "lib/web/client/static/leaflet/mapbox-2.2.1/mapbox.uncompressed.js",
+        "lib/web/client/static/leaflet/mapbox-2.2.2/mapbox.uncompressed.js",
         "lib/web/client/static/leaflet/leaflet-providers-1.0.29.js",
         // "lib/web/client/static/leaflet/leaflet-minimap/Control.MiniMap-447530.js",
         "lib/web/client/static/underscore/underscore-1.6.0.js",
