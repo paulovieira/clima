@@ -218,8 +218,12 @@ internals.addMissingKeys = function(tilemillDir, obj){
     // get an array of all the mbtiles exports relative to this map,
     // and order them by date (the last one will be the most recent one)
 
+    // the first exported mbtiles will be something like "temperatura-maxima.mbtiles", but the others will have
+    // a random 6-character string appended: temperatura-maxima_687ae5.export
+
     // TODO: cache the stat information
-    var mbtiles = Glob.sync(tilemillDir + "/export/" + obj.id + "*.mbtiles")
+    var mbtiles = Glob.sync(tilemillDir + "/export/" + obj.id + ".mbtiles")
+                    .concat(Glob.sync(tilemillDir + "/export/" + obj.id + "_??????.mbtiles"))
                     .sort(function(a, b){
                         return Fs.statSync(a).mtime.getTime() - Fs.statSync(b).mtime.getTime();
                     })
