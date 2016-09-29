@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title></title>
+
+    <style>
+
+        
+    </style>
+</head>
+
+<body>
+
+    <div style="margin-top: 30px; " class="container">
+    </div>
+
+    {# container for modal     #}
+    <div class="modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content mn-r-modal-contents">
+            </div>
+        </div>
+    </div>
+
+
+
+    {# inject data coming from the server directly into the page source (we could also setup an ajax endpoint for this) 
+    <script>
+        window.definitions = {{ ctx.definitions | stringify}};
+    </script>
+#}
+    {% if NODE_ENV == 'dev' %}
+
+    <script src="http://localhost:8081/WEBPACK_DEV_SERVER/lib.js"></script>
+    <script src="http://localhost:8081/WEBPACK_DEV_SERVER/app.js"></script>
+
+    {% else %}
+
+    <script src="/cartografia2-app/_build/{{ libBuild }}"></script>
+    <script src="/cartografia2-app/_build/{{ appBuild }}"></script>
+
+{#
+    <script src="/cartografia2-app/_build/temp/lib.js"></script>
+    <script src="/cartografia2-app/_build/temp/app.js"></script>
+#}
+
+    {% endif %}
+
+
+
+</body>
+
+</html>
