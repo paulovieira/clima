@@ -1,0 +1,90 @@
+{
+  "name": "paulovieira/clima",
+  "version": "0.1.4",
+  "libraries": {
+    "xv": "^1.1.25"
+  },
+  "title": "",
+  "branch": "",
+  "style": {
+    "name": "Material",
+    "componentSet": {
+      "nav": "nav/DarkAbsoluteNav",
+      "header": "header/GradientHeader",
+      "article": "article/BasicArticle",
+      "footer": "footer/BasicFooter"
+    },
+    "fontFamily": "Roboto, sans-serif",
+    "heading": {
+      "fontWeight": 500,
+      "letterSpacing": "-0.01em"
+    },
+    "colors": {
+      "text": "#212121",
+      "background": "#fff",
+      "primary": "#2196f3",
+      "secondary": "#1565c0",
+      "highlight": "#ff4081",
+      "border": "#e0e0e0",
+      "muted": "#f5f5f5"
+    },
+    "layout": {
+      "centered": true,
+      "bannerHeight": "80vh",
+      "maxWidth": 896
+    }
+  },
+  "content": [
+    {
+      "component": "nav",
+      "links": [
+        {
+          "href": "https://github.com/paulovieira/clima",
+          "text": "GitHub"
+        },
+        {
+          "href": "https://npmjs.com/package/clima2",
+          "text": "npm"
+        }
+      ]
+    },
+    {
+      "component": "header",
+      "heading": "clima",
+      "subhead": "clima - web app for clima-madeira",
+      "children": [
+        {
+          "component": "ui/TweetButton",
+          "text": "clima: clima - web app for clima-madeira",
+          "url": null
+        },
+        {
+          "component": "ui/GithubButton",
+          "user": "paulovieira",
+          "repo": "clima"
+        }
+      ],
+      "text": "v0.0.1"
+    },
+    {
+      "component": "article",
+      "metadata": {
+        "source": "github.readme"
+      },
+      "html": "<h1>CLIMA Web App</h1>\n<h3>Pre-requisites:</h3>\n<ul>\n<li>nginx  </li>\n<li>node</li>\n<li>postgres + postgis</li>\n<li>shp2pgsql</li>\n</ul>\n<h3>First time installation</h3>\n<p>Clima is composed of several different services. They will all be installed inside the  <code>clima-app</code> directory. We also need a dedicated directory for the maps:</p>\n<pre>mkdir ~/clima-app\nmkdir ~/tilemill-files</pre><h4>clima-tilelive (mbtiles server)</h4>\n<p>Clone and install dependencies:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app\ngit <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/clima-tilelive\n<span class=\"hljs-built_in\">cd</span> clima-tilelive\nsudo npm install</pre><p>Then launch the server</p>\n<pre><span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\nnode index.js -port=8001 --source=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span>/<span class=\"hljs-built_in\">export</span></pre><p>Note: the default port for this service is 8001</p>\n<h4>OUTDATED TileStream (mbtiles server)</h4>\n<p>Clone and install dependencies:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app\ngit <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/tilestream-clima\n<span class=\"hljs-built_in\">cd</span> tilestream-clima\nsudo npm install</pre><p>Then launch TileStream:</p>\n<pre><span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n./index.js start --tilePort=8001  --tiles=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span>/<span class=\"hljs-built_in\">export</span></pre><p>Note: the default port for this service is 8001</p>\n<h4>TileMill (map editor that exports mbtiles)</h4>\n<p>Clone and install dependencies:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app\ngit <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/tilemill-clima\n<span class=\"hljs-built_in\">cd</span> tilemill-clima\nsudo npm install</pre><p>Then copy-paste and edit the custom <code>clima-settings.json</code>:</p>\n<pre>cp clima-settings.json.template clima-settings.json\nemacs clima-settings.json</pre><p>Then launch TileMill:</p>\n<pre><span class=\"hljs-built_in\">export</span> TILEMILL_HOSTNAME=clima.dev (or clima-madeira.pt)\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n\nnode index.js --server=<span class=\"hljs-literal\">true</span> --files=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span> --coreUrl=<span class=\"hljs-variable\">$TILEMILL_HOSTNAME</span> --tileUrl=<span class=\"hljs-variable\">$TILEMILL_HOSTNAME</span></pre><p>Note: the default ports for this service are 20008 and 20009.</p>\n<h4>The main HAPI application</h4>\n<p>Clone and install dependencies:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app\ngit <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/clima\n<span class=\"hljs-built_in\">cd</span> clima\nnpm install</pre><h3>Configuration of the main application</h3>\n<p>Define the environment:</p>\n<pre><span class=\"hljs-built_in\">export</span> NODE_ENV=production (or dev or dev-no-auth)</pre><p>Create the corresponding options file for the environment (to be used throughout the application via the <a href=\"https://github.com/lorenwest/node-config\">config</a> module):</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/clima\ntouch config/<span class=\"hljs-variable\">$NODE_ENV</span>.js\nemacs config/<span class=\"hljs-variable\">$NODE_ENV</span>.js</pre><p>Edit the necessary options in the configuration files. In principle only these should be changed for default.js:</p>\n<ul>\n<li>for <code>config/default.js</code>: <ul>\n<li>publicUri</li>\n<li>publicPort</li>\n<li>allowedLanguages</li>\n</ul>\n</li>\n<li>for <code>config/dev.js</code> and <code>config/production.js</code>: copy-paste from the configuration files available in Dropbox.</li>\n</ul>\n<p>Create the database and populate with the initial data:</p>\n<pre>cd ~/clima-app/clima\ncreatedb <span class=\"hljs-tag\">&lt;database_name&gt;</span>  (used <span class=\"hljs-keyword\">in</span>  `config/dev.js` <span class=\"hljs-keyword\">or</span>  `config/production.js`)\n./database/initialize_db.sh <span class=\"hljs-tag\">&lt;database_name&gt;</span>\n<span class=\"hljs-keyword\">node</span> <span class=\"hljs-title\">database</span>/populate-initial-data/</pre><h3>Launch the main app</h3>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/clima\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n<span class=\"hljs-built_in\">export</span> NODE_ENV=dev (or dev-no-auth, or production)\nnode index.js</pre><h3>Using pm2 to launch the services</h3>\n<p>Make sure pm2 is installed:</p>\n<pre>pm2 list\nsudo npm install pm2 -g</pre><p>1) Start clima-tilelive (note that we have to pass the arguments after &quot;--&quot;):</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/clima-tilelive\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n\npm2 start index.js --name <span class=\"hljs-string\">&quot;clima-tilelive&quot;</span> -- --port=8001 --source=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span>/<span class=\"hljs-built_in\">export</span></pre><p>1) OUTDATED Start TileStream (note that we have to pass the arguments after &quot;--&quot;):</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/tilestream-clima\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n\npm2 start index.js --name <span class=\"hljs-string\">&quot;tilestream-clima&quot;</span> -- --tiles=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span>/<span class=\"hljs-built_in\">export</span> --tilePort=8001</pre><p>2) Start TileMill:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/tilemill-clima\n<span class=\"hljs-built_in\">export</span> TILEMILL_HOSTNAME=clima-madeira.pt (or clima.dev)\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n\npm2 start index.js --name <span class=\"hljs-string\">&quot;tilemill-clima&quot;</span> -- --server=<span class=\"hljs-literal\">true</span> --files=<span class=\"hljs-variable\">$TILEMILL_FILES_DIR</span> --coreUrl=<span class=\"hljs-variable\">$TILEMILL_HOSTNAME</span> --tileUrl=<span class=\"hljs-variable\">$TILEMILL_HOSTNAME</span></pre><p>3) Start the main app:</p>\n<pre><span class=\"hljs-built_in\">cd</span> ~/clima-app/clima\n<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=<span class=\"hljs-variable\">$HOME</span>/tilemill-files\n<span class=\"hljs-built_in\">export</span> NODE_ENV=dev (or production)\n\npm2 start index.js --name <span class=\"hljs-string\">&quot;clima&quot;</span></pre><h4>Updating the app</h4>\n<pre><span class=\"hljs-comment\"># stop the process</span>\npm2 list\npm2 stop N \n(pm2 delete N)\n\n<span class=\"hljs-comment\"># backup the database</span>\n<span class=\"hljs-built_in\">cd</span> ~/clima-app/backups &amp;&amp; pg_dump --format=c --file=backup_YYMMDD.sqlc db_name\n\n<span class=\"hljs-comment\"># delete the hardcoded texts (if necessary)</span>\n(psql dbname)\n(select id, last_updated from texts order by last_updated desc <span class=\"hljs-built_in\">limit</span> 50;)\n(delete from texts <span class=\"hljs-built_in\">where</span> id &lt; 1000;)\n\n<span class=\"hljs-comment\"># update and restart</span>\ngit fetch\ngit merge origin/master\ngrunt build\n\n(<span class=\"hljs-built_in\">export</span> NODE_ENV=production)\n(<span class=\"hljs-built_in\">export</span> TILEMILL_FILES_DIR=~/tilemill-files/)\n(./database/initialize_db.sh db_name)\n(node ./database/populate-initial-data/)\n\n<span class=\"hljs-comment\"># regular files in the static folder should have only read permissions...</span>\n(find lib/web/client/static -type f -exec chmod 744 {} \\;)\n\n<span class=\"hljs-comment\"># ...but directories need read+execute (so that nginx can access them)</span>\n(find lib/web/client/static -type d -exec chmod 755 {} \\;)\n\n\n\nsudo service nginx restart (to make sure the served static files are the updated version - is it really necessary?)\n\n\nsudo service nginx restart (to make sure the served static files are the updated version - is it really necessary?)\npm2 start pm2-clima-XXX.json</pre><h4>Compiling the client-side templates</h4>\n<p>The client apps use <a href=\"https://mozilla.github.io/nunjucks/\">nunjucks</a> as the templating engine templates. Nunjucks should be installed globally. The <code>README.d</code> file in lib/web/client has more details on how to use nunjucks.</p>\n<h4>Other configurations</h4>\n<p>Nginx client_max_body_size\nin the sites-available nginx configuration for clima-madeira.pt, make sure the &quot;server&quot; block has:</p>\n<p>client_max_body_size 0;</p>\n<p>(right below server_name, for instance)</p>\n<h3>Installing TileMill plugins (manually)</h3>\n<p>1) make sure the plugins directory exists:</p>\n<pre>    mkdir /home/pvieira/.tilemill/node_modules</pre><p>2) install the plugins manually by cloning the github repos</p>\n<pre>    <span class=\"hljs-built_in\">cd</span> /home/pvieira/.tilemill/node_modules\n\n    git <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/tilemill-easey-clima.git\n    git <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/tilemill-tablesort-clima.git\n    git <span class=\"hljs-built_in\">clone</span> https://github.com/paulovieira/tilemill-lots-clima.git</pre><p>todo:\n-update readme with options that the plugin should receive</p>\n<p>-install node 4 (first downgrade npm)\n-o mesmo no vps da fcul (nao &#xE9; necessario fazer downgrade do npm)</p>\n<h2>create directories for the new instance</h2>\n<p>cd ~/clima-app\nmkdir clima-acores\nmkdir clima-acores/config\nmkdir clima-acores/data/uploads/public/images -p\nmkdir clima-acores/tilemill-files</p>\n<h2>copy-paste the configuration files from one of the available deplyments and update them accordingly</h2>\n<p>cp clima-madeira/config/dev.js         clima-acores/config\ncp clima-madeira/config/production.js  clima-acores/config\nln -s ~/clima-app/clima/config/default.js  clima-acores/config/default.js</p>\n<p>cp clima-madeira/pm2-clima-madeira-dev.json   clima-acores/pm2-clima-acores-dev.json\ncp clima-madeira/pm2-clima-madeira-production.json   clima-acores/pm2-clima-acores-production.json</p>\n<h2>copy-paste the necessary initialization files:</h2>\n<p>cp clima-madeira/data/README.md clima-acores/data\ncp -r clima-madeira/data/<strong>icons clima-acores/data\ncp -r clima-madeira/data/</strong>textures clima-acores/data\ncp -r clima-madeira/data/tilemill-default-project clima-acores/data</p>\n<h2>create the database and update the configuration files</h2>\n<p>createdb prac\ncd ~/clima-app/clima &amp;&amp; ./database/initialize_db.sh prac</p>\n<h1>populate initial data in the database configured in the config files</h1>\n<p>export NODE_ENV=dev\nexport NODE_CONFIG_DIR=~/clima-app/clima-acores/config\nnode ~/clima-app/clima/database/populate-initial-data/</p>\n<h2>views configuration</h2>\n<p>this is a hapi plugin living along side the directory of the core &quot;clima&quot; module; it is dinamically loaded (the directory of the plugin is set in the configuration)</p>\n<p>cd ~/clima-app\nmkdir clima-acores-views\ncp -r clima-madeira-views/* clima-acores-views\ncd clima-acores-views &amp;&amp; git init</p>\n<h2>finally, start the server</h2>\n<p>export NODE_ENV=dev\nexport NODE_CONFIG_DIR=~/clima-app/clima-acores/config\nnode ~/clima-app/clima/index.js</p>\n<p>If all is well, start in background mode with pm2</p>\n<p>pm2 start pm2-file.json\npm2 save </p>\n<p>VERIFIFY:\n  -ok upload file, make sure it is in the right directory\n  -ok download file\n  -ok upload shape, create map\n  -ok remove dev.js/prod.js from the core config</p>\n"
+    },
+    {
+      "component": "footer",
+      "links": [
+        {
+          "href": "https://github.com/paulovieira/clima",
+          "text": "GitHub"
+        },
+        {
+          "href": "https://github.com/paulovieira",
+          "text": "paulovieira"
+        }
+      ]
+    }
+  ]
+}
