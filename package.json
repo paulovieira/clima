@@ -27,7 +27,7 @@
     "h2o2": "^5.1.0",
     "hapi": "^9.5.1",
     "hapi-auth-cookie": "^3.1.0",
-    "hapi-auth-session-memory": "paulovieira/hapi-auth-session-memory",
+    "hapi-auth-session": "paulovieira/hapi-auth-session",
     "hapi-nunjucks": "paulovieira/hapi-nunjucks",
     "hapi-tilelive": "paulovieira/hapi-tilelive",
     "hapi-tilemill": "paulovieira/hapi-tilemill",
