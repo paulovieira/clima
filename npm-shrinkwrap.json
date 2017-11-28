@@ -6814,7 +6814,8 @@
             },
             "chownr": {
               "version": "0.0.1",
-              "from": "../chownr"
+              "from": "chownr@0.0.1",
+              "resolved": "https://registry.npmjs.org/chownr/-/chownr-0.0.1.tgz"
             },
             "cmd-shim": {
               "version": "2.0.1",
