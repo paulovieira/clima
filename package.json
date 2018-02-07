@@ -5,7 +5,7 @@
   "main": "index.js",
   "license": "BSD",
   "dependencies": {
-    "bcrypt": "^0.8.3",
+    "bcrypt": "1.0.2",
     "bell-on-bundler-error-plugin": "^1.0.8",
     "blipp": "^2.3.0",
     "bluebird": "^2.9.30",
