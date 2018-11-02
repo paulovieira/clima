@@ -271,6 +271,10 @@ todo:
 
 
 
+npm install bcrypt@0.8.7 --save
+npm install pg-promise@1.10 --save
+
+
 ## create directories for the new instance
 
 cd ~/clima-app
@@ -335,3 +339,18 @@ VERIFIFY:
   -ok download file
   -ok upload shape, create map
   -ok remove dev.js/prod.js from the core config
+
+--
+
+ajustes finais:
+
+
+1)
+manual update dependencies that cause errors after changing from node4 to node6 (ideally these updates would already be present in thge nmp-shrinkwrap file, but we got a bunch of errors)
+
+npm install bcrypt@0.8.7    --prefix ~/clima-app/clima
+npm install sqlite3@3.1.8   --prefix ~/clima-app/clima/node_modules/hapi-tilelive/node_modules/mbtiles
+npm install mapnik@3.5.14   --prefix ~/clima-app/clima/node_modules/hapi-tilemill
+npm install sqlite3@3.1.8   --prefix ~/clima-app/clima/node_modules/hapi-tilemill
+npm install srs@1.2.0       --prefix ~/clima-app/clima/node_modules/hapi-tilemill/node_modules/millstone
+npm install zipfile@0.5.11  --prefix ~/clima-app/clima/node_modules/hapi-tilemill/node_modules/millstone
