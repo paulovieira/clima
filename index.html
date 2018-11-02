@@ -140,6 +140,8 @@ in the sites-available nginx configuration for clima-madeira.pt, make sure the &
 -update readme with options that the plugin should receive</p>
 <p>-install node 4 (first downgrade npm)
 -o mesmo no vps da fcul (nao é necessario fazer downgrade do npm)</p>
+<p>npm install bcrypt@0.8.7 --save
+npm install pg-promise@1.10 --save</p>
 <h2>create directories for the new instance</h2>
 <p>cd ~/clima-app
 mkdir clima-acores
@@ -182,4 +184,14 @@ pm2 save </p>
   -ok download file
   -ok upload shape, create map
   -ok remove dev.js/prod.js from the core config</p>
+<p>--</p>
+<p>ajustes finais:</p>
+<p>1)
+manual update dependencies that cause errors after changing from node4 to node6 (ideally these updates would already be present in thge nmp-shrinkwrap file, but we got a bunch of errors)</p>
+<p>npm install bcrypt@0.8.7    --prefix ~/clima-app/clima
+npm install sqlite3@3.1.8   --prefix ~/clima-app/clima/node_modules/hapi-tilelive/node_modules/mbtiles
+npm install mapnik@3.5.14   --prefix ~/clima-app/clima/node_modules/hapi-tilemill
+npm install sqlite3@3.1.8   --prefix ~/clima-app/clima/node_modules/hapi-tilemill
+npm install srs@1.2.0       --prefix ~/clima-app/clima/node_modules/hapi-tilemill/node_modules/millstone
+npm install zipfile@0.5.11  --prefix ~/clima-app/clima/node_modules/hapi-tilemill/node_modules/millstone</p>
 </div></article></div><footer><div style="box-sizing:border-box;max-width:896px;margin-left:auto;margin-right:auto;margin-bottom:32px;padding-top:8px;padding-bottom:8px;padding-left:32px;padding-right:32px;"><div style="margin-left:-16px;margin-right:-16px;"><a href="https://github.com/paulovieira/clima" class="Link" style="box-sizing:border-box;color:inherit;display:inline-block;font-size:14px;line-height:16px;padding-left:16px;padding-right:16px;padding-top:16px;padding-bottom:16px;font-weight:600;text-decoration:none;">GitHub</a><a href="https://github.com/paulovieira" class="Link" style="box-sizing:border-box;color:inherit;display:inline-block;font-size:14px;line-height:16px;padding-left:16px;padding-right:16px;padding-top:16px;padding-bottom:16px;font-weight:600;text-decoration:none;">paulovieira</a></div><div></div></div></footer></div><div style="font-family:-apple-system, sans-serif;font-size:12px;font-weight:600;text-align:right;padding:24px;color:#333;background-color:#eee;"><a href="http://compositor.io" style="color:inherit;text-decoration:none;">Built with Compositor.io</a></div></body></html>
